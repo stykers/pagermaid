@@ -11,7 +11,6 @@ from requests import get
 from telethon import TelegramClient
 import redis
 
-
 load_dotenv("config.env")
 
 # logging stuff
@@ -33,3 +32,29 @@ if version_info[0] < 3 or version_info[1] < 6:
         "Please upgrade your python interpreter."
     )
     exit(1)
+
+API_KEY = os.environ.get("API_KEY", None)
+API_HASH = os.environ.get("API_HASH", None)
+bot = TelegramClient("jarvis", API_KEY, API_HASH)
+
+REDIS = redis.StrictRedis(host='localhost', port=6379, db=3)
+
+
+def redis_check():
+    try:
+        REDIS.ping()
+        return True
+    except:
+        return False
+
+
+# a bunch of vars possibly used in other classes
+COUNT_MSG = 0
+USERS = {}
+WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
+WIDE_MAP[0x20] = 0x3000
+COUNT_PM = {}
+LASTMSG = {}
+ENABLE_KILLME = True
+CMD_HELP = {}
+AFKREASON = "work"

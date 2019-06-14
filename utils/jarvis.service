@@ -7,8 +7,7 @@ WantedBy=multi-user.target
 
 [Service]
 Type=simple
-User=root
+User=jarvis
 WorkingDirectory=/var/lib/jarvis
 ExecStart=/usr/bin/env python3 -m jarvis
-ProtectSystem=full
 Restart=on-failure
