@@ -1,0 +1,14 @@
+[Unit]
+Description=Jarvis telegram utility daemon
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/lib/jarvis
+ExecStart=/usr/bin/env python3 -m jarvis
+ProtectSystem=full
+Restart=on-failure
