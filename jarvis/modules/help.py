@@ -4,7 +4,7 @@ from jarvis import command_help
 from jarvis.events import register
 
 
-@register(outgoing=True, pattern="^s!help(?: |$)(.*)")
+@register(outgoing=True, pattern="^-help")
 async def help(event):
     """ The help command. """
     if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@", "!"):

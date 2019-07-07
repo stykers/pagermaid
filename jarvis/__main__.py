@@ -28,7 +28,7 @@ except PhoneNumberInvalidError:
 for module_name in all_modules:
     imported_module = import_module("jarvis.modules." + module_name)
 
-logs.info("Jarvis has started, The prefix is s!, type s!help for help message.")
+logs.info("Jarvis has started, The prefix is -, type -help for help message.")
 
 if len(argv) not in (1, 3, 4):
     bot.disconnect()

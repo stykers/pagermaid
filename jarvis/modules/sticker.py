@@ -10,7 +10,7 @@ from jarvis import bot, command_help
 from jarvis.events import register
 
 
-@register(outgoing=True, pattern="^s!sticker")
+@register(outgoing=True, pattern="^-sticker")
 async def sticker(args):
     """ Fetches images/stickers and add them to your pack. """
     global emoji
