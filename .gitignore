@@ -2,3 +2,6 @@ venv/
 .idea/
 config.env
 database.db
+__pycache__/*
+jarvis/__pycache__/*
+jarvis/modules/__pycache__/*
