@@ -65,3 +65,4 @@ lastmsg = {}
 enable_suicide = True
 command_help = {}
 afkreason = "work"
+database_test = []
