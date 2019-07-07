@@ -7,15 +7,15 @@ from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
 
 from dotenv import load_dotenv
-from requests import get
+from shutil import copyfile
 from telethon import TelegramClient
 import redis
 
 load_dotenv("config.env")
 
 # logging stuff
-CONSOLE_LOGGER_VERBOSE = sb(os.environ.get("CONSOLE_LOGGER_VERBOSE", "False"))
-if CONSOLE_LOGGER_VERBOSE:
+debug = sb(os.environ.get("DEBUG", "False"))
+if debug:
     basicConfig(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         level=DEBUG,
@@ -25,36 +25,43 @@ else:
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         level=INFO
     )
-LOGS = getLogger(__name__)
+logs = getLogger(__name__)
 
 if version_info[0] < 3 or version_info[1] < 6:
-    LOGS.error(
-        "Please upgrade your python interpreter."
+    logs.error(
+        "Please upgrade your python interpreter to at least 3.6."
     )
     exit(1)
 
-API_KEY = os.environ.get("API_KEY", None)
-API_HASH = os.environ.get("API_HASH", None)
-bot = TelegramClient("jarvis", API_KEY, API_HASH)
+if os.path.exists("database.db"):
+    os.remove("database.db")
+else:
+    logs.info("SQLite3 database file doesn't exist, generating...")
 
-REDIS = redis.StrictRedis(host='localhost', port=6379, db=3)
+copyfile("utils/database.db", "database.db")
+
+api_key = os.environ.get("API_KEY", None)
+api_hash = os.environ.get("API_HASH", None)
+bot = TelegramClient("jarvis", api_key, api_hash)
+
+redis = redis.StrictRedis(host='localhost', port=6379, db=3)
 
 
 def redis_check():
     try:
-        REDIS.ping()
+        redis.ping()
         return True
     except:
         return False
 
 
 # a bunch of vars possibly used in other classes
-COUNT_MSG = 0
-USERS = {}
-WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
-WIDE_MAP[0x20] = 0x3000
-COUNT_PM = {}
-LASTMSG = {}
-ENABLE_KILLME = True
-CMD_HELP = {}
-AFKREASON = "work"
+count_msg = 0
+users = {}
+wide_map = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
+wide_map[0x20] = 0x3000
+count_pm = {}
+lastmsg = {}
+enable_suicide = True
+command_help = {}
+afkreason = "work"
