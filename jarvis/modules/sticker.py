@@ -19,7 +19,6 @@ async def sticker(args):
         if not user.username:
             user.username = user.first_name
         message = await args.get_reply_message()
-        photo = None
         emojibypass = False
         if message and message.media:
             if isinstance(message.media, MessageMediaPhoto):
