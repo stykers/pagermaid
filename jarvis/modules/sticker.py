@@ -51,7 +51,7 @@ async def sticker(args):
                     pack = int(splat[1])
                 else:
                     emoji = splat[1]
-            packname = f"{user.id}_{user.username}_{pack}"
+            packname = f"pack_{user.id}_{user.username}"
             response = request.urlopen(
                 request.Request(f'http://t.me/addstickers/{packname}')
             )
