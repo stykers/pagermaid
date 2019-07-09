@@ -36,3 +36,23 @@ async def chatid(chat):
     """ Queries the chatid of the chat you are in. """
     if not chat.text[0].isalpha() and chat.text[0] not in ("/", "#", "@", "!"):
         await chat.edit("ChatID: `" + str(chat.chat_id) + "`")
+
+
+@register(outgoing=True, pattern=r"^.log(?: |$)([\s\S]*)")
+async def log(log_text):
+    """ Forwards a message into log group """
+    if not log_text.text[0].isalpha() and log_text.text[0] not in ("/", "#", "@", "!"):
+        if log:
+            if log_text.reply_to_msg_id:
+                reply_msg = await log_text.get_reply_message()
+                await reply_msg.forward_to(log_chatid)
+            elif log_text.pattern_match.group(1):
+                user = f"#LOG / Chat ID: {log_text.chat_id}\n\n"
+                text = user + log_text.pattern_match.group(1)
+                await bot.send_message(log_chatid, text)
+            else:
+                await log_text.edit("`Specify target message.`")
+                return
+            await log_text.edit("Noted.")
+        else:
+            await log_text.edit("`Logging is disabled.`")
