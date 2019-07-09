@@ -38,7 +38,7 @@ async def chatid(chat):
         await chat.edit("ChatID: `" + str(chat.chat_id) + "`")
 
 
-@register(outgoing=True, pattern=r"^.log(?: |$)([\s\S]*)")
+@register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
 async def log(log_text):
     """ Forwards a message into log group """
     if not log_text.text[0].isalpha() and log_text.text[0] not in ("/", "#", "@", "!"):

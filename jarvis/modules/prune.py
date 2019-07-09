@@ -38,3 +38,32 @@ async def prune(message):
             )
         await sleep(3)
         await notify.delete()
+
+
+@register(outgoing=True, pattern="^.selfprune")
+async def selfprune(context):
+    """ Prune self message. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        message = context.text
+        count = int(message[9:])
+        i = 1
+
+        async for message in context.client.iter_messages(context.chat_id, from_user='me'):
+            if i > count + 1:
+                break
+            i = i + 1
+            await message.delete()
+
+        notification = await context.client.send_message(
+            context.chat_id,
+            "Deleted "
+            + str(count)
+            + " messages.",
+        )
+        if log:
+            await context.client.send_message(
+                log_chatid, "Deleted " +
+                str(count) + " messages."
+            )
+        await sleep(3)
+        await notification.delete()
