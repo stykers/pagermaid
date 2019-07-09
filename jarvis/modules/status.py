@@ -139,3 +139,20 @@ async def pip(module):
                 )
         else:
             await module.edit("`Invalid argument, check module help.`")
+
+command_help.update({
+    "sysinfo": "Parameter: -sysinfo\
+    \nUsage: Retrieve system information via neofetch."
+})
+command_help.update({
+    "version": "Parameter: -version\
+    \nUsage: Outputs the version and git revision."
+})
+command_help.update({
+    "pip": "Parameter: -pip <module(s)>\
+    \nUsage: Searches pip for the requested modules."
+})
+command_help.update({
+    "status": "Parameter: -status\
+    \nUsage: Output the status of Jarvis"
+})
