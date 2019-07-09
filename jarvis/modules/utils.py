@@ -64,3 +64,17 @@ async def leave(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("Goodbye.")
         await bot(LeaveChannelRequest(leave.chat_id))
+
+
+command_help.update({
+    "chatid": "Query the chatid of the chat you are in"
+})
+command_help.update({
+    "userid": "Query the userid of the sender of the message you replied to."
+})
+command_help.update({
+    "log": "Forwards message to logging group."
+})
+command_help.update({
+    "leave": "Say goodbye and leave."
+})
