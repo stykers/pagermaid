@@ -56,3 +56,11 @@ async def log(log_text):
             await log_text.edit("Noted.")
         else:
             await log_text.edit("`Logging is disabled.`")
+
+
+@register(outgoing=True, pattern="^-leave$")
+async def leave(context):
+    """ It leaves you from the group. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("Goodbye.")
+        await bot(LeaveChannelRequest(leave.chat_id))
