@@ -24,7 +24,7 @@ async def prune(message):
 
         if msgs:
             await message.client.delete_messages(chat, msgs)
-        done = await message.client.send_message(
+        notify = await message.client.send_message(
             message.chat_id,
             "Deleted "
             + str(count)
@@ -36,3 +36,5 @@ async def prune(message):
                 log_chatid, "Deleted " +
                 str(count) + " messages."
             )
+        await sleep(3)
+        await notify.delete()
