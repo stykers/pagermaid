@@ -27,6 +27,12 @@ else:
     )
 logs = getLogger(__name__)
 
+log_chatid = int(os.environ.get("LOG_CHATID", "0"))
+
+log = sb(os.environ.get(
+    "LOG", "False"
+))
+
 if version_info[0] < 3 or version_info[1] < 6:
     logs.error(
         "Please upgrade your python interpreter to at least 3.6."
