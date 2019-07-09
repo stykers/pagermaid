@@ -32,3 +32,42 @@ async def sysinfo(sys):
             await sys.edit("`" + result + "`")
         except FileNotFoundError:
             await sys.edit("`Neofetch not found on this system.`")
+
+
+@register(outgoing=True, pattern="^-version$")
+async def bot_ver(event):
+    """ Command to query the version of the bot. """
+    if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@", "!"):
+        if which("git") is not None:
+            invokever = "git describe --all --long"
+            ver = await async_run(
+                invokever,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+            stdout, stderr = await ver.communicate()
+            verout = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
+
+            invokerev = "git rev-list --all --count"
+            rev = await async_run(
+                invokerev,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+            stdout, stderr = await rev.communicate()
+            revout = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
+
+            await event.edit(
+                "`Jarvis Version: "
+                f"{verout}"
+                "` \n"
+                "`Git Revision: "
+                f"{revout}"
+                "`"
+            )
+        else:
+            await event.edit(
+                "Git is malfunctioning."
+            )
