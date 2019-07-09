@@ -13,9 +13,9 @@ async def help(event):
             if args in command_help:
                 await event.edit(str(command_help[args]))
             else:
-                await event.edit("Invalid argument, please check module list.")
+                await event.edit("`Invalid argument, please check module list.`")
         else:
-            await event.edit("Invalid argument, please specify target module.")
+            await event.edit("`Invalid argument, please specify target module.`")
             string = ""
             for i in command_help:
                 string += "`"+str(i)

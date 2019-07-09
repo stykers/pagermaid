@@ -134,11 +134,11 @@ async def resize_photo(photo):
 
 
 command_help.update({
-    "sticker": "Parameter: s!sticker\
-\nUsage: Reply s!sticker to a sticker or an image to crop and add it to your pack.\
-\n\nParameter: s!sticker [emoji(s)]\
-\nWorks just like s!sticker but uses the emoji(s) in the parameter.\
-\n\nParameter: s!sticker [id]\
+    "sticker": "Parameter: -sticker\
+\nUsage: Reply -sticker to a sticker or an image to crop and add it to your pack.\
+\n\nParameter: -sticker [emoji(s)]\
+\nWorks just like -sticker but uses the emoji(s) in the parameter.\
+\n\nParameter: -sticker [id]\
 \nUsage: Adds the sticker to the specified pack but uses 🤔 as emoji."
 })
 
