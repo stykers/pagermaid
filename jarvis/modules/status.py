@@ -10,7 +10,8 @@ from jarvis import command_help, redis, redis_check
 from jarvis.events import register
 
 
-default_user = uname().node
+hostname = uname().node
+kernel = uname().release
 
 
 @register(outgoing=True, pattern="^-sysinfo$")
@@ -70,4 +71,23 @@ async def bot_ver(event):
         else:
             await event.edit(
                 "Git is malfunctioning."
+            )
+
+
+@register(outgoing=True, pattern="^-status$")
+async def status(e):
+    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+        if not redis_check():
+            db = "Redis is malfunctioning."
+        else:
+            db = "Connected to Redis."
+        await e.edit(
+            "`"
+            "Jarvis is online. \n\n"
+            f"Hostname: {hostname} \n"
+            f"Database Status: {db} \n"
+            f"Kernel Version: {kernel} \n"
+            f"Python Version: {python_version()} \n"
+            f"Library version: {version.__version__}"
+            "`"
             )
