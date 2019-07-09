@@ -91,3 +91,51 @@ async def status(e):
             f"Library version: {version.__version__}"
             "`"
             )
+
+
+@register(outgoing=True, pattern="^-pip(?: |$)(.*)")
+async def pip(module):
+    """ Search pip for module. """
+    if not module.text[0].isalpha() and module.text[0] not in ("/", "#", "@", "!"):
+        pipmodule = module.pattern_match.group(1)
+        if pipmodule:
+            await module.edit("`Searching pip for module . . .`")
+            command = f"pip search {pipmodule}"
+            execute = await async_run(
+                command,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+
+            stdout, stderr = await execute.communicate()
+            pipout = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
+
+            if pipout:
+                if len(pipout) > 4096:
+                    await module.edit("`Output too large, sending as file`")
+                    file = open("output.txt", "w+")
+                    file.write(pipout)
+                    file.close()
+                    await module.client.send_file(
+                        module.chat_id,
+                        "output.txt",
+                        reply_to=module.id,
+                    )
+                    remove("output.txt")
+                    return
+                await module.edit(
+                    "**Command: **\n`"
+                    f"{command}"
+                    "`\n**Output: **\n`"
+                    f"{pipout}"
+                    "`"
+                )
+            else:
+                await module.edit(
+                    "**Command: **\n`"
+                    f"{command}"
+                    "`\n**Output: **\n`No output.`"
+                )
+        else:
+            await module.edit("`Invalid argument, check module help.`")
