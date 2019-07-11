@@ -66,15 +66,36 @@ async def leave(context):
         await bot(LeaveChannelRequest(leave.chat_id))
 
 
+@register(outgoing=True, pattern="^-shutdown$")
+async def shutdown(context):
+    """ To shutdown Jarvis. """
+    if not context.text[0].isalpha():
+        await context.edit("`Jarvis is powering off.`")
+        if log:
+            await context.client.send_message(
+                log_chatid,
+                "Jarvis power off."
+            )
+        await context.client.disconnect()
+
+
 command_help.update({
-    "chatid": "Query the chatid of the chat you are in"
+    "chatid": "Parameter: -chatid\
+    \nUsage: Query the chatid of the chat you are in"
 })
 command_help.update({
-    "userid": "Query the userid of the sender of the message you replied to."
+    "userid": "Parameter: -userid\
+    \nUsage: Query the userid of the sender of the message you replied to."
 })
 command_help.update({
-    "log": "Forwards message to logging group."
+    "log": "Parameter: -log\
+    \nUsage: Forwards message to logging group."
 })
 command_help.update({
-    "leave": "Say goodbye and leave."
+    "leave": "Parameter: -leave\
+    \nUsage: Say goodbye and leave."
+})
+command_help.update({
+    "shutdown": "Parameter: -shutdown\
+    \nUsage: Shuts down Jarvis."
 })
