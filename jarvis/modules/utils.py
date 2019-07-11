@@ -79,6 +79,20 @@ async def shutdown(context):
         await context.client.disconnect()
 
 
+@register(outgoing=True, pattern="^-channel$")
+async def channel(context):
+    """ Returns the author's channel. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("Author Channel: @SparkzStuff")
+
+
+@register(outgoing=True, pattern="^-source$")
+async def source(context):
+    """ Prints the git repository URL. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("https://git.stykers.moe/scm/~stykers/jarvis.git")
+
+
 command_help.update({
     "chatid": "Parameter: -chatid\
     \nUsage: Query the chatid of the chat you are in"
@@ -98,4 +112,12 @@ command_help.update({
 command_help.update({
     "shutdown": "Parameter: -shutdown\
     \nUsage: Shuts down Jarvis."
+})
+command_help.update({
+    "channel": "Parameter: -channel\
+    \nUsage: Shows the development channel."
+})
+command_help.update({
+    "source": "Parameter: -source\
+    \nUsage: Prints the git repository URL."
 })
