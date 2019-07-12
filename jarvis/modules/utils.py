@@ -1,6 +1,7 @@
-""" Useful utils in group chats. """
+""" Useful utilities for Jarvis. """
+import speedtest
 
-from telethon.tl.functions.channels import LeaveChannelRequest
+from telethon import functions
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
 
@@ -63,7 +64,7 @@ async def leave(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("Goodbye.")
         try:
-            await bot(LeaveChannelRequest(leave.chat_id))
+            await bot(functions.channels.LeaveChannelRequest(leave.chat_id))
         except AttributeError:
             await context.edit("You are not in a group.")
 
@@ -93,6 +94,59 @@ async def source(context):
     """ Prints the git repository URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("https://git.stykers.moe/scm/~stykers/jarvis.git")
+
+
+@register(outgoing=True, pattern="^-speed$")
+async def speed(context):
+    """ Tests internet speed using speedtest. """
+    global result
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("`Executing test scripts . . .`")
+        test = speedtest.Speedtest()
+
+        test.get_best_server()
+        test.download()
+        test.upload()
+        test.results.share()
+        result = test.results.dict()
+
+    await context.edit("Timestamp "
+                       f"`{result['timestamp']}` \n\n"
+                       "Upload "
+                       f"`{unit_convert(result['upload'])}` \n"
+                       "Download "
+                       f"`{unit_convert(result['download'])}` \n"
+                       "Latency "
+                       f"`{result['ping']}` \n"
+                       "ISP "
+                       f"`{result['client']['isp']}`")
+
+
+@register(outgoing=True, pattern="^-connection$")
+async def connection(context):
+    """ Shows connection info. """
+    datacenter = await context.client(functions.help.GetNearestDcRequest())
+    await context.edit(
+        f"Region `{datacenter.country}` \n"
+        f"Connected Datacenter `{datacenter.this_dc}` \n"
+        f"Nearest Datacenter `{datacenter.nearest_dc}`"
+    )
+
+
+def unit_convert(byte):
+    """ Converts byte into readable formats. """
+    power = 2 ** 10
+    zero = 0
+    units = {
+        0: '',
+        1: 'Kb/s',
+        2: 'Mb/s',
+        3: 'Gb/s',
+        4: 'Tb/s'}
+    while byte > power:
+        byte /= power
+        zero += 1
+    return f"{round(byte, 2)} {units[zero]}"
 
 
 command_help.update({
