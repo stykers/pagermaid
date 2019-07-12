@@ -10,15 +10,16 @@ from jarvis import bot, command_help
 from jarvis.events import register
 
 
+# noinspection PyUnusedLocal
 @register(outgoing=True, pattern="^-sticker")
-async def sticker(args):
+async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
     global emoji
-    if not args.text[0].isalpha() and args.text[0] not in ("/", "#", "@", "!"):
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         user = await bot.get_me()
         if not user.username:
             user.username = user.first_name
-        message = await args.get_reply_message()
+        message = await context.get_reply_message()
         emojibypass = False
         if message and message.media:
             if isinstance(message.media, MessageMediaPhoto):
@@ -32,14 +33,14 @@ async def sticker(args):
                     emoji = message.media.document.attributes[1].alt
                     emojibypass = True
             else:
-                await args.edit("`This file type is not supported.`")
+                await context.edit("`This file type is not supported.`")
                 return
         else:
-            await args.edit("`Please reply to a message with an image/sticker.`")
+            await context.edit("`Please reply to a message with an image/sticker.`")
             return
         if photo:
             image = await resize_photo(photo)
-            splat = args.text.split()
+            splat = context.text.split()
             if not emojibypass:
                 emoji = "🤔"
             pack = "1"
@@ -77,7 +78,7 @@ async def sticker(args):
                     await conv.get_response()
                     await bot.send_read_acknowledge(conv.chat_id)
             else:
-                await args.edit("Pack not found, creating pack.")
+                await context.edit("Pack not found, creating pack.")
                 async with bot.conversation('Stickers') as conv:
                     await conv.send_message('/newpack')
                     await conv.get_response()
@@ -102,7 +103,7 @@ async def sticker(args):
                     await conv.get_response()
                     await bot.send_read_acknowledge(conv.chat_id)
 
-            await args.edit(
+            await context.edit(
                 f"Sticker has been added to [this](t.me/addstickers/{packname}) pack.",
                 parse_mode='md'
             )
