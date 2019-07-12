@@ -5,19 +5,19 @@ from jarvis.events import register
 
 
 @register(outgoing=True, pattern="^-help(?: |$)(.*)")
-async def help(event):
+async def help(context):
     """ The help command,"""
-    if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@", "!"):
-        args = event.pattern_match.group(1)
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        args = context.pattern_match.group(1)
         if args:
             if args in command_help:
-                await event.edit(str(command_help[args]))
+                await context.edit(str(command_help[args]))
             else:
-                await event.edit("`Invalid argument, please check module list.`")
+                await context.edit("`Invalid argument, please check module list.`")
         else:
-            await event.edit("`Invalid argument, please specify target module.`")
+            await context.edit("`Invalid argument, please specify target module.`")
             string = ""
             for i in command_help:
                 string += "`" + str(i)
                 string += "`\n"
-            await event.reply(string)
+            await context.reply(string)
