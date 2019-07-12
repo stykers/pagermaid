@@ -5,7 +5,8 @@ from asyncio.subprocess import PIPE
 from platform import python_version, uname
 from shutil import which
 from os import remove
-from telethon import version
+# noinspection PyProtectedMember
+from telethon import __version__ as telethon_version
 from jarvis import command_help, redis_check
 from jarvis.events import register
 
@@ -27,7 +28,7 @@ async def sysinfo(context):
 
             stdout, stderr = await execute.communicate()
             result = str(stdout.decode().strip()) \
-                     + str(stderr.decode().strip())
+                + str(stderr.decode().strip())
 
             await context.edit("`" + result + "`")
         except FileNotFoundError:
@@ -47,7 +48,7 @@ async def version(context):
             )
             stdout, stderr = await ver.communicate()
             verout = str(stdout.decode().strip()) \
-                     + str(stderr.decode().strip())
+                + str(stderr.decode().strip())
 
             invokerev = "git rev-list --all --count"
             rev = await async_run(
@@ -57,7 +58,7 @@ async def version(context):
             )
             stdout, stderr = await rev.communicate()
             revout = str(stdout.decode().strip()) \
-                     + str(stderr.decode().strip())
+                + str(stderr.decode().strip())
 
             await context.edit(
                 "`Jarvis Version: "
@@ -87,7 +88,7 @@ async def status(context):
             f"Database Status: {db} \n"
             f"Kernel Version: {kernel} \n"
             f"Python Version: {python_version()} \n"
-            f"Library version: {version.__version__}"
+            f"Library version: {telethon_version}"
             "`"
         )
 
@@ -108,7 +109,7 @@ async def pip(context):
 
             stdout, stderr = await execute.communicate()
             pipout = str(stdout.decode().strip()) \
-                     + str(stderr.decode().strip())
+                + str(stderr.decode().strip())
 
             if pipout:
                 if len(pipout) > 4096:
