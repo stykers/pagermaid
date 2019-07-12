@@ -89,3 +89,40 @@ async def delete(context):
                         log_chatid,
                         "Lacks message deletion permission."
                     )
+
+
+@register(outgoing=True, pattern="^-edit")
+async def edit(context):
+    """ Edits your last message. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        message = context.text
+        chat = await context.get_input_chat()
+        self_id = await context.client.get_peer_id('me')
+        string = str(message[6:])
+        i = 1
+        async for message in context.client.iter_messages(chat, self_id):
+            if i == 2:
+                await message.edit(string)
+                await context.delete()
+                break
+            i = i + 1
+        if log:
+            await context.client.send_message(log_chatid, "Message edited.")
+
+
+@register(outgoing=True, pattern="^-timed")
+async def timed(context):
+    """ A timed message that deletes itself. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        try:
+            message = context.text
+            counter = int(message[7:9])
+            text = str(context.text[9:])
+            await context.delete()
+            source_msg = await context.client.send_message(context.chat_id, text)
+            await sleep(counter)
+            await source_msg.delete()
+            if log:
+                await context.client.send_message(log_chatid, "Created timed message.")
+        except ValueError:
+            await context.edit("`Invalid time parameter specified.`")
