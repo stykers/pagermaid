@@ -1,6 +1,7 @@
 """ Useful utilities for Jarvis. """
 import speedtest
 
+from datetime import datetime
 from telethon import functions
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
@@ -131,6 +132,17 @@ async def connection(context):
         f"Connected Datacenter `{datacenter.this_dc}` \n"
         f"Nearest Datacenter `{datacenter.nearest_dc}`"
     )
+
+
+@register(outgoing=True, pattern="^-ping$")
+async def ping(context):
+    """ Calculates the latency of the bot host. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        start = datetime.now()
+        await context.edit("`Pong!`")
+        end = datetime.now()
+        duration = (end - start).microseconds / 1000
+        await context.edit("`Pong!|%sms`" % duration)
 
 
 def unit_convert(byte):
