@@ -62,7 +62,10 @@ async def leave(context):
     """ It leaves you from the group. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("Goodbye.")
-        await bot(LeaveChannelRequest(leave.chat_id))
+        try:
+            await bot(LeaveChannelRequest(leave.chat_id))
+        except AttributeError:
+            await context.edit("You are not in a group.")
 
 
 @register(outgoing=True, pattern="^-shutdown$")
