@@ -6,7 +6,7 @@ from platform import python_version, uname
 from shutil import which
 from os import remove
 from telethon import version
-from jarvis import command_help, redis, redis_check
+from jarvis import command_help, redis_check
 from jarvis.events import register
 
 
@@ -15,9 +15,9 @@ kernel = uname().release
 
 
 @register(outgoing=True, pattern="^-sysinfo$")
-async def sysinfo(sys):
+async def sysinfo(context):
     """ Fetches system info using neofetch. """
-    if not sys.text[0].isalpha() and sys.text[0] not in ("/", "#", "@", "!"):
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         try :
             command = "neofetch --stdout"
             execute = await async_run(
@@ -30,15 +30,15 @@ async def sysinfo(sys):
             result = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
-            await sys.edit("`" + result + "`")
+            await context.edit("`" + result + "`")
         except FileNotFoundError:
-            await sys.edit("`Neofetch not found on this system.`")
+            await context.edit("`Neofetch not found on this system.`")
 
 
 @register(outgoing=True, pattern="^-version$")
-async def bot_ver(event):
-    """ Command to query the version of the bot. """
-    if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@", "!"):
+async def version(context):
+    """ Command to query the version of Jarvis. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if which("git") is not None:
             invokever = "git describe --all --long"
             ver = await async_run(
@@ -60,7 +60,7 @@ async def bot_ver(event):
             revout = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
-            await event.edit(
+            await context.edit(
                 "`Jarvis Version: "
                 f"{verout}"
                 "` \n"
@@ -69,19 +69,19 @@ async def bot_ver(event):
                 "`"
             )
         else:
-            await event.edit(
+            await context.edit(
                 "Git is malfunctioning."
             )
 
 
 @register(outgoing=True, pattern="^-status$")
-async def status(e):
-    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+async def status(context):
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if not redis_check():
             db = "Redis is malfunctioning."
         else:
             db = "Connected to Redis."
-        await e.edit(
+        await context.edit(
             "`"
             "Jarvis is online. \n\n"
             f"Hostname: {hostname} \n"
@@ -94,12 +94,12 @@ async def status(e):
 
 
 @register(outgoing=True, pattern="^-pip(?: |$)(.*)")
-async def pip(module):
+async def pip(context):
     """ Search pip for module. """
-    if not module.text[0].isalpha() and module.text[0] not in ("/", "#", "@", "!"):
-        pipmodule = module.pattern_match.group(1)
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        pipmodule = context.pattern_match.group(1)
         if pipmodule:
-            await module.edit("`Searching pip for module . . .`")
+            await context.edit("`Searching pip for module . . .`")
             command = f"pip search {pipmodule}"
             execute = await async_run(
                 command,
@@ -113,18 +113,18 @@ async def pip(module):
 
             if pipout:
                 if len(pipout) > 4096:
-                    await module.edit("`Output too large, sending as file`")
+                    await context.edit("`Output exceeded limit, attaching file.`")
                     file = open("output.txt", "w+")
                     file.write(pipout)
                     file.close()
-                    await module.client.send_file(
-                        module.chat_id,
+                    await context.client.send_file(
+                        context.chat_id,
                         "output.txt",
-                        reply_to=module.id,
+                        reply_to=context.id,
                     )
                     remove("output.txt")
                     return
-                await module.edit(
+                await context.edit(
                     "**Command: **\n`"
                     f"{command}"
                     "`\n**Output: **\n`"
@@ -132,13 +132,13 @@ async def pip(module):
                     "`"
                 )
             else:
-                await module.edit(
+                await context.edit(
                     "**Command: **\n`"
                     f"{command}"
                     "`\n**Output: **\n`No output.`"
                 )
         else:
-            await module.edit("`Invalid argument, check module help.`")
+            await context.edit("`Invalid argument, check module help.`")
 
 command_help.update({
     "sysinfo": "Parameter: -sysinfo\

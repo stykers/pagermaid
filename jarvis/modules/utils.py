@@ -1,16 +1,15 @@
 """ Useful utils in group chats. """
 
-from time import sleep
 from telethon.tl.functions.channels import LeaveChannelRequest
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
 
 
 @register(outgoing=True, pattern="^-userid$")
-async def userid(target):
+async def userid(context):
     """ Queries the userid of a user. """
-    if not target.text[0].isalpha() and target.text[0] not in ("/", "#", "@", "!"):
-        message = await target.get_reply_message()
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        message = await context.get_reply_message()
         if message:
             if not message.forward:
                 user_id = message.sender.id
@@ -25,37 +24,37 @@ async def userid(target):
                     name = "@" + message.forward.sender.username
                 else:
                     name = "*" + message.forward.sender.first_name + "*"
-            await target.edit(
+            await context.edit(
                 "**Username:** {} \n**UserID:** `{}`"
                 .format(name, user_id)
             )
 
 
 @register(outgoing=True, pattern="^-chatid$")
-async def chatid(chat):
+async def chatid(context):
     """ Queries the chatid of the chat you are in. """
-    if not chat.text[0].isalpha() and chat.text[0] not in ("/", "#", "@", "!"):
-        await chat.edit("ChatID: `" + str(chat.chat_id) + "`")
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("ChatID: `" + str(context.chat_id) + "`")
 
 
 @register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
-async def log(log_text):
+async def log(context):
     """ Forwards a message into log group """
-    if not log_text.text[0].isalpha() and log_text.text[0] not in ("/", "#", "@", "!"):
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if log:
-            if log_text.reply_to_msg_id:
-                reply_msg = await log_text.get_reply_message()
+            if context.reply_to_msg_id:
+                reply_msg = await context.get_reply_message()
                 await reply_msg.forward_to(log_chatid)
-            elif log_text.pattern_match.group(1):
-                user = f"#LOG / Chat ID: {log_text.chat_id}\n\n"
-                text = user + log_text.pattern_match.group(1)
+            elif context.pattern_match.group(1):
+                user = f"#LOG / Chat ID: {context.chat_id}\n\n"
+                text = user + context.pattern_match.group(1)
                 await bot.send_message(log_chatid, text)
             else:
-                await log_text.edit("`Specify target message.`")
+                await context.edit("`Specify target message.`")
                 return
-            await log_text.edit("Noted.")
+            await context.edit("Noted.")
         else:
-            await log_text.edit("`Logging is disabled.`")
+            await context.edit("`Logging is disabled.`")
 
 
 @register(outgoing=True, pattern="^-leave$")
