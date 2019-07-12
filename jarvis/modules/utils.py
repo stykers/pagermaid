@@ -189,3 +189,18 @@ command_help.update({
     "source": "Parameter: -source\
     \nUsage: Prints the git repository URL."
 })
+
+command_help.update({
+    "speed": "Parameter: -speed\
+    \nUsage: Execute the speedtest script and outputs your internet speed."
+})
+
+command_help.update({
+    "connection": "Parameter: -connection\
+    \nUsage: Shows your connection info."
+})
+
+command_help.update({
+    "ping": "Parameter: -ping\
+    \nUsage: Outputs your latency to telegram."
+})
