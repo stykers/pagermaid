@@ -18,6 +18,6 @@ async def help(event):
             await event.edit("`Invalid argument, please specify target module.`")
             string = ""
             for i in command_help:
-                string += "`"+str(i)
+                string += "`" + str(i)
                 string += "`\n"
             await event.reply(string)

@@ -9,7 +9,6 @@ from telethon import version
 from jarvis import command_help, redis_check
 from jarvis.events import register
 
-
 hostname = uname().node
 kernel = uname().release
 
@@ -18,7 +17,7 @@ kernel = uname().release
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        try :
+        try:
             command = "neofetch --stdout"
             execute = await async_run(
                 command,
@@ -28,7 +27,7 @@ async def sysinfo(context):
 
             stdout, stderr = await execute.communicate()
             result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+                     + str(stderr.decode().strip())
 
             await context.edit("`" + result + "`")
         except FileNotFoundError:
@@ -48,7 +47,7 @@ async def version(context):
             )
             stdout, stderr = await ver.communicate()
             verout = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+                     + str(stderr.decode().strip())
 
             invokerev = "git rev-list --all --count"
             rev = await async_run(
@@ -58,7 +57,7 @@ async def version(context):
             )
             stdout, stderr = await rev.communicate()
             revout = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+                     + str(stderr.decode().strip())
 
             await context.edit(
                 "`Jarvis Version: "
@@ -90,7 +89,7 @@ async def status(context):
             f"Python Version: {python_version()} \n"
             f"Library version: {version.__version__}"
             "`"
-            )
+        )
 
 
 @register(outgoing=True, pattern="^-pip(?: |$)(.*)")
@@ -109,7 +108,7 @@ async def pip(context):
 
             stdout, stderr = await execute.communicate()
             pipout = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+                     + str(stderr.decode().strip())
 
             if pipout:
                 if len(pipout) > 4096:
@@ -139,6 +138,7 @@ async def pip(context):
                 )
         else:
             await context.edit("`Invalid argument, check module help.`")
+
 
 command_help.update({
     "sysinfo": "Parameter: -sysinfo\

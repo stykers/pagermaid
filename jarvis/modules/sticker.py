@@ -116,11 +116,11 @@ async def resize_photo(photo):
         size1 = image.width
         size2 = image.height
         if image.width > image.height:
-            scale = 512/size1
+            scale = 512 / size1
             size1new = 512
             size2new = size2 * scale
         else:
-            scale = 512/size2
+            scale = 512 / size2
             size1new = size1 * scale
             size2new = 512
         size1new = math.floor(size1new)
@@ -141,4 +141,3 @@ command_help.update({
 \n\nParameter: -sticker [id]\
 \nUsage: Adds the sticker to the specified pack but uses 🤔 as emoji."
 })
-

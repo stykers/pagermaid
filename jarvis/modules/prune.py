@@ -34,7 +34,7 @@ async def prune(context):
         if log:
             await context.client.send_message(
                 log_chatid, "Deleted " +
-                str(count) + " messages."
+                            str(count) + " messages."
             )
         await sleep(3)
         await notify.delete()
@@ -63,7 +63,7 @@ async def selfprune(context):
         if log:
             await context.client.send_message(
                 log_chatid, "Deleted " +
-                str(count) + " messages."
+                            str(count) + " messages."
             )
         await sleep(3)
         await notification.delete()
