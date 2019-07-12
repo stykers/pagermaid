@@ -67,3 +67,25 @@ async def selfprune(context):
             )
         await sleep(3)
         await notification.delete()
+
+
+@register(outgoing=True, pattern="^-delete$")
+async def delete(context):
+    """ Deletes the replied message. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        msg_src = await context.get_reply_message()
+        if context.reply_to_msg_id:
+            try:
+                await msg_src.delete()
+                await context.delete()
+                if log:
+                    await context.client.send_message(
+                        log_chatid,
+                        "Deleted a message."
+                    )
+            except rpcbaseerrors.BadRequestError:
+                if log:
+                    await context.client.send_message(
+                        log_chatid,
+                        "Lacks message deletion permission."
+                    )
