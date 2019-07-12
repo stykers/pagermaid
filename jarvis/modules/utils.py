@@ -97,6 +97,13 @@ async def source(context):
         await context.edit("https://git.stykers.moe/scm/~stykers/jarvis.git")
 
 
+@register(outgoing=True, pattern="^-site$")
+async def site(context):
+    """ Outputs the site URL. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("https://jarvis.stykers.moe/")
+
+
 @register(outgoing=True, pattern="^-speed$")
 async def speed(context):
     """ Tests internet speed using speedtest. """
@@ -188,6 +195,11 @@ command_help.update({
 command_help.update({
     "source": "Parameter: -source\
     \nUsage: Prints the git repository URL."
+})
+
+command_help.update({
+    "site": "Parameter: -site\
+    \nUsage: Shows the site of Jarvis."
 })
 
 command_help.update({
