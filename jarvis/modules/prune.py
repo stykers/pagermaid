@@ -40,12 +40,12 @@ async def prune(message):
         await notify.delete()
 
 
-@register(outgoing=True, pattern="^.selfprune")
+@register(outgoing=True, pattern="^-selfprune")
 async def selfprune(context):
     """ Prune self message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         message = context.text
-        count = int(message[9:])
+        count = int(message[11:])
         i = 1
 
         async for message in context.client.iter_messages(context.chat_id, from_user='me'):
