@@ -78,12 +78,12 @@ async def sticker(context):
                     await conv.get_response()
                     await bot.send_read_acknowledge(conv.chat_id)
             else:
-                await context.edit("Pack not found, creating pack.")
+                await context.edit("Pack not found, creating pack . . .")
                 async with bot.conversation('Stickers') as conv:
                     await conv.send_message('/newpack')
                     await conv.get_response()
                     await bot.send_read_acknowledge(conv.chat_id)
-                    await conv.send_message(f"@{user.username}'s pack.")
+                    await conv.send_message(f"@{user.username}'s pack")
                     await conv.get_response()
                     await bot.send_read_acknowledge(conv.chat_id)
                     file.seek(0)
