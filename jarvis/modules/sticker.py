@@ -39,10 +39,11 @@ async def sticker(context):
             await context.edit("`Please reply to a message with an image/sticker.`")
             return
         if photo:
+            await context.edit("Collecting sticker . . .")
             image = await resize_photo(photo)
             splat = context.text.split()
             if not emojibypass:
-                emoji = "🤔"
+                emoji = "👀"
             pack = "1"
             if len(splat) == 3:
                 pack = splat[2]
@@ -140,5 +141,5 @@ command_help.update({
 \n\nParameter: -sticker [emoji(s)]\
 \nWorks just like -sticker but uses the emoji(s) in the parameter.\
 \n\nParameter: -sticker [id]\
-\nUsage: Adds the sticker to the specified pack but uses 🤔 as emoji."
+\nUsage: Adds the sticker to the specified pack but uses 👀 as emoji."
 })
