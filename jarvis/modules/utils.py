@@ -1,5 +1,6 @@
 """ Useful utilities for Jarvis. """
 import speedtest
+import asyncio
 
 from datetime import datetime
 from telethon import functions
@@ -168,6 +169,33 @@ def unit_convert(byte):
     return f"{round(byte, 2)} {units[zero]}"
 
 
+@register(pattern='-animate(?: |$)(.*)')
+async def animate(context):
+    """ Command for animated texts. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit("`Invalid argument.`")
+            return
+        sleep_time = 0.03
+        typing_symbol = "█"
+        old_text = ''
+        await context.edit(typing_symbol)
+        await asyncio.sleep(sleep_time)
+        for character in message:
+            old_text = old_text + "" + character
+            typing_text = old_text + "" + typing_symbol
+            await context.edit(typing_text)
+            await asyncio.sleep(sleep_time)
+            await context.edit(old_text)
+            await asyncio.sleep(sleep_time)
+
+
 command_help.update({
     "chatid": "Parameter: -chatid\
     \nUsage: Query the chatid of the chat you are in"
@@ -215,4 +243,9 @@ command_help.update({
 command_help.update({
     "ping": "Parameter: -ping\
     \nUsage: Outputs your latency to telegram."
+})
+
+command_help.update({
+    "animate": "Parameter: -animate <text>\
+    \nUsage: Animated text."
 })
