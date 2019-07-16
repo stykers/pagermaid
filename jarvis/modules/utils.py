@@ -297,6 +297,6 @@ command_help.update({
 })
 
 command_help.update({
-    "corrupt": "Parameter: -corrupt\
+    "corrupt": "Parameter: -corrupt <text>\
     \nUsage: Corrupts some text."
 })
