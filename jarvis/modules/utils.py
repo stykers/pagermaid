@@ -6,6 +6,7 @@ from datetime import datetime
 from telethon import functions
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
+from spongemock import spongemock
 
 
 @register(outgoing=True, pattern="^-userid$")
@@ -196,6 +197,24 @@ async def animate(context):
             await asyncio.sleep(sleep_time)
 
 
+@register(outgoing=True, pattern="^-mock(?: |$)(.*)")
+async def mock(context):
+    """ Mock people with weird caps. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit("`Invalid arguments.`")
+            return
+
+        reply_text = spongemock.mock(message)
+        await context.edit(reply_text)
+
+
 command_help.update({
     "chatid": "Parameter: -chatid\
     \nUsage: Query the chatid of the chat you are in"
@@ -248,4 +267,9 @@ command_help.update({
 command_help.update({
     "animate": "Parameter: -animate <text>\
     \nUsage: Animated text."
+})
+
+command_help.update({
+    "mock": "Parameter: -mock\
+    \nUsage: Reply to a message to mock with weird caps."
 })
