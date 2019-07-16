@@ -7,6 +7,7 @@ from telethon import functions
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
 from spongemock import spongemock
+from zalgo_text import zalgo
 
 
 @register(outgoing=True, pattern="^-userid$")
@@ -215,6 +216,27 @@ async def mock(context):
         await context.edit(reply_text)
 
 
+@register(outgoing=True, pattern="^-corrupt(?: |$)(.*)")
+async def corrupt(context):
+    """ Corrupt texts. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit(
+                "`Invalid arguments.`"
+            )
+            return
+
+        input_text = " ".join(message).lower()
+        corrupted_text = zalgo.zalgo().zalgofy(input_text)
+        await context.edit(corrupted_text)
+
+
 command_help.update({
     "chatid": "Parameter: -chatid\
     \nUsage: Query the chatid of the chat you are in"
@@ -272,4 +294,9 @@ command_help.update({
 command_help.update({
     "mock": "Parameter: -mock\
     \nUsage: Reply to a message to mock with weird caps."
+})
+
+command_help.update({
+    "corrupt": "Parameter: -corrupt\
+    \nUsage: Corrupts some text."
 })
