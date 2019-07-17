@@ -237,6 +237,24 @@ async def corrupt(context):
         await context.edit(corrupted_text)
 
 
+@register(outgoing=True, pattern="^-widen(?: |$)(.*)")
+async def widen(context):
+    """ Make texts weirdly wide. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit("`Invalid argument.`")
+            return
+
+        reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
+        await context.edit(reply_text)
+
+
 command_help.update({
     "chatid": "Parameter: -chatid\
     \nUsage: Query the chatid of the chat you are in"
@@ -292,11 +310,16 @@ command_help.update({
 })
 
 command_help.update({
-    "mock": "Parameter: -mock\
-    \nUsage: Reply to a message to mock with weird caps."
+    "mock": "Parameter: -mock <text>\
+    \nUsage: Mock a string via weird caps."
 })
 
 command_help.update({
     "corrupt": "Parameter: -corrupt <text>\
     \nUsage: Corrupts some text."
+})
+
+command_help.update({
+    "widen": "Parameter: -widen <text>\
+    \nUsage: Widen every char in a string in a weird way."
 })
