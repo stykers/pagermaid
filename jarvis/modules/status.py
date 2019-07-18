@@ -114,15 +114,15 @@ async def pip(context):
             if pipout:
                 if len(pipout) > 4096:
                     await context.edit("`Output exceeded limit, attaching file.`")
-                    file = open("output.txt", "w+")
+                    file = open("output.log", "w+")
                     file.write(pipout)
                     file.close()
                     await context.client.send_file(
                         context.chat_id,
-                        "output.txt",
+                        "output.log",
                         reply_to=context.id,
                     )
-                    remove("output.txt")
+                    remove("output.log")
                     return
                 await context.edit(
                     "**Command: **\n`"
