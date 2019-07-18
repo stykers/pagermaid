@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
-redis-server --daemonize yes
-python3 -m jarvis
-exit 0
+#!/bin/sh
+while true; do
+    python3 -m jarvis
+    echo 'Restarting in 2 seconds...'
+    sleep 2;
+done

@@ -42,4 +42,4 @@ WORKDIR /home/jarvis/instance
 COPY ./jarvis.session ./config.env /home/jarvis/instance/
 RUN sudo pip3 install -r requirements.txt
 RUN sudo chmod -R 777 /home/jarvis/instance
-CMD ["dash","utils/start.sh"]
+CMD ["dash","utils/entrypoint.sh"]
