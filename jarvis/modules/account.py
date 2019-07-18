@@ -108,3 +108,24 @@ async def rm_pfp(context):
             )
         await bot(DeletePhotosRequest(id=input_photos))
         await context.edit(f"`Removed {len(input_photos)} profile picture(s).`")
+
+command_help.update({
+    "username": "Parameter: -username <text>\
+    \nUsage: Sets the username."
+})
+command_help.update({
+    "name": "Parameter: -name <text> <text>\
+    \nUsage: Alters the display name."
+})
+command_help.update({
+    "pfp": "Usage: -pfp\
+    \nUsage: Sets profile picture to image replied to."
+})
+command_help.update({
+    "bio": "-bio <text>\
+    \nUsage: Sets the bio string."
+})
+command_help.update({
+    "rm_pfp": "Parameter: -rm_pfp <amount>\
+    \nUsage: Deletes part or all of your profile picture history."
+})
