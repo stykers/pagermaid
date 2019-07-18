@@ -10,4 +10,4 @@ Type=simple
 User=jarvis
 WorkingDirectory=/var/lib/jarvis
 ExecStart=/bin/bash -c "source venv/bin/activate; /usr/bin/env python3 -m jarvis"
-Restart=on-failure
+Restart=always
