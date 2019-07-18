@@ -7,7 +7,6 @@ from asyncio.subprocess import PIPE
 from getpass import getuser
 from os import remove
 from os import geteuid
-from sys import executable
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register
 
