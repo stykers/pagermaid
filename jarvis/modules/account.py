@@ -253,3 +253,7 @@ command_help.update({
     "rm_pfp": "Parameter: -rm_pfp <amount>\
     \nUsage: Deletes part or all of your profile picture history."
 })
+command_help.update({
+    "profile": "Parameter: -profile <user>\
+    \nUsage: Shows user profile in a large message."
+})
