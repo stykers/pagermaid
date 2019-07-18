@@ -3,7 +3,8 @@
 import os
 
 from telethon.errors import ImageProcessFailedError, PhotoCropSizeSmallError
-from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedError
+from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedError, AboutTooLongError,\
+    FirstNameInvalidError, UsernameInvalidError
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
@@ -18,9 +19,13 @@ async def username(context):
         result = context.pattern_match.group(1)
         try:
             await bot(UpdateUsernameRequest(result))
-            await context.edit("`Username have been updated.`")
         except UsernameOccupiedError:
             await context.edit("`Username is taken.`")
+            return
+        except UsernameInvalidError:
+            await context.edit("`Invalid username.`")
+            return
+        await context.edit("`Username have been updated.`")
 
 
 @register(outgoing=True, pattern="^-name")
@@ -35,10 +40,13 @@ async def name(context):
             split = new.split(" ", 1)
             first = split[0]
             last = split[1]
-
-        await bot(UpdateProfileRequest(
-            first_name=first,
-            last_name=last))
+        try:
+            await bot(UpdateProfileRequest(
+                first_name=first,
+                last_name=last))
+        except FirstNameInvalidError:
+            await context.edit("`Invalid first name.`")
+            return
         await context.edit("`Display name is successfully altered.`")
 
 
@@ -76,7 +84,11 @@ async def bio(context):
     """ Sets your bio. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         result = context.pattern_match.group(1)
-        await bot(UpdateProfileRequest(about=result))
+        try:
+            await bot(UpdateProfileRequest(about=result))
+        except AboutTooLongError:
+            await context.edit("`Provided string is too long.`")
+            return
         await context.edit("`Bio has been altered successfully.`")
 
 
