@@ -3,6 +3,7 @@
 import os
 
 from sys import version_info
+from sys import platform
 from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
 
@@ -26,6 +27,16 @@ else:
         level=INFO
     )
 logs = getLogger(__name__)
+
+if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7"\
+        or platform == "freebsd8" or platform == "freebsdN" or platform == "openbsd6":
+    logs.info(
+        "Detected platform as " + platform + ", chainloading Jarvis."
+    )
+else:
+    logs.error(
+        "Your platform " + platform + " is not supported, please start the bot on Linux or BSD."
+    )
 
 log_chatid = int(os.environ.get("LOG_CHATID", "0"))
 
