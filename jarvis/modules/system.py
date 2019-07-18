@@ -28,6 +28,17 @@ async def sh(context):
             await context.edit("`Invalid argument.`")
             return
 
+        if uid is 0:
+            await context.edit(
+                f"`{user}`@{hostname} ~"
+                f"\n> `#` {command}"
+            )
+        else:
+            await context.edit(
+                f"`{user}`@{hostname} ~"
+                f"\n> `$` {command}"
+            )
+
         process = await asyncio.create_subprocess_shell(
             command,
             stdout=PIPE,
@@ -64,17 +75,7 @@ async def sh(context):
                     f"\n`{result}`"
                 )
         else:
-            if uid is 0:
-                await context.edit(
-                    f"`{user}`@{hostname} ~"
-                    f"\n> `#` {command}"
-                )
-            else:
-                await context.edit(
-                    f"`{user}`@{hostname} ~"
-                    f"\n> `$` {command}"
-                )
-
+            return
         if log:
             await context.client.send_message(
                 log_chatid,

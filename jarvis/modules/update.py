@@ -58,7 +58,7 @@ async def upstream(context):
     changelog = await changelog_gen(repo, f'HEAD..upstream/{active_branch}')
 
     if not changelog:
-        await context.edit(f"`Jarvis is up to date with branch` **{active_branch}**`.`")
+        await context.edit(f"`Jarvis is up to date with branch `**{active_branch}**`.`")
         return
 
     if parameter != "now":
