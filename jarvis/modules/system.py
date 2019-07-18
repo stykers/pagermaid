@@ -37,31 +37,43 @@ async def sh(context):
         result = str(stdout.decode().strip()) \
             + str(stderr.decode().strip())
 
-        if len(result) > 4096:
-            output = open("output.txt", "w+")
-            output.write(result)
-            output.close()
-            await context.client.send_file(
-                context.chat_id,
-                "output.log",
-                reply_to=context.id,
-                caption="`Output exceeded limit, attaching file.`",
-            )
-            remove("output.txt")
-            return
+        if result:
+            if len(result) > 4096:
+                output = open("output.txt", "w+")
+                output.write(result)
+                output.close()
+                await context.client.send_file(
+                    context.chat_id,
+                    "output.log",
+                    reply_to=context.id,
+                    caption="`Output exceeded limit, attaching file.`",
+                )
+                remove("output.txt")
+                return
 
-        if uid is 0:
-            await context.edit(
-                f"`{user}`@{hostname} ~"
-                f"\n> `#` {command}"
-                f"\n`{result}`"
-            )
+            if uid is 0:
+                await context.edit(
+                    f"`{user}`@{hostname} ~"
+                    f"\n> `#` {command}"
+                    f"\n`{result}`"
+                )
+            else:
+                await context.edit(
+                    f"`{user}`@{hostname} ~"
+                    f"\n> `$` {command}"
+                    f"\n`{result}`"
+                )
         else:
-            await context.edit(
-                f"`{user}`@{hostname} ~"
-                f"\n> `$` {command}"
-                f"\n`{result}`"
-            )
+            if uid is 0:
+                await context.edit(
+                    f"`{user}`@{hostname} ~"
+                    f"\n> `#` {command}"
+                )
+            else:
+                await context.edit(
+                    f"`{user}`@{hostname} ~"
+                    f"\n> `$` {command}"
+                )
 
         if log:
             await context.client.send_message(
@@ -85,14 +97,14 @@ async def pip(context):
             )
 
             stdout, stderr = await execute.communicate()
-            pipout = str(stdout.decode().strip()) \
+            result = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
-            if pipout:
-                if len(pipout) > 4096:
+            if result:
+                if len(result) > 4096:
                     await context.edit("`Output exceeded limit, attaching file.`")
                     file = open("output.log", "w+")
-                    file.write(pipout)
+                    file.write(result)
                     file.close()
                     await context.client.send_file(
                         context.chat_id,
@@ -105,7 +117,7 @@ async def pip(context):
                     "**Command: **\n`"
                     f"{command}"
                     "`\n**Output: **\n`"
-                    f"{pipout}"
+                    f"{result}"
                     "`"
                 )
             else:
