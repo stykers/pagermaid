@@ -8,7 +8,7 @@
 - Reply based range message pruner
 - Prune self message
 - Message deletion
-- Message edition
+- Message editing
 - Timed messages
 - System summary
 - Sticker collection
