@@ -86,9 +86,9 @@ async def leave(context):
 
 @register(outgoing=True, pattern="^-shutdown$")
 async def shutdown(context):
-    """ To shutdown Jarvis. """
+    """ To re-execute Jarvis. """
     if not context.text[0].isalpha():
-        await context.edit("`Jarvis is powering off.`")
+        await context.edit("`Attempting re-execution.`")
         if log:
             await context.client.send_message(
                 log_chatid,
