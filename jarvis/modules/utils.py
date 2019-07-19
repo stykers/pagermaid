@@ -391,3 +391,7 @@ command_help.update({
     "widen": "Parameter: -widen <text>\
     \nUsage: Widen every char in a string in a weird way."
 })
+command_help.update({
+    "translate": "Parameter: -translate <text>\
+    \nUsage: Translate the target message into English."
+})
