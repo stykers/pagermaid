@@ -446,3 +446,7 @@ command_help.update({
     "translate": "Parameter: -translate <text>\
     \nUsage: Translate the target message into English."
 })
+command_help.update({
+    "tts": "Parameter: -tts <text>\
+    \nUsage: Generates a voice message."
+})
