@@ -1,6 +1,7 @@
 """ Useful utilities for Jarvis. """
 import speedtest
 import asyncio
+import os
 
 from datetime import datetime
 from telethon import functions
@@ -12,6 +13,12 @@ from emoji import get_emoji_regexp
 from googletrans import LANGUAGES
 from googletrans import Translator
 from os import remove
+from gtts import gTTS
+from dotenv import load_dotenv
+
+
+load_dotenv("config.env")
+lang = os.environ.get("APPLICATION_LANGUAGE", "en")
 
 
 @register(outgoing=True, pattern="^-userid$")
@@ -276,9 +283,9 @@ async def translate(context):
 
         try:
             await context.edit("`Generating translation . . .`")
-            reply_text = translator.translate(clear_emojis(message), dest="en")
+            reply_text = translator.translate(clear_emojis(message), dest=lang)
         except ValueError:
-            await context.edit("Destination language not found, please report this in the bug tracker.")
+            await context.edit("`Language not found, please correct the error in the config file.`")
             return
 
         source_lang = LANGUAGES[f'{reply_text.src.lower()}']
@@ -316,6 +323,50 @@ async def translate(context):
                 log_chatid,
                 log_message,
             )
+
+
+@register(outgoing=True, pattern=r"^-tts(?: |$)([\s\S]*)")
+async def tts(context):
+    """ Send TTS stuff as voice message. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit("`Invalid argument.`")
+            return
+
+        try:
+            await context.edit("`Generating vocals . . .`")
+            gTTS(message, lang)
+        except AssertionError:
+            await context.edit("`Invalid argument.`")
+            return
+        except ValueError:
+            await context.edit('`Language not found, please correct the error in the config file.`')
+            return
+        except RuntimeError:
+            await context.edit('`Error loading array of languages.`')
+            return
+        gtts = gTTS(message, lang)
+        gtts.save("vocals.mp3")
+        with open("vocals.mp3", "rb") as audio:
+            line_list = list(audio)
+            line_count = len(line_list)
+        if line_count == 1:
+            gtts = gTTS(message, lang)
+            gtts.save("vocals.mp3")
+        with open("vocals.mp3", "r"):
+            await context.client.send_file(context.chat_id, "vocals.mp3", voice_note=True)
+            remove("vocals.mp3")
+            if log:
+                await context.client.send_message(
+                    log_chatid, "Generated tts for `" + message + "` ."
+                )
+            await context.delete()
 
 
 def clear_emojis(target):

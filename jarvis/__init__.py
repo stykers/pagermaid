@@ -12,9 +12,10 @@ from shutil import copyfile
 from telethon import TelegramClient
 import redis
 
+
 load_dotenv("config.env")
 
-# logging stuff
+
 debug = sb(os.environ.get("DEBUG", "False"))
 if debug:
     basicConfig(
