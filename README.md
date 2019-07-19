@@ -4,6 +4,10 @@ Jarvis is a utility daemon for telegram.
 
 It automates a range of tasks by responding to commands issued to self.
 
+## Features
+
+See [FEATURES.md]().
+
 ## Get Started
 
 A venv is recommended for this program, python 3.6+ is required too.
