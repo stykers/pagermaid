@@ -8,6 +8,10 @@ from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
 from spongemock import spongemock
 from zalgo_text import zalgo
+from emoji import get_emoji_regexp
+from googletrans import LANGUAGES
+from googletrans import Translator
+from os import remove
 
 
 @register(outgoing=True, pattern="^-userid$")
@@ -253,6 +257,70 @@ async def widen(context):
 
         reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
         await context.edit(reply_text)
+
+
+@register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
+async def translate(context):
+    """ Jarvis universal translator. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        translator = Translator()
+        text = await context.get_reply_message()
+        message = context.pattern_match.group(1)
+        if message:
+            pass
+        elif text:
+            message = text.text
+        else:
+            await context.edit("`Invalid parameter.`")
+            return
+
+        try:
+            await context.edit("`Generating translation . . .`")
+            reply_text = translator.translate(clear_emojis(message), dest="en")
+        except ValueError:
+            await context.edit("Destination language not found, please report this in the bug tracker.")
+            return
+
+        source_lang = LANGUAGES[f'{reply_text.src.lower()}']
+        trans_lang = LANGUAGES[f'{reply_text.dest.lower()}']
+        reply_text = f"**Translated** from {source_lang.title()}:\n{reply_text.text}"
+
+        if len(reply_text) > 4096:
+            await context.edit("`Output exceeded limit, attaching file.`")
+            file = open("output.log", "w+")
+            file.write(reply_text)
+            file.close()
+            await context.client.send_file(
+                context.chat_id,
+                "output.log",
+                reply_to=context.id,
+            )
+            remove("output.log")
+            return
+        await context.edit(reply_text)
+        if log:
+            log_message = f"Translated `{message}` from {source_lang} to {trans_lang}"
+            if len(log_message) > 4096:
+                await context.edit("`Output exceeded limit, attaching file.`")
+                file = open("output.log", "w+")
+                file.write(log_message)
+                file.close()
+                await context.client.send_file(
+                    context.chat_id,
+                    "output.log",
+                    reply_to=context.id,
+                )
+                remove("output.log")
+                return
+            await context.client.send_message(
+                log_chatid,
+                log_message,
+            )
+
+
+def clear_emojis(target):
+    """ Removes all Emojis from provided string """
+    return get_emoji_regexp().sub(u'', target)
 
 
 command_help.update({
