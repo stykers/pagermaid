@@ -4,7 +4,7 @@ from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
-from jarvis import command_help
+from jarvis import command_help, log, log_chatid
 from jarvis.events import register
 
 
@@ -83,12 +83,20 @@ async def upstream(context):
 
     try:
         ups_rem.pull(active_branch)
+        if log:
+            await context.client.send_message(
+                log_chatid, "Jarvis have been updated."
+            )
         await context.edit(
             '`Update successful, Jarvis is restarting.`'
             )
         await context.client.disconnect()
     except GitCommandError:
         ups_rem.git.reset('--hard')
+        if log:
+            await context.client.send_message(
+                log_chatid, "Update failed, resetting."
+            )
         await context.edit(
             '`Updated with errors, Jarvis is restarting.`'
             )
