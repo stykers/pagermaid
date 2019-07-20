@@ -6,7 +6,10 @@ It automates a range of tasks by responding to commands issued to self.
 
 ## Features
 
-See [FEATURES.md](https://git.stykers.moe/users/stykers/repos/jarvis/browse/FEATURES.md).
+Jarvis has many features, including account manipulation and query, system administration utilities, chat moderation,
+and misc message utils.
+
+For full list see [FEATURES.md](https://git.stykers.moe/users/stykers/repos/jarvis/browse/FEATURES.md).
 
 ## Get Started
 
