@@ -61,11 +61,28 @@ async def parseqr(context):
             await context.get_reply_message()
         )
         try:
-            await context.edit("Content: `" + str(decode(Image.open(target_file_path))[0].data) + "`.")
-        except IndexError:
-            await context.edit("`Target is not a QR code.`")
-        os.remove(target_file_path)
-
+            try:
+                message = str(decode(Image.open(target_file_path))[0].data)
+                await context.edit("Content: `" + message + "`.")
+                success = True
+            except IndexError:
+                await context.edit("`Target is not a QR code.`")
+                success = False
+                message = None
+            os.remove(target_file_path)
+        except AttributeError:
+            await context.edit("`Invalid argument.`")
+            return
+        if success:
+            if log:
+                await context.client.send_message(
+                    log_chatid, "Parsed QR code with content `" + message + "`."
+                )
+        else:
+            if log:
+                await context.client.send_message(
+                    log_chatid, "Attempted to parse non-encoded image as QR code."
+                )
 
 command_help.update({
     "genqr": "Parameter: -genqr <text>\
