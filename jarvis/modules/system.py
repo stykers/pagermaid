@@ -134,6 +134,7 @@ command_help.update({
     "sh": "Parameter: -sh <command>\
     \nUsage: Executes a shell command."
 })
+
 command_help.update({
     "pip": "Parameter: -pip <module(s)>\
     \nUsage: Searches pip for the requested modules."

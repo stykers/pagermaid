@@ -101,6 +101,7 @@ command_help.update({
     "genqr": "Parameter: -genqr <text>\
     \nUsage: Generates a QR code sticker."
 })
+
 command_help.update({
     "parseqr": "Parameter: -parseqr\
     \nUsage: Parse the attached QR code into plaintext."

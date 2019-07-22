@@ -1,14 +1,11 @@
 """ Useful utilities for Jarvis. """
 import speedtest
-import asyncio
 import os
 
 from datetime import datetime
 from telethon import functions
-from jarvis import command_help, bot, log, log_chatid
+from jarvis import command_help, log, log_chatid
 from jarvis.events import register
-from spongemock import spongemock
-from zalgo_text import zalgo
 from emoji import get_emoji_regexp
 from googletrans import LANGUAGES
 from googletrans import Translator
@@ -19,37 +16,6 @@ from dotenv import load_dotenv
 
 load_dotenv("config.env")
 lang = os.environ.get("APPLICATION_LANGUAGE", "en")
-
-
-@register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
-async def log(context):
-    """ Forwards a message into log group """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        if log:
-            if context.reply_to_msg_id:
-                reply_msg = await context.get_reply_message()
-                await reply_msg.forward_to(log_chatid)
-            elif context.pattern_match.group(1):
-                user = f"#LOG / Chat ID: {context.chat_id}\n\n"
-                text = user + context.pattern_match.group(1)
-                await bot.send_message(log_chatid, text)
-            else:
-                await context.edit("`Specify target message.`")
-                return
-            await context.edit("Noted.")
-        else:
-            await context.edit("`Logging is disabled.`")
-
-
-@register(outgoing=True, pattern="^-leave$")
-async def leave(context):
-    """ It leaves you from the group. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("Goodbye.")
-        try:
-            await bot(functions.channels.LeaveChannelRequest(leave.chat_id))
-        except AttributeError:
-            await context.edit("You are not in a group.")
 
 
 @register(outgoing=True, pattern="^-shutdown$")
@@ -148,90 +114,6 @@ def unit_convert(byte):
         byte /= power
         zero += 1
     return f"{round(byte, 2)} {units[zero]}"
-
-
-@register(pattern='-animate(?: |$)(.*)')
-async def animate(context):
-    """ Command for animated texts. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
-        message = context.pattern_match.group(1)
-        if message:
-            pass
-        elif text:
-            message = text.text
-        else:
-            await context.edit("`Invalid argument.`")
-            return
-        sleep_time = 0.03
-        typing_symbol = "█"
-        old_text = ''
-        await context.edit(typing_symbol)
-        await asyncio.sleep(sleep_time)
-        for character in message:
-            old_text = old_text + "" + character
-            typing_text = old_text + "" + typing_symbol
-            await context.edit(typing_text)
-            await asyncio.sleep(sleep_time)
-            await context.edit(old_text)
-            await asyncio.sleep(sleep_time)
-
-
-@register(outgoing=True, pattern="^-mock(?: |$)(.*)")
-async def mock(context):
-    """ Mock people with weird caps. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
-        message = context.pattern_match.group(1)
-        if message:
-            pass
-        elif text:
-            message = text.text
-        else:
-            await context.edit("`Invalid arguments.`")
-            return
-
-        reply_text = spongemock.mock(message)
-        await context.edit(reply_text)
-
-
-@register(outgoing=True, pattern="^-corrupt(?: |$)(.*)")
-async def corrupt(context):
-    """ Corrupt texts. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
-        message = context.pattern_match.group(1)
-        if message:
-            pass
-        elif text:
-            message = text.text
-        else:
-            await context.edit(
-                "`Invalid arguments.`"
-            )
-            return
-
-        input_text = " ".join(message).lower()
-        corrupted_text = zalgo.zalgo().zalgofy(input_text)
-        await context.edit(corrupted_text)
-
-
-@register(outgoing=True, pattern="^-widen(?: |$)(.*)")
-async def widen(context):
-    """ Make texts weirdly wide. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
-        message = context.pattern_match.group(1)
-        if message:
-            pass
-        elif text:
-            message = text.text
-        else:
-            await context.edit("`Invalid argument.`")
-            return
-
-        reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
-        await context.edit(reply_text)
 
 
 @register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
@@ -343,14 +225,6 @@ def clear_emojis(target):
 
 
 command_help.update({
-    "log": "Parameter: -log\
-    \nUsage: Forwards message to logging group."
-})
-command_help.update({
-    "leave": "Parameter: -leave\
-    \nUsage: Say goodbye and leave."
-})
-command_help.update({
     "shutdown": "Parameter: -shutdown\
     \nUsage: Shuts down Jarvis."
 })
@@ -367,7 +241,6 @@ command_help.update({
     "site": "Parameter: -site\
     \nUsage: Shows the site of Jarvis."
 })
-
 command_help.update({
     "speed": "Parameter: -speed\
     \nUsage: Execute the speedtest script and outputs your internet speed."
@@ -384,28 +257,10 @@ command_help.update({
 })
 
 command_help.update({
-    "animate": "Parameter: -animate <text>\
-    \nUsage: Animated text."
-})
-
-command_help.update({
-    "mock": "Parameter: -mock <text>\
-    \nUsage: Mock a string via weird caps."
-})
-
-command_help.update({
-    "corrupt": "Parameter: -corrupt <text>\
-    \nUsage: Corrupts some text."
-})
-
-command_help.update({
-    "widen": "Parameter: -widen <text>\
-    \nUsage: Widen every char in a string in a weird way."
-})
-command_help.update({
     "translate": "Parameter: -translate <text>\
     \nUsage: Translate the target message into English."
 })
+
 command_help.update({
     "tts": "Parameter: -tts <text>\
     \nUsage: Generates a voice message."
