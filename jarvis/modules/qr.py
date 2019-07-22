@@ -43,6 +43,7 @@ async def genqr(context):
             pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
         except UnicodeEncodeError:
             await context.edit("`Invalid characters in target string.`")
+            return
         await context.client.send_file(
             context.chat_id,
             "qr.webp",
