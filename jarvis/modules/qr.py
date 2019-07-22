@@ -31,7 +31,12 @@ async def genqr(context):
                     lines = file.readlines()
                 message = ""
                 for media in lines:
-                    message += media.decode("UTF-8") + "\r\n"
+                    try:
+                        message += media.decode("UTF-8") + "\n"
+                    except UnicodeDecodeError:
+                        await context.edit("`Unable to parse file as plaintext.`")
+                        os.remove(downloaded_file_name)
+                        return
                 os.remove(downloaded_file_name)
             else:
                 message = reply.message
@@ -43,6 +48,7 @@ async def genqr(context):
             pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
         except UnicodeEncodeError:
             await context.edit("`Invalid characters in target string.`")
+            os.remove(downloaded_file_name)
             return
         await context.client.send_file(
             context.chat_id,
