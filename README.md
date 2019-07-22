@@ -31,6 +31,8 @@ After that, install dependencies:
 
 ```bash
 pip install -r requirements.txt
+# After you install the python modules you also need to install the 
+# zbar package using your distribution's native package manager.
 ```
 
 Generate config files:
