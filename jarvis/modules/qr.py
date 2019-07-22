@@ -39,7 +39,10 @@ async def genqr(context):
             await context.edit("`Invalid argument.`")
             return
         await context.edit("`Generating QR code.`")
-        pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
+        try:
+            pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
+        except UnicodeEncodeError:
+            await context.edit("`Invalid characters in target string.`")
         await context.client.send_file(
             context.chat_id,
             "qr.webp",
