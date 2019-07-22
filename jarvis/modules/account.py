@@ -14,6 +14,38 @@ from jarvis import command_help, bot
 from jarvis.events import register
 
 
+@register(outgoing=True, pattern="^-userid$")
+async def userid(context):
+    """ Queries the userid of a user. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        message = await context.get_reply_message()
+        if message:
+            if not message.forward:
+                user_id = message.sender.id
+                if message.sender.username:
+                    target = "@" + message.sender.username
+                else:
+                    target = "**" + message.sender.first_name + "**"
+
+            else:
+                user_id = message.forward.sender.id
+                if message.forward.sender.username:
+                    target = "@" + message.forward.sender.username
+                else:
+                    target = "*" + message.forward.sender.first_name + "*"
+            await context.edit(
+                "**Username:** {} \n**UserID:** `{}`"
+                .format(target, user_id)
+            )
+
+
+@register(outgoing=True, pattern="^-chatid$")
+async def chatid(context):
+    """ Queries the chatid of the chat you are in. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("ChatID: `" + str(context.chat_id) + "`")
+
+
 @register(outgoing=True, pattern="^-username (.*)")
 async def username(context):
     """ Reconfigure your username. """
@@ -233,6 +265,14 @@ async def generate_strings(replied_user, event):
     return photo, caption
 
 
+command_help.update({
+    "chatid": "Parameter: -chatid\
+    \nUsage: Query the chatid of the chat you are in"
+})
+command_help.update({
+    "userid": "Parameter: -userid\
+    \nUsage: Query the userid of the sender of the message you replied to."
+})
 command_help.update({
     "username": "Parameter: -username <text>\
     \nUsage: Sets the username."

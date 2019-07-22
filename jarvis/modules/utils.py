@@ -21,38 +21,6 @@ load_dotenv("config.env")
 lang = os.environ.get("APPLICATION_LANGUAGE", "en")
 
 
-@register(outgoing=True, pattern="^-userid$")
-async def userid(context):
-    """ Queries the userid of a user. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        message = await context.get_reply_message()
-        if message:
-            if not message.forward:
-                user_id = message.sender.id
-                if message.sender.username:
-                    name = "@" + message.sender.username
-                else:
-                    name = "**" + message.sender.first_name + "**"
-
-            else:
-                user_id = message.forward.sender.id
-                if message.forward.sender.username:
-                    name = "@" + message.forward.sender.username
-                else:
-                    name = "*" + message.forward.sender.first_name + "*"
-            await context.edit(
-                "**Username:** {} \n**UserID:** `{}`"
-                .format(name, user_id)
-            )
-
-
-@register(outgoing=True, pattern="^-chatid$")
-async def chatid(context):
-    """ Queries the chatid of the chat you are in. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("ChatID: `" + str(context.chat_id) + "`")
-
-
 @register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
 async def log(context):
     """ Forwards a message into log group """
@@ -374,14 +342,6 @@ def clear_emojis(target):
     return get_emoji_regexp().sub(u'', target)
 
 
-command_help.update({
-    "chatid": "Parameter: -chatid\
-    \nUsage: Query the chatid of the chat you are in"
-})
-command_help.update({
-    "userid": "Parameter: -userid\
-    \nUsage: Query the userid of the sender of the message you replied to."
-})
 command_help.update({
     "log": "Parameter: -log\
     \nUsage: Forwards message to logging group."
