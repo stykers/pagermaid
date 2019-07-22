@@ -28,3 +28,4 @@ spotify_token
 redis
 dnspython
 pyqrcode
+pypng
