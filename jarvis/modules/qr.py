@@ -62,7 +62,7 @@ async def parseqr(context):
         )
         try:
             try:
-                message = str(decode(Image.open(target_file_path))[0].data)
+                message = str(decode(Image.open(target_file_path))[0].data)[2:][:-1]
                 await context.edit("Content: `" + message + "`.")
                 success = True
             except IndexError:
