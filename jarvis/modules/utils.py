@@ -306,7 +306,7 @@ async def translate(context):
             return
         await context.edit(reply_text)
         if log:
-            log_message = f"Translated `{message}` from {source_lang} to {trans_lang}"
+            log_message = f"Translated `{message}` from {source_lang} to {trans_lang}."
             if len(log_message) > 4096:
                 await context.edit("`Output exceeded limit, attaching file.`")
                 file = open("output.log", "w+")
@@ -364,7 +364,7 @@ async def tts(context):
             remove("vocals.mp3")
             if log:
                 await context.client.send_message(
-                    log_chatid, "Generated tts for `" + message + "` ."
+                    log_chatid, "Generated tts for `" + message + "`."
                 )
             await context.delete()
 

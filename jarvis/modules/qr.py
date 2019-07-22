@@ -3,7 +3,7 @@
 import os
 import pyqrcode
 
-from jarvis import command_help
+from jarvis import command_help, log, log_chatid
 from jarvis.events import register
 
 
@@ -41,6 +41,11 @@ async def gen_qr(context):
             reply_to=result
         )
         os.remove("qr.webp")
+        await context.delete()
+        if log:
+            await context.client.send_message(
+                log_chatid, "Generated QR code for `" + message + "`."
+            )
         await context.delete()
 
 
