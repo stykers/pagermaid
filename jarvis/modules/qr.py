@@ -5,10 +5,12 @@ import pyqrcode
 
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register
+from pyzbar.pyzbar import decode
+from PIL import Image
 
 
-@register(pattern=r"-gen_qr(?: |$)([\s\S]*)", outgoing=True)
-async def gen_qr(context):
+@register(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
+async def genqr(context):
     """ Generate QR codes. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
@@ -49,7 +51,27 @@ async def gen_qr(context):
         await context.delete()
 
 
+@register(pattern=r"^-parseqr$", outgoing=True)
+async def parseqr(context):
+    """ Parse QR code into plaintext. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if context.fwd_from:
+            return
+        target_file_path = await context.client.download_media(
+            await context.get_reply_message()
+        )
+        try:
+            await context.edit("Content: `" + str(decode(Image.open(target_file_path))[0].data) + "`.")
+        except IndexError:
+            await context.edit("`Target is not a QR code.`")
+        os.remove(target_file_path)
+
+
 command_help.update({
-    "gen_qr": "Parameter: -gen_qr <text>\
+    "genqr": "Parameter: -genqr <text>\
     \nUsage: Generates a QR code sticker."
+})
+command_help.update({
+    "parseqr": "Parameter: -parseqr\
+    \nUsage: Parse the attached QR code into plaintext."
 })
