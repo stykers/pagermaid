@@ -3,18 +3,8 @@
 import os
 import pyqrcode
 
-from datetime import datetime
 from jarvis import command_help
 from jarvis.events import register
-
-
-def progress(current, total):
-    """ Returns progress message as a string. """
-    print(
-        "{}: {} of {} downloaded.".format(
-            (current / total) * 100, current, total
-        )
-    )
 
 
 @register(pattern=r"-gen_qr(?: |$)([\s\S]*)", outgoing=True)
@@ -23,7 +13,6 @@ async def gen_qr(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
             return
-        start = datetime.now()
         input_string = context.pattern_match.group(1)
         message = "`Invalid argument.`"
         result = None
@@ -53,3 +42,9 @@ async def gen_qr(context):
         )
         os.remove("qr.webp")
         await context.delete()
+
+
+command_help.update({
+    "gen_qr": "Parameter: -gen_qr <text>\
+    \nUsage: Generates a QR code sticker."
+})
