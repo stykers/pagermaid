@@ -16,7 +16,7 @@ async def genqr(context):
         if context.fwd_from:
             return
         input_string = context.pattern_match.group(1)
-        message = "`Invalid argument.`"
+        message = None
         result = None
         if input_string:
             message = input_string
@@ -28,13 +28,16 @@ async def genqr(context):
                     reply
                 )
                 with open(downloaded_file_name, "rb") as file:
-                    m_list = file.readlines()
+                    lines = file.readlines()
                 message = ""
-                for media in m_list:
+                for media in lines:
                     message += media.decode("UTF-8") + "\r\n"
                 os.remove(downloaded_file_name)
             else:
                 message = reply.message
+        if message is None:
+            await context.edit("`Invalid argument.`")
+            return
         await context.edit("`Generating QR code.`")
         pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
         await context.client.send_file(
