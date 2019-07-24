@@ -4,7 +4,8 @@ import time
 from telethon.events import StopPropagation
 from jarvis import log, log_chatid, command_help, count_msg, users, redis_check
 from jarvis.events import register
-from jarvis.modules.database import afk, afk_reason, is_afk, not_afk
+from jarvis.modules.database import afk_reason, is_afk, not_afk
+from jarvis.modules.database import afk as db_afk
 
 
 @register(outgoing=True, pattern="^-afk")
@@ -20,11 +21,11 @@ async def afk(context):
         except:
             reason = ''
         if not reason:
-            reason = 'work'
+            reason = 'no reason at all'
         await context.edit("I gtg.")
         if log:
             await context.client.send_message(log_chatid, "User is afk, begin message logging.")
-        await afk(reason)
+        await db_afk(reason)
         raise StopPropagation
 
 
@@ -73,7 +74,7 @@ async def mention_respond(context):
             if context.sender_id not in users:
                 await context.reply(
                     "Jarvis Auto Respond\n"
-                    + "`I am away for `"
+                    + "`I am away for "
                     + await afk_reason()
                     + ", your message is logged.`"
                 )
@@ -105,7 +106,7 @@ async def afk_on_pm(context):
             if context.sender_id not in users:
                 await context.reply(
                     "Jarvis Auto Respond\n"
-                    + "`I am away for `"
+                    + "`I am away for "
                     + await afk_reason()
                     + ", your message is logged.`"
                 )
