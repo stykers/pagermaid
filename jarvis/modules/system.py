@@ -2,7 +2,6 @@
 
 import asyncio
 import platform
-
 from asyncio.subprocess import PIPE
 from getpass import getuser
 from os import remove
@@ -130,6 +129,19 @@ async def pip(context):
             await context.edit("`Invalid argument.`")
 
 
+@register(outgoing=True, pattern="^-shutdown$")
+async def shutdown(context):
+    """ To re-execute Jarvis. """
+    if not context.text[0].isalpha():
+        await context.edit("`Attempting re-execution.`")
+        if log:
+            await context.client.send_message(
+                log_chatid,
+                "Jarvis power off."
+            )
+        await context.client.disconnect()
+
+
 command_help.update({
     "sh": "Parameter: -sh <command>\
     \nUsage: Executes a shell command."
@@ -138,4 +150,9 @@ command_help.update({
 command_help.update({
     "pip": "Parameter: -pip <module(s)>\
     \nUsage: Searches pip for the requested modules."
+})
+
+command_help.update({
+    "shutdown": "Parameter: -shutdown\
+    \nUsage: Shuts down Jarvis."
 })

@@ -1,10 +1,13 @@
 """ Module that show system info of the hardware the bot is running on. """
 
+import speedtest
+
+from datetime import datetime
+from telethon import functions
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from platform import python_version, uname
 from shutil import which
-# noinspection PyProtectedMember
 from telethon import __version__ as telethon_version
 from jarvis import command_help, redis_check
 from jarvis.events import register
@@ -92,6 +95,69 @@ async def status(context):
         )
 
 
+@register(outgoing=True, pattern="^-speed$")
+async def speed(context):
+    """ Tests internet speed using speedtest. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("`Executing test scripts . . .`")
+        test = speedtest.Speedtest()
+
+        test.get_best_server()
+        test.download()
+        test.upload()
+        test.results.share()
+        result = test.results.dict()
+
+    await context.edit("Timestamp "
+                       f"`{result['timestamp']}` \n\n"
+                       "Upload "
+                       f"`{unit_convert(result['upload'])}` \n"
+                       "Download "
+                       f"`{unit_convert(result['download'])}` \n"
+                       "Latency "
+                       f"`{result['ping']}` \n"
+                       "ISP "
+                       f"`{result['client']['isp']}`")
+
+
+@register(outgoing=True, pattern="^-connection$")
+async def connection(context):
+    """ Shows connection info. """
+    datacenter = await context.client(functions.help.GetNearestDcRequest())
+    await context.edit(
+        f"Region `{datacenter.country}` \n"
+        f"Connected Datacenter `{datacenter.this_dc}` \n"
+        f"Nearest Datacenter `{datacenter.nearest_dc}`"
+    )
+
+
+@register(outgoing=True, pattern="^-ping$")
+async def ping(context):
+    """ Calculates the latency of the bot host. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        start = datetime.now()
+        await context.edit("`Pong!`")
+        end = datetime.now()
+        duration = (end - start).microseconds / 1000
+        await context.edit("`Pong!|%sms`" % duration)
+
+
+def unit_convert(byte):
+    """ Converts byte into readable formats. """
+    power = 2 ** 10
+    zero = 0
+    units = {
+        0: '',
+        1: 'Kb/s',
+        2: 'Mb/s',
+        3: 'Gb/s',
+        4: 'Tb/s'}
+    while byte > power:
+        byte /= power
+        zero += 1
+    return f"{round(byte, 2)} {units[zero]}"
+
+
 command_help.update({
     "sysinfo": "Parameter: -sysinfo\
     \nUsage: Retrieve system information via neofetch."
@@ -105,4 +171,19 @@ command_help.update({
 command_help.update({
     "status": "Parameter: -status\
     \nUsage: Output the status of Jarvis"
+})
+
+command_help.update({
+    "speed": "Parameter: -speed\
+    \nUsage: Execute the speedtest script and outputs your internet speed."
+})
+
+command_help.update({
+    "connection": "Parameter: -connection\
+    \nUsage: Shows your connection info."
+})
+
+command_help.update({
+    "ping": "Parameter: -ping\
+    \nUsage: Outputs your latency to telegram."
 })
