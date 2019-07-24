@@ -244,6 +244,7 @@ command_help.update({
     "channel": "Parameter: -channel\
     \nUsage: Shows the development channel."
 })
+
 command_help.update({
     "source": "Parameter: -source\
     \nUsage: Prints the git repository URL."
