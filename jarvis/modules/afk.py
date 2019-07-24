@@ -21,7 +21,7 @@ async def afk(context):
         except:
             reason = ''
         if not reason:
-            reason = 'no reason at all'
+            reason = 'generic reason'
         await context.edit("I gtg.")
         if log:
             await context.client.send_message(log_chatid, "User is afk, begin message logging.")
@@ -73,7 +73,7 @@ async def mention_respond(context):
         if query_afk is True:
             if context.sender_id not in users:
                 await context.reply(
-                    "Jarvis Auto Respond\n"
+                    "**Jarvis Auto Respond**\n"
                     + "`I am away for "
                     + await afk_reason()
                     + ", your message is logged.`"
@@ -125,3 +125,9 @@ async def afk_on_pm(context):
                 else:
                     users[context.sender_id] = users[context.sender_id] + 1
                     count_msg = count_msg + 1
+
+
+command_help.update({
+    "afk": "Parameter: -afk <text>\
+    \nUsage: Sets yourself to afk and enables message logging and auto response, a message cancels the status."
+})
