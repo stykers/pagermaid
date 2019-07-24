@@ -84,7 +84,7 @@ async def mention_respond(context):
                 if users[context.sender_id] % 5 == 0:
                     await context.reply(
                         "Jarvis Auto Respond\n"
-                        + "`Sorry, I am still away for `"
+                        + "`Sorry, I am still away for "
                         + await afk_reason()
                         + ", your message priority is upgraded.`"
                     )
@@ -116,7 +116,7 @@ async def afk_on_pm(context):
                 if users[context.sender_id] % 5 == 0:
                     await context.reply(
                         "Jarvis Auto Respond\n"
-                        + "`Sorry, I am still away for `"
+                        + "`Sorry, I am still away for "
                         + await afk_reason()
                         + ", your message priority is upgraded.`"
                     )
