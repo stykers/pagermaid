@@ -21,7 +21,7 @@ async def afk(context):
         except:
             reason = ''
         if not reason:
-            reason = 'generic reason'
+            reason = 'rest'
         await context.edit("Gotta go.")
         if log:
             await context.client.send_message(log_chatid, "User is afk, begin message logging.")
