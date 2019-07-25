@@ -45,7 +45,7 @@ vim config.env
 Fill in your options, and start the bot.
 
 ```bash
-python -m jarvis
+/bin/sh -c utils/start.sh
 ```
 
 Follow the prompts, after you login, do -help in telegram for the help message.

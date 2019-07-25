@@ -22,7 +22,7 @@ async def afk(context):
             reason = ''
         if not reason:
             reason = 'rest'
-        await context.edit("Gotta go.")
+        await context.edit("Entering afk status.")
         if log:
             await context.client.send_message(log_chatid, "User is afk, begin message logging.")
         await db_afk(reason)
@@ -60,6 +60,7 @@ async def back(context):
                     str(users[i]) +
                     " times.`",
                 )
+            await context.client.disconnect()
 
 
 @register(incoming=True, disable_edited=True)
