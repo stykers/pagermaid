@@ -43,7 +43,7 @@ async def back(context):
                 str(count_msg) +
                 " messages from " +
                 str(len(users)) +
-                " groups while afk.",
+                " chats while afk.",
             )
             for i in users:
                 name = await context.client.get_entity(i)
@@ -74,20 +74,18 @@ async def mention_respond(context):
         if query_afk is True:
             if context.sender_id not in users:
                 await context.reply(
-                    "**Jarvis Auto Respond**\n"
-                    + "`I am away for "
+                    "I am away for "
                     + await afk_reason()
-                    + ", your message is logged.`"
+                    + ", your message is logged."
                 )
                 users.update({context.sender_id: 1})
                 count_msg = count_msg + 1
             elif context.sender_id in users:
                 if users[context.sender_id] % 5 == 0:
                     await context.reply(
-                        "Jarvis Auto Respond\n"
-                        + "`I am still away for "
+                        "I am still away for "
                         + await afk_reason()
-                        + ", your message priority is upgraded.`"
+                        + ", your message priority is upgraded."
                     )
                     users[context.sender_id] = users[context.sender_id] + 1
                     count_msg = count_msg + 1
@@ -106,20 +104,18 @@ async def afk_on_pm(context):
         if query_afk is True:
             if context.sender_id not in users:
                 await context.reply(
-                    "Jarvis Auto Respond\n"
-                    + "`I am away for "
+                    "I am away for "
                     + await afk_reason()
-                    + ", your message is logged.`"
+                    + ", your message is logged."
                 )
                 users.update({context.sender_id: 1})
                 count_msg = count_msg + 1
             elif context.sender_id in users:
                 if users[context.sender_id] % 5 == 0:
                     await context.reply(
-                        "Jarvis Auto Respond\n"
-                        + "`I am still away for "
+                        "I am still away for "
                         + await afk_reason()
-                        + ", your message priority is upgraded.`"
+                        + ", your message priority is upgraded."
                     )
                     users[context.sender_id] = users[context.sender_id] + 1
                     count_msg = count_msg + 1
