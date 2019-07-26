@@ -75,7 +75,7 @@ async def upstream(context):
             )
             remove("output.log")
         else:
-            await context.edit(changelog_str + "\n **Execute \"-update now\" to apply update(s).**")
+            await context.edit(changelog_str + "\n**Execute \"-update now\" to apply update(s).**")
         return
 
     await context.edit('`Found update(s), pulling it in . . .`')
