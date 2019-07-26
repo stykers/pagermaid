@@ -61,7 +61,7 @@ async def upstream(context):
         await context.edit(f"`Jarvis is up to date with branch `**{active_branch}**`.`")
         return
 
-    if parameter != "now":
+    if parameter != "true":
         changelog_str = f'**Update found for branch {active_branch}.\n\nChangelog:**\n`{changelog}`'
         if len(changelog_str) > 4096:
             await context.edit("`Changelog is too long, attaching file.`")
@@ -75,7 +75,7 @@ async def upstream(context):
             )
             remove("output.log")
         else:
-            await context.edit(changelog_str + "\n**Execute \"-update now\" to apply update(s).**")
+            await context.edit(changelog_str + "\n**Execute \"-update true\" to apply update(s).**")
         return
 
     await context.edit('`Found update(s), pulling it in . . .`')
@@ -103,6 +103,6 @@ async def upstream(context):
 
 
 command_help.update({
-    "update": "Parameter: -update <now>\
+    "update": "Parameter: -update <boolean>\
     \nUsage: Checks for updates from remote origin and updates Jarvis."
 })
