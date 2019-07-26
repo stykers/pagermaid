@@ -19,4 +19,4 @@ async def help(context):
             for i in command_help:
                 result += "`" + str(i)
                 result += "`, "
-            await context.edit(result[:-2] + "\n**Do \"-help <command-name>\" to view help for a specific command.**")
+            await context.edit(result[:-2] + "\n**Do \"-help <command>\" to view help for a specific command.**")
