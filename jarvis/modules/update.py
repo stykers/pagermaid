@@ -75,11 +75,10 @@ async def upstream(context):
             )
             remove("output.log")
         else:
-            await context.edit(changelog_str)
-        await context.respond('`Execute \"-update now\" to apply update(s).`')
+            await context.edit(changelog_str + "\n **Execute \"-update now\" to apply update(s).**")
         return
 
-    await context.edit('`Found update, pulling it in . . .`')
+    await context.edit('`Found update(s), pulling it in . . .`')
 
     try:
         ups_rem.pull(active_branch)
