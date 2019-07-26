@@ -104,5 +104,5 @@ async def upstream(context):
 
 command_help.update({
     "update": "Parameter: -update <boolean>\
-    \nUsage: Checks for updates from remote origin and updates Jarvis."
+    \nUsage: Checks for updates from remote origin, and apply updates to Jarvis."
 })
