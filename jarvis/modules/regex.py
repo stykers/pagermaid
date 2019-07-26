@@ -48,55 +48,58 @@ async def sed(context):
             else:
                 text = re.sub(reply, reply_result, message, count=1).strip()
         except sre_err:
-            await context.edit("`Syntax error in regex.`")
+            await context.edit("`Syntax error in pattern.`")
             return
         if text:
-            await context.edit("**Ran** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text + "\"")
+            await context.edit("**Running** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text + "\"")
 
 
 def format_sed(data):
     """ Separate sed arguments. """
-    if (
-            len(data) >= 1 and
-            data[1] in deliminators and
-            data.count(data[1]) >= 2
-    ):
-        target = data[1]
-        start = counter = 2
-        while counter < len(data):
-            if data[counter] == "\\":
+    try:
+        if (
+                len(data) >= 1 and
+                data[1] in deliminators and
+                data.count(data[1]) >= 2
+        ):
+            target = data[1]
+            start = counter = 2
+            while counter < len(data):
+                if data[counter] == "\\":
+                    counter += 1
+
+                elif data[counter] == target:
+                    replace = data[start:counter]
+                    counter += 1
+                    start = counter
+                    break
+
                 counter += 1
 
-            elif data[counter] == target:
-                replace = data[start:counter]
+            else:
+                return None
+
+            while counter < len(data):
+                if (
+                        data[counter] == "\\" and
+                        counter + 1 < len(data) and
+                        data[counter + 1] == target
+                ):
+                    data = data[:counter] + data[counter + 1:]
+
+                elif data[counter] == target:
+                    replace_with = data[start:counter]
+                    counter += 1
+                    break
+
                 counter += 1
-                start = counter
-                break
+            else:
+                return replace, data[start:], ""
 
-            counter += 1
-
-        else:
-            return None
-
-        while counter < len(data):
-            if (
-                    data[counter] == "\\" and
-                    counter + 1 < len(data) and
-                    data[counter + 1] == target
-            ):
-                data = data[:counter] + data[counter + 1:]
-
-            elif data[counter] == target:
-                replace_with = data[start:counter]
-                counter += 1
-                break
-
-            counter += 1
-        else:
-            return replace, data[start:], ""
-
-        flags = ""
-        if counter < len(data):
-            flags = data[counter:]
-        return replace, replace_with, flags.lower()
-    return None
+            flags = ""
+            if counter < len(data):
+                flags = data[counter:]
+            return replace, replace_with, flags.lower()
+        return None
+    except IndexError:
+        pass
