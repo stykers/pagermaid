@@ -69,3 +69,13 @@ async def admins(context):
         except ChatAdminRequiredError as err:
             result += " " + str(err) + "\n"
         await context.edit(result)
+
+command_help.update({
+    "group_image": "Parameter: -group_image <image>\
+    \nUsage: Changes the group's pfp to the attachment."
+})
+
+command_help.update({
+    "admins": "Parameter: -admins\
+    \nUsage: Lists admins in the group."
+})
