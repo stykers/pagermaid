@@ -9,15 +9,15 @@ deliminators = ("/", ":", "|", "_")
 
 
 @register(outgoing=True, pattern="^s")
-async def sed(command):
+async def sed(context):
     """ Implements regex on telegram. """
-    result = format_sed(command.text)
-    target = await command.get_reply_message()
+    result = format_sed(context.text)
+    target = await context.get_reply_message()
     if result:
         if target:
             message = target.text
         else:
-            await command.edit(
+            await context.edit(
                 "`Unable to retrieve target data.`"
             )
             return
@@ -25,7 +25,7 @@ async def sed(command):
         reply, reply_result, flags = result
 
         if not reply:
-            await command.edit(
+            await context.edit(
                 "`Unable to retrieve target data.`"
             )
             return
@@ -33,7 +33,7 @@ async def sed(command):
         try:
             check = re.match(reply, message, flags=re.IGNORECASE)
             if check and check.group(0).lower() == message.lower():
-                await command.edit(
+                await context.edit(
                     "`Invalid argument.`"
                 )
                 return
@@ -48,10 +48,10 @@ async def sed(command):
             else:
                 text = re.sub(reply, reply_result, message, count=1).strip()
         except sre_err:
-            await command.edit("`Syntax error in regex.`")
+            await context.edit("`Syntax error in regex.`")
             return
         if text:
-            await command.edit(text)
+            await context.edit("**Ran** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text + "\"")
 
 
 def format_sed(data):
