@@ -9,11 +9,11 @@ from jarvis.events import register
 
 
 async def changelog_gen(repo, diff):
-    log = ''
+    result = ''
     d_form = "%d/%m/%y"
     for c in repo.iter_commits(diff):
-        log += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
-    return log
+        result += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
+    return result
 
 
 async def official_check(branch):
@@ -53,8 +53,8 @@ async def upstream(context):
     except:
         pass
 
-    ups_rem = repo.remote('upstream')
-    ups_rem.fetch(active_branch)
+    upstream_remote = repo.remote('upstream')
+    upstream_remote.fetch(active_branch)
     changelog = await changelog_gen(repo, f'HEAD..upstream/{active_branch}')
 
     if not changelog:
@@ -81,7 +81,7 @@ async def upstream(context):
     await context.edit('`Found update(s), pulling it in . . .`')
 
     try:
-        ups_rem.pull(active_branch)
+        upstream_remote.pull(active_branch)
         if log:
             await context.client.send_message(
                 log_chatid, "Jarvis have been updated."
@@ -91,7 +91,7 @@ async def upstream(context):
             )
         await context.client.disconnect()
     except GitCommandError:
-        ups_rem.git.reset('--hard')
+        upstream_remote.git.reset('--hard')
         if log:
             await context.client.send_message(
                 log_chatid, "Update failed, resetting."
