@@ -49,8 +49,8 @@ async def mock(context):
             await context.edit("`Invalid arguments.`")
             return
 
-        reply_text = spongemock.mock(message)
-        await context.edit(reply_text)
+        result = spongemock.mock(message)
+        await context.edit(result)
 
 
 @register(outgoing=True, pattern="^-widen(?: |$)(.*)")

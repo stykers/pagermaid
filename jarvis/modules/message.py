@@ -27,7 +27,10 @@ async def userid(context):
                 if message.sender.username:
                     target = "@" + message.sender.username
                 else:
-                    target = "**" + message.sender.first_name + "**"
+                    try:
+                        target = "**" + message.sender.first_name + "**"
+                    except TypeError:
+                        target = "**" + "Deleted Account" + "**"
 
             else:
                 user_id = message.forward.sender.id
