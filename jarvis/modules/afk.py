@@ -1,8 +1,7 @@
 """ Jarvis auto-response for when you are AFK. """
-import time
 
 from telethon.events import StopPropagation
-from jarvis import log, log_chatid, command_help, count_msg, users, redis_check
+from jarvis import log, log_chatid, command_help, users, redis_check
 from jarvis.events import register
 from jarvis.modules.database import afk_reason, is_afk, not_afk
 from jarvis.modules.database import afk as db_afk
@@ -60,7 +59,6 @@ async def back(context):
                     str(users[i]) +
                     " times.`",
                 )
-            await context.client.disconnect()
 
 
 @register(incoming=True, disable_edited=True)
