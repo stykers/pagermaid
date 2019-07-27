@@ -51,7 +51,8 @@ async def sed(context):
             await context.edit("`Syntax error in pattern.`")
             return
         if text:
-            await context.edit("**Running** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text + "\"")
+            await context.edit("**Running** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text +
+                               "\"")
 
 
 def format_sed(data):
