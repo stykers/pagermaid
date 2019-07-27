@@ -59,6 +59,7 @@ async def back(context):
                     str(users[i]) +
                     " times.`",
                 )
+        cleanup()
 
 
 @register(incoming=True, disable_edited=True)
@@ -120,6 +121,13 @@ async def afk_on_pm(context):
                 else:
                     users[context.sender_id] = users[context.sender_id] + 1
                     count_msg = count_msg + 1
+
+
+def cleanup():
+    global count_msg
+    global users
+    count_msg = 0
+    users = {}
 
 
 command_help.update({
