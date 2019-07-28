@@ -162,6 +162,8 @@ async def profile(context):
     if context.fwd_from:
         return
 
+    await context.edit("`Generating user profile summary . . .`")
+
     if not os.path.isdir("./"):
         os.makedirs("./")
 
