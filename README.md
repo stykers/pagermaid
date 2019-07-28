@@ -63,8 +63,8 @@ sudo mv jarvis /var/lib/jarvis
 Edit the sample unit file in utils/ to meet your work user and copy it into systemd unit files.
 
 ```bash
-sudo vim /var/lib/jarvis/utils/jarvis.service
 sudo cp /var/lib/jarvis/utils/jarvis.service /usr/lib/systemd/system/jarvis.service
+sudo vim /usr/lib/systemd/system/jarvis.service
 ```
 
 Now reload systemd and start the service:
