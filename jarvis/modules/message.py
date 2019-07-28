@@ -8,6 +8,8 @@ from os import remove
 from gtts import gTTS
 from telethon import functions
 from dotenv import load_dotenv
+from asyncio import create_subprocess_shell as async_run
+from asyncio.subprocess import PIPE
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register
 
@@ -187,6 +189,31 @@ async def tts(context):
             await context.delete()
 
 
+@register(outgoing=True, pattern="^-rng(?: |$)(.*)")
+async def rng(context):
+    """ Automates keyboard spamming. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        try:
+            length = context.pattern_match.group(1)
+            if length:
+                command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c " + length + " ; echo \'\'"
+            else:
+                command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c 64 ; echo \'\'"
+            execute = await async_run(
+                command,
+                stdout=PIPE,
+                stderr=PIPE
+            )
+
+            stdout, stderr = await execute.communicate()
+            result = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
+
+            await context.edit(result)
+        except FileNotFoundError:
+            await context.edit("`A util is missing.`")
+
+
 @register(outgoing=True, pattern="^-channel$")
 async def channel(context):
     """ Returns the author's channel. """
@@ -241,6 +268,11 @@ command_help.update({
 command_help.update({
     "tts": "Parameter: -tts <text>\
     \nUsage: Generates a voice message."
+})
+
+command_help.update({
+    "rng": "Parameter: -rng <integer>\
+    \nUsage: Automates keyboard spamming."
 })
 
 command_help.update({
