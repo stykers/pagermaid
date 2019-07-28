@@ -71,9 +71,9 @@ async def widen(context):
         await context.edit(reply_text)
 
 
-@register(outgoing=True, pattern="^-corrupt(?: |$)(.*)")
-async def corrupt(context):
-    """ Corrupt texts. """
+@register(outgoing=True, pattern="^-fox(?: |$)(.*)")
+async def fox(context):
+    """ Make a fox scratch your message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         text = await context.get_reply_message()
         message = context.pattern_match.group(1)
@@ -108,6 +108,6 @@ command_help.update({
 })
 
 command_help.update({
-    "corrupt": "Parameter: -corrupt <text>\
-    \nUsage: Corrupts some text."
+    "fox": "Parameter: -fox <text>\
+    \nUsage: Make a fox corrupt your text."
 })
