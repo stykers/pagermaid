@@ -38,7 +38,7 @@ pip install -r requirements.txt
 Generate config files:
 
 ```bash
-mv config.gen.env config.env
+cp config.gen.env config.env
 vim config.env
 ```
 
