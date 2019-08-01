@@ -53,7 +53,7 @@ async def evaluate(context):
 
         if log:
             await context.client.send_message(
-                log_chatid, f"Evaluated ```{expression}``` in the python interpreter."
+                log_chatid, f"Evaluated `{expression}` in the python interpreter."
             )
 
 
