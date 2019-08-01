@@ -10,6 +10,53 @@ from jarvis import command_help, log, log_chatid
 from jarvis.events import register
 
 
+@register(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
+async def evaluate(context):
+    """ Evaluate a python expression. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if context.is_channel and not context.is_group:
+            await context.edit("`Evaluation is disabled in channels.`")
+            return
+
+        if context.pattern_match.group(1):
+            expression = context.pattern_match.group(1)
+        else:
+            await context.edit("`Invalid parameter.`")
+            return
+
+        try:
+            evaluation = str(eval(expression))
+            if evaluation:
+                if isinstance(evaluation, str):
+                    if len(evaluation) >= 4096:
+                        file = open("output.log", "w+")
+                        file.write(evaluation)
+                        file.close()
+                        await context.client.send_file(
+                            context.chat_id,
+                            "output.log",
+                            reply_to=context.id,
+                            caption="`Output exceeded limit, attaching file.`",
+                        )
+                        remove("output.log")
+                        return
+                    await context.edit(
+                        f">>> {expression}\n"
+                        f"{evaluation}"
+                    )
+
+        except Exception as err:
+            await context.edit(
+                f">>> {expression}\n"
+                f"`{err}`"
+            )
+
+        if log:
+            await context.client.send_message(
+                log_chatid, f"Evaluated ```{expression}``` in the python interpreter."
+            )
+
+
 @register(outgoing=True, pattern="^-sh(?: |$)(.*)")
 async def sh(context):
     """ For calling a binary from the shell. """
