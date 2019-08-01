@@ -190,6 +190,11 @@ async def shutdown(context):
 
 
 command_help.update({
+    "evaluate": "Parameter: -evaluate <expression>>\
+    \nUsage: Evaluate an expression in the python interpreter."
+})
+
+command_help.update({
     "sh": "Parameter: -sh <command>\
     \nUsage: Executes a shell command."
 })
