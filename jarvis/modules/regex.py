@@ -55,8 +55,7 @@ async def sed(context):
                 await target.edit(text)
                 await context.delete()
             else:
-                await context.edit("**Running** \"`" + context.text + "`\" **against message.**\n" + "Output: \"" + text
-                                   + "\"")
+                await context.edit("*" + text + "\n\n Pattern: \"" + context.text + "\"")
 
 
 def format_sed(data):
