@@ -2,6 +2,9 @@
 
 import asyncio
 import platform
+
+from requests import head
+from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from asyncio.subprocess import PIPE
 from getpass import getuser
 from os import remove
@@ -189,6 +192,70 @@ async def shutdown(context):
         await context.client.disconnect()
 
 
+@register(outgoing=True, pattern="^-trace(?: |$)(.*)")
+async def trace(context):
+    """ Trace URL redirects. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        url = context.pattern_match.group(1)
+        reply = await context.get_reply_message()
+        if url:
+            pass
+        else:
+            url = reply
+        if url:
+            await context.edit("`Tracing redirects . . .`")
+            result = str("")
+            for url in url_tracer(url):
+                count = 0
+                if result:
+                    result += " ↴\n" + url
+                else:
+                    result = url
+                if count == 128:
+                    result += "\n\nMore than 128 redirects, aborting!"
+                    break
+            if result:
+                if len(result) > 4096:
+                    await context.edit("`Output exceeded limit, attaching file.`")
+                    file = open("output.log", "w+")
+                    file.write(result)
+                    file.close()
+                    await context.client.send_file(
+                        context.chat_id,
+                        "output.log",
+                        reply_to=context.id,
+                    )
+                    remove("output.log")
+                    return
+                await context.edit(
+                    "Redirects:\n"
+                    f"{result}"
+                )
+            else:
+                await context.edit(
+                    "`Something wrong happened while making HTTP requests.`"
+                )
+        else:
+            await context.edit("`Invalid argument.`")
+
+
+def url_tracer(url):
+    while True:
+        yield url
+        try:
+            response = head(url)
+        except MissingSchema:
+            break
+        except InvalidURL:
+            break
+        except ConnectionError:
+            break
+        if 300 < response.status_code < 400:
+            url = response.headers['location']
+        else:
+            break
+
+
 command_help.update({
     "evaluate": "Parameter: -evaluate <expression>>\
     \nUsage: Evaluate an expression in the python interpreter."
@@ -207,4 +274,9 @@ command_help.update({
 command_help.update({
     "shutdown": "Parameter: -shutdown\
     \nUsage: Shuts down Jarvis."
+})
+
+command_help.update({
+    "trace": "Parameter: -trace <url>\
+    \nUsage: Traces redirect of a URL."
 })
