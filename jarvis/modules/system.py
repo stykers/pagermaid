@@ -201,6 +201,10 @@ async def trace(context):
         if reply:
             url = reply.text
         if url:
+            if url.startswith("https://") or url.startswith("http://"):
+                pass
+            else:
+                url = "https://" + url
             await context.edit("`Tracing redirects . . .`")
             result = str("")
             for url in url_tracer(url):
