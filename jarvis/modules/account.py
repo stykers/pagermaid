@@ -230,8 +230,8 @@ async def generate_strings(replied_user, event):
     caption += f"Common Chats: {common_chat} \n"
     caption += f"Permanent Link: "
     caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \
-    if last_name is not "This user does not have a " \
-                        "last name." else f"[{first_name}](tg://user?id={user_id})"
+        if last_name is not "This user does not have a " \
+                            "last name." else f"[{first_name}](tg://user?id={user_id})"
     return photo, caption
 
 
