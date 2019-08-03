@@ -3,6 +3,7 @@
 import re
 
 from sre_constants import error as sre_err
+from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from jarvis.events import register
 
 deliminators = ("/", ":", "|", "_")
@@ -52,7 +53,11 @@ async def sed(context):
             return
         if text:
             if target.sender.is_self:
-                await target.edit(text)
+                try:
+                    await target.edit(text)
+                except MessageNotModifiedError:
+                    await context.delete()
+                    return
                 await context.delete()
             else:
                 await context.edit("*" + text + "\n\n Pattern: \"" + context.text + "\"")
