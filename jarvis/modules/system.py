@@ -198,10 +198,8 @@ async def trace(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         url = context.pattern_match.group(1)
         reply = await context.get_reply_message()
-        if url:
-            pass
-        else:
-            url = reply
+        if reply:
+            url = reply.text
         if url:
             await context.edit("`Tracing redirects . . .`")
             result = str("")
