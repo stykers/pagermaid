@@ -183,8 +183,7 @@ async def profile(context):
             caption=caption,
             link_preview=False,
             force_document=False,
-            reply_to=message_id_to_reply,
-            parse_mode="html"
+            reply_to=message_id_to_reply
         )
 
         if not photo.startswith("http"):
@@ -192,7 +191,7 @@ async def profile(context):
         await context.delete()
 
     except TypeError:
-        await context.edit(caption, parse_mode="html")
+        await context.edit(caption)
 
 
 async def generate_strings(replied_user, event):
@@ -219,18 +218,18 @@ async def generate_strings(replied_user, event):
         "This user does not have a username.")
     user_bio = "This user has no bio." if not user_bio else user_bio
 
-    caption = "<b>Profile:</b> \n"
+    caption = "**Profile:** \n"
     caption += f"First Name: {first_name} \n"
     caption += f"Last Name: {last_name} \n"
     caption += f"Username: {user_name} \n"
     caption += f"Bot: {is_bot} \n"
     caption += f"Restricted: {restricted} \n"
     caption += f"Verified: {verified} \n"
-    caption += f"ID: <code>{user_id}</code> \n \n"
-    caption += f"Bio: \n<code>{user_bio}</code> \n \n"
+    caption += f"ID: `{user_id}` \n \n"
+    caption += f"Bio: `{user_bio}` \n \n"
     caption += f"Common Chats: {common_chat} \n"
     caption += f"Permanent Link: "
-    caption += f"<a href=\"tg://user?id={user_id}\">{first_name}</a>"
+    caption += f"[{first_name}](tg://user?id={user_id})"
 
     return photo, caption
 
