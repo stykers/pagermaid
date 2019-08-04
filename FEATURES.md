@@ -30,3 +30,8 @@
 - Widen texts
 - Translate message
 - Generate vocal messages
+- Convert regular messages to OwO
+- Evaluate python expressions
+- QR code encode/decide
+- Querying list of admins of group
+- Redirect tracer

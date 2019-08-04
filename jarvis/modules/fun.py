@@ -1,7 +1,6 @@
 """ Fun related chat utilities. """
 
-import asyncio
-
+from asyncio import sleep
 from random import seed
 from random import choice
 from random import random
@@ -24,18 +23,18 @@ async def animate(context):
         else:
             await context.edit("`Invalid argument.`")
             return
-        sleep_time = 0.03
-        typing_symbol = "█"
+        latency = 0.03
+        cursor = "█"
         old_text = ''
-        await context.edit(typing_symbol)
-        await asyncio.sleep(sleep_time)
+        await context.edit(cursor)
+        await sleep(latency)
         for character in message:
             old_text = old_text + "" + character
-            typing_text = old_text + "" + typing_symbol
+            typing_text = old_text + "" + cursor
             await context.edit(typing_text)
-            await asyncio.sleep(sleep_time)
+            await sleep(latency)
             await context.edit(old_text)
-            await asyncio.sleep(sleep_time)
+            await sleep(latency)
 
 
 @register(outgoing=True, pattern="^-mock(?: |$)(.*)")
