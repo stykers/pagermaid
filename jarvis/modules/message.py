@@ -1,7 +1,6 @@
 """ Message related utilities. """
 
 from os import environ
-from random import choice
 from emoji import get_emoji_regexp
 from googletrans import LANGUAGES
 from googletrans import Translator
@@ -214,23 +213,6 @@ async def rng(context):
             await context.edit("`A util is missing.`")
 
 
-@register(outgoing=True, pattern=r"^-owo(?: |$)([\s\S]*)")
-async def owo(context):
-    """ Makes messages become owo. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        if log:
-            if context.reply_to_msg_id:
-                reply_msg = await context.get_reply_message()
-                await context.edit(owoifier(reply_msg.text))
-                return
-            elif context.pattern_match.group(1):
-                text = context.pattern_match.group(1)
-                await context.edit(owoifier(text))
-            else:
-                await context.edit("`Unable to get the target message.`")
-                return
-
-
 @register(outgoing=True, pattern="^-channel$")
 async def channel(context):
     """ Returns the author's channel. """
@@ -255,31 +237,6 @@ async def site(context):
 def clear_emojis(target):
     """ Removes all Emojis from provided string """
     return get_emoji_regexp().sub(u'', target)
-
-
-def last_replace(s, old, new):
-    li = s.rsplit(old, 1)
-    return new.join(li)
-
-
-def owoifier(text):
-    """ Converts your text to OwO """
-    smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω\´・)', '(´・ω・\`)']
-
-    text = text.replace('L', 'W').replace('l', 'w')
-    text = text.replace('R', 'W').replace('r', 'w')
-
-    text = last_replace(text, '!', '! {}'.format(choice(smileys)))
-    text = last_replace(text, '?', '? owo')
-    text = last_replace(text, '.', '. {}'.format(choice(smileys)))
-
-    for v in ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']:
-        if 'n{}'.format(v) in text:
-            text = text.replace('n{}'.format(v), 'ny{}'.format(v))
-        if 'N{}'.format(v) in text:
-            text = text.replace('N{}'.format(v), 'N{}{}'.format('Y' if v.isupper() else 'y', v))
-
-    return text
 
 
 command_help.update({
@@ -330,9 +287,4 @@ command_help.update({
 command_help.update({
     "site": "Parameter: -site\
     \nUsage: Shows the site of Jarvis."
-})
-
-command_help.update({
-    "owo": "Parameter: -owo <text>\
-    \nUsage: Converts messages to OwO."
 })
