@@ -19,7 +19,6 @@ pytube
 pytz
 requests>=2.18.4
 speedtest-cli>=2.0.2
-spongemock
 telegraph
 telethon>=1.6.2
 urbandict>=0.5

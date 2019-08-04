@@ -3,8 +3,9 @@
 import asyncio
 
 from zalgo_text import zalgo
+from random import seed
 from random import choice
-from spongemock import spongemock
+from random import random
 from jarvis import command_help
 from jarvis.events import register
 
@@ -50,7 +51,7 @@ async def mock(context):
             await context.edit("`Invalid arguments.`")
             return
 
-        result = spongemock.mock(message)
+        result = mocker(message)
         await context.edit(result)
 
 
@@ -137,6 +138,24 @@ def owoifier(text):
             text = text.replace('N{}'.format(v), 'N{}{}'.format('Y' if v.isupper() else 'y', v))
 
     return text
+
+
+def mocker(text, diversity_bias=0.5, random_seed=None):
+    if diversity_bias < 0 or diversity_bias > 1:
+        raise ValueError('diversity_bias must be between the inclusive range [0,1]')
+    seed(random_seed)
+    out = ''
+    last_was_upper = True
+    swap_chance = 0.5
+    for c in text:
+        if c.isalpha():
+            if random() < swap_chance:
+                last_was_upper = not last_was_upper
+                swap_chance = 0.5
+            c = c.upper() if last_was_upper else c.lower()
+            swap_chance += (1 - swap_chance) * diversity_bias
+        out += c
+    return out
 
 
 command_help.update({
