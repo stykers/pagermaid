@@ -2,10 +2,11 @@
 
 import asyncio
 
-from zalgo_text import zalgo
 from random import seed
 from random import choice
 from random import random
+from random import randint
+from random import randrange
 from jarvis import command_help
 from jarvis.events import register
 
@@ -90,7 +91,7 @@ async def fox(context):
             return
 
         input_text = " ".join(message).lower()
-        corrupted_text = zalgo.zalgo().zalgofy(input_text)
+        corrupted_text = corrupt(input_text)
         await context.edit(corrupted_text)
 
 
@@ -156,6 +157,63 @@ def mocker(text, diversity_bias=0.5, random_seed=None):
             swap_chance += (1 - swap_chance) * diversity_bias
         out += c
     return out
+
+
+def corrupt(text):
+    """ Summons fox to scratch strings. """
+    num_accents_up = (1, 3)
+    num_accents_down = (1, 3)
+    num_accents_middle = (1, 2)
+    max_accents_per_letter = 3
+    dd = ['̖', ' ̗', ' ̘', ' ̙', ' ̜', ' ̝', ' ̞', ' ̟', ' ̠', ' ̤', ' ̥', ' ̦', ' ̩', ' ̪', ' ̫', ' ̬', ' ̭', ' ̮',
+          ' ̯', ' ̰', ' ̱', ' ̲', ' ̳', ' ̹', ' ̺', ' ̻', ' ̼', ' ͅ', ' ͇', ' ͈', ' ͉', ' ͍', ' ͎', ' ͓', ' ͔', ' ͕',
+          ' ͖', ' ͙', ' ͚', ' ', ]
+    du = [' ̍', ' ̎', ' ̄', ' ̅', ' ̿', ' ̑', ' ̆', ' ̐', ' ͒', ' ͗', ' ͑', ' ̇', ' ̈', ' ̊', ' ͂', ' ̓', ' ̈́', ' ͊',
+          ' ͋', ' ͌', ' ̃', ' ̂', ' ̌', ' ͐', ' ́', ' ̋', ' ̏', ' ̽', ' ̉', ' ͣ', ' ͤ', ' ͥ', ' ͦ', ' ͧ', ' ͨ', ' ͩ',
+          ' ͪ', ' ͫ', ' ͬ', ' ͭ', ' ͮ', ' ͯ', ' ̾', ' ͛', ' ͆', ' ̚', ]
+    dm = [' ̕', ' ̛', ' ̀', ' ́', ' ͘', ' ̡', ' ̢', ' ̧', ' ̨', ' ̴', ' ̵', ' ̶', ' ͜', ' ͝', ' ͞', ' ͟', ' ͠', ' ͢',
+          ' ̸', ' ̷', ' ͡', ]
+    letters = list(text)
+    new_letters = []
+
+    for letter in letters:
+        a = letter
+
+        if not a.isalpha():
+            new_letters.append(a)
+            continue
+
+        num_accents = 0
+        num_u = randint(num_accents_up[0], num_accents_up[1])
+        num_d = randint(num_accents_down[0], num_accents_down[1])
+        num_m = randint(num_accents_middle[0], num_accents_middle[1])
+        while num_accents < max_accents_per_letter and num_u + num_m + num_d != 0:
+            rand_int = randint(0, 2)
+            if rand_int == 0:
+                if num_u > 0:
+                    a = combine_with_diacritic(a, du)
+                    num_accents += 1
+                    num_u -= 1
+            elif rand_int == 1:
+                if num_d > 0:
+                    a = combine_with_diacritic(a, dd)
+                    num_d -= 1
+                    num_accents += 1
+            else:
+                if num_m > 0:
+                    a = combine_with_diacritic(a, dm)
+                    num_m -= 1
+                    num_accents += 1
+
+        new_letters.append(a)
+
+    new_word = ''.join(new_letters)
+    return new_word
+
+
+def combine_with_diacritic(letter, diacritic_list):
+    """ The fox. """
+    return letter.strip() + diacritic_list[randrange(0, len(diacritic_list))].strip()
 
 
 command_help.update({
