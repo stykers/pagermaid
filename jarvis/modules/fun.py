@@ -6,6 +6,9 @@ from random import choice
 from random import random
 from random import randint
 from random import randrange
+from json import load as load_json
+from re import sub
+from re import IGNORECASE
 from jarvis import command_help
 from jarvis.events import register
 
@@ -120,6 +123,33 @@ def last_replace(s, old, new):
     return new.join(li)
 
 
+def stutter(text):
+    """Add a stutter"""
+    words = text.split()
+    first_letter = words[0][0]
+
+    letter_stutter = f"{first_letter}-{first_letter.lower()}-"
+
+    if len(words[0]) > 1:
+        words[0] = letter_stutter + words[0][1:]
+    else:
+        words[0] = letter_stutter
+
+    return " ".join(words)
+
+
+def weebify(text):
+    """Replace words and phrases"""
+    with open("utils/replacements.json") as fp:
+        replacements = load_json(fp)
+
+    for expression in replacements:
+        replacement = replacements[expression]
+        text = sub(expression, replacement, text, flags=IGNORECASE)
+
+    return text
+
+
 def owoifier(text):
     """ Converts your text to OwO """
     smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω\´・)', '(´・ω・\`)']
@@ -130,6 +160,9 @@ def owoifier(text):
     text = last_replace(text, '!', '! {}'.format(choice(smileys)))
     text = last_replace(text, '?', '? owo')
     text = last_replace(text, '.', '. {}'.format(choice(smileys)))
+    text = stutter(text)
+    text = weebify(text)
+    text = text + " desu"
 
     for v in ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']:
         if 'n{}'.format(v) in text:
