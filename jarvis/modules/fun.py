@@ -101,7 +101,11 @@ async def fox(context):
 async def owo(context):
     """ Makes messages become owo. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        if context.reply_to_msg_id:
+        if context.pattern_match.group(1):
+            text = context.pattern_match.group(1)
+            await context.edit(owoifier(text))
+            return
+        elif context.reply_to_msg_id:
             reply_msg = await context.get_reply_message()
             if reply_msg.sender.is_self:
                 try:
@@ -119,9 +123,6 @@ async def owo(context):
                     return
                 await context.edit(result)
             return
-        elif context.pattern_match.group(1):
-            text = context.pattern_match.group(1)
-            await context.edit(owoifier(text))
         else:
             await context.edit("`Unable to get the target message.`")
             return
