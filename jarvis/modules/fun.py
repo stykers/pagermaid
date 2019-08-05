@@ -104,10 +104,20 @@ async def owo(context):
         if context.reply_to_msg_id:
             reply_msg = await context.get_reply_message()
             if reply_msg.sender.is_self:
-                await reply_msg.edit(owoifier(reply_msg.text))
+                try:
+                    result = owoifier(reply_msg.text)
+                except:
+                    await context.delete()
+                    return
+                await reply_msg.edit(result)
                 await context.delete()
             else:
-                await context.edit(owoifier(reply_msg.text))
+                try:
+                    result = owoifier(reply_msg.text)
+                except:
+                    await context.delete()
+                    return
+                await context.edit(result)
             return
         elif context.pattern_match.group(1):
             text = context.pattern_match.group(1)
