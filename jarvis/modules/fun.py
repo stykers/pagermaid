@@ -132,6 +132,7 @@ async def owo(context):
 async def ship(context):
     """ Ship randomly generated members. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("`Generating couple . . .`")
         users = []
         async for user in context.client.iter_participants(context.chat_id):
             users.append(user)
