@@ -154,14 +154,13 @@ def owoifier(text):
     """ Converts your text to OwO """
     smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω\´・)', '(´・ω・\`)']
 
+    text = stutter(text)
+    text = weebify(text)
     text = text.replace('L', 'W').replace('l', 'w')
     text = text.replace('R', 'W').replace('r', 'w')
-
     text = last_replace(text, '!', '! {}'.format(choice(smileys)))
     text = last_replace(text, '?', '? owo')
     text = last_replace(text, '.', '. {}'.format(choice(smileys)))
-    text = stutter(text)
-    text = weebify(text)
     text = text + " desu"
 
     for v in ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']:
