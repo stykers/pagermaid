@@ -128,6 +128,19 @@ async def owo(context):
             return
 
 
+@register(outgoing=True, pattern="^-ship(?: |$)(.*)")
+async def ship(context):
+    """ Ship randomly generated members. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        users = []
+        async for user in context.client.iter_participants(context.chat_id):
+            users.append(user)
+        target_1 = choice(users)
+        target_2 = choice(users)
+        await context.edit("**Generated couple**\n" + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
+                           + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
+
+
 def last_replace(s, old, new):
     """ Helper util for owoifier. """
     li = s.rsplit(old, 1)
