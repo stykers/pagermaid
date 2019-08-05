@@ -139,7 +139,7 @@ def stutter(text):
     words = text.split()
     first_letter = words[0][0]
 
-    letter_stutter = f"{first_letter}-{first_letter.lower()}-"
+    letter_stutter = f"{first_letter}-{first_letter.lower()}-{first_letter.lower()}"
 
     if len(words[0]) > 1:
         words[0] = letter_stutter + words[0][1:]
