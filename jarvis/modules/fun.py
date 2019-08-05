@@ -9,7 +9,7 @@ from random import randrange
 from json import load as load_json
 from re import sub
 from re import IGNORECASE
-from jarvis import command_help
+from jarvis import command_help, bot
 from jarvis.events import register
 
 
@@ -138,6 +138,9 @@ async def ship(context):
             users.append(user)
         target_1 = choice(users)
         target_2 = choice(users)
+        if len(users) is 1:
+            target_1 = users[0]
+            target_2 = await bot.get_me()
         await context.edit("**Generated couple**\n" + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
                            + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
 
