@@ -191,7 +191,7 @@ def owoifier(text):
     text = last_replace(text, '.', '. {}'.format(choice(smileys)))
     text = text + " desu"
 
-    for v in ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']:
+    for v in ['a', 'o', 'u', 'A', 'O', 'U']:
         if 'n{}'.format(v) in text:
             text = text.replace('n{}'.format(v), 'ny{}'.format(v))
         if 'N{}'.format(v) in text:
