@@ -180,7 +180,7 @@ def weebify(text):
 
 def owoifier(text):
     """ Converts your text to OwO """
-    smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω\´・)', '(´・ω・\`)']
+    smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω´・)', '(´・ω・`)']
 
     text = weebify(text)
     text = stutter(text)
