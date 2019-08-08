@@ -20,21 +20,40 @@ kernel = uname().release
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        try:
-            command = "neofetch --stdout"
-            execute = await async_run(
-                command,
-                stdout=PIPE,
-                stderr=PIPE
-            )
+        command = "neofetch --stdout"
+        execute = await async_run(
+            command,
+            stdout=PIPE,
+            stderr=PIPE
+        )
 
-            stdout, stderr = await execute.communicate()
-            result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+        stdout, stderr = await execute.communicate()
+        result = str(stdout.decode().strip()) \
+            + str(stderr.decode().strip())
+        if result == "/bin/sh: neofetch: command not found":
+            await context.edit("`Neofetch does not exist on this system.`")
+            return
+        await context.edit("`" + result + "`")
 
-            await context.edit("`" + result + "`")
-        except FileNotFoundError:
-            await context.edit("`Neofetch not found on this system.`")
+
+@register(outgoing=True, pattern="^-fortune$")
+async def fortune(context):
+    """ Reads a fortune cookie. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        command = "fortune"
+        execute = await async_run(
+            command,
+            stdout=PIPE,
+            stderr=PIPE
+        )
+
+        stdout, stderr = await execute.communicate()
+        result = str(stdout.decode().strip()) \
+            + str(stderr.decode().strip())
+        if result == "/bin/sh: fortune: command not found":
+            await context.edit("`No fortune cookies on this system.`")
+            return
+        await context.edit(result)
 
 
 @register(outgoing=True, pattern="^-version$")
@@ -161,6 +180,11 @@ def unit_convert(byte):
 command_help.update({
     "sysinfo": "Parameter: -sysinfo\
     \nUsage: Retrieve system information via neofetch."
+})
+
+command_help.update({
+    "fortune": "Parameter: -fortune\
+    \nUsage: Reads a fortune cookie message."
 })
 
 command_help.update({
