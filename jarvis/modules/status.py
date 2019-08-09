@@ -1,6 +1,7 @@
 """ Module that show system info of the hardware the bot is running on. """
 
 import speedtest
+import os
 
 from datetime import datetime
 from telethon import functions
@@ -54,6 +55,44 @@ async def fortune(context):
             await context.edit("`No fortune cookies on this system.`")
             return
         await context.edit(result)
+
+
+@register(outgoing=True, pattern="^-tty$")
+async def tty(context):
+    """ Screenshots a TTY and prints it. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await context.edit("`Taking screenshot of tty1 . . .`")
+        command = "fbdump > image.ppm && convert image.ppm image.png"
+        execute = await async_run(
+            command,
+            stdout=PIPE,
+            stderr=PIPE
+        )
+
+        stdout, stderr = await execute.communicate()
+        result = str(stdout.decode().strip()) \
+            + str(stderr.decode().strip())
+        if result == "/bin/sh: fbdump: command not found":
+            await context.edit("`fbdump does not exist on this system.`")
+            os.remove("image.ppm")
+            return
+        if result == "/bin/sh: convert: command not found":
+            await context.edit("`ImageMagick does not exist on this system.`")
+            os.remove("image.ppm")
+            return
+        if result == "Failed to open /dev/fb0: Permission denied":
+            await context.edit("`User not in video group.`")
+            os.remove("image.ppm")
+            return
+        await context.client.send_file(
+            context.chat_id,
+            "image.png",
+            caption="Screenshot of TTY1.",
+            link_preview=False,
+            force_document=False
+        )
+        os.remove("image.ppm")
+        os.remove("image.png")
 
 
 @register(outgoing=True, pattern="^-version$")
