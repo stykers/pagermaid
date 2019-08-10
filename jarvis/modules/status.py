@@ -91,6 +91,7 @@ async def tty(context):
             link_preview=False,
             force_document=False
         )
+        await context.delete()
         os.remove("image.ppm")
         os.remove("image.png")
 
