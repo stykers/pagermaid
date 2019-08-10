@@ -86,14 +86,18 @@ async def tty(context):
             await context.edit("`User not in video group.`")
             os.remove("image.png")
             return
-        await context.client.send_file(
-            context.chat_id,
-            "image.png",
-            caption="Screenshot of TTY1.",
-            link_preview=False,
-            force_document=False,
-            reply_to=message_id_to_reply
-        )
+        try:
+            await context.client.send_file(
+                context.chat_id,
+                "image.png",
+                caption="Screenshot of TTY1.",
+                link_preview=False,
+                force_document=False,
+                reply_to=message_id_to_reply
+            )
+        except ValueError:
+            await context.edit("`File is not generated due to unexpected error.`")
+            return
         await context.delete()
         os.remove("image.png")
 
