@@ -68,7 +68,9 @@ async def tty(context):
             stdout=PIPE,
             stderr=PIPE
         )
-
+        message_id_to_reply = context.message.reply_to_msg_id
+        if not message_id_to_reply:
+            message_id_to_reply = None
         stdout, stderr = await execute.communicate()
         result = str(stdout.decode().strip()) \
             + str(stderr.decode().strip())
@@ -89,7 +91,8 @@ async def tty(context):
             "image.png",
             caption="Screenshot of TTY1.",
             link_preview=False,
-            force_document=False
+            force_document=False,
+            reply_to=message_id_to_reply
         )
         await context.delete()
         os.remove("image.ppm")
