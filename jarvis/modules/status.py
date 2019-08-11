@@ -61,7 +61,7 @@ async def fortune(context):
 async def tty(context):
     """ Screenshots a TTY and prints it. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("`Taking screenshot of tty1 . . .`")
+        await context.edit("`Taking screenshot of framebuffer . . .`")
         command = "fbdump | magick - image.png"
         execute = await async_run(
             command,
@@ -90,7 +90,7 @@ async def tty(context):
             await context.client.send_file(
                 context.chat_id,
                 "image.png",
-                caption="Screenshot of TTY1.",
+                caption="Screenshot of currently attached tty.",
                 link_preview=False,
                 force_document=False,
                 reply_to=message_id_to_reply
