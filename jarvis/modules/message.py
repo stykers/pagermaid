@@ -213,13 +213,6 @@ async def rng(context):
             await context.edit("`A util is missing.`")
 
 
-@register(outgoing=True, pattern="^-channel$")
-async def channel(context):
-    """ Returns the author's channel. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("Author Channel: @SparkzStuff")
-
-
 @register(outgoing=True, pattern="^-source$")
 async def source(context):
     """ Prints the git repository URL. """
@@ -272,11 +265,6 @@ command_help.update({
 command_help.update({
     "rng": "Parameter: -rng <integer>\
     \nUsage: Automates keyboard spamming."
-})
-
-command_help.update({
-    "channel": "Parameter: -channel\
-    \nUsage: Shows the development channel."
 })
 
 command_help.update({
