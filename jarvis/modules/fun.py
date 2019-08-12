@@ -140,8 +140,9 @@ async def ship(context):
         target_1 = choice(users)
         target_2 = choice(users)
         if context.pattern_match.group(1):
-            if context.pattern_match.group(2):
-                user = context.pattern_match.group(1)
+            if ' ' in context.pattern_match.group(1):
+                string_1, string_2 = context.pattern_match.group(1).split(' ', 1)
+                user = string_1
                 if user.isnumeric():
                     user = int(user)
                 try:
@@ -149,7 +150,7 @@ async def ship(context):
                 except (TypeError, ValueError) as err:
                     await context.edit(str(err))
                     return None
-                user = context.pattern_match.group(2)
+                user = string_2
                 if user.isnumeric():
                     user = int(user)
                 try:
