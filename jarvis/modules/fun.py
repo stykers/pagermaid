@@ -321,3 +321,8 @@ command_help.update({
     "owo": "Parameter: -owo <text>\
     \nUsage: Converts messages to OwO."
 })
+
+command_help.update({
+    "ship": "Parameter: -ship <user> <user>\
+    \nUsage: Ships random person, supports defining person to ship."
+})
