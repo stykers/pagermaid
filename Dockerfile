@@ -1,5 +1,6 @@
 FROM alpine:edge
 RUN sed -e 's;^#http\(.*\)/v3.9/community;http\1/v3.9/community;g' -i /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
 RUN apk add --no-cache --update \
     git \
     dash \
@@ -10,6 +11,7 @@ RUN apk add --no-cache --update \
     readline-dev \
     sqlite-dev \
     build-base \
+    fortune \
     python3 \
     redis \
     libxslt-dev \
@@ -29,7 +31,8 @@ RUN apk add --no-cache --update \
     musl \
     sqlite \
     figlet \
-    libwebp-dev
+    libwebp-dev \
+    zbar
 
 RUN pip3 install --upgrade pip setuptools
 RUN  sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
@@ -41,5 +44,4 @@ RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /home/ja
 WORKDIR /home/jarvis/instance
 COPY ./jarvis.session ./config.env /home/jarvis/instance/
 RUN sudo pip3 install -r requirements.txt
-RUN sudo chmod -R 777 /home/jarvis/instance
 CMD ["dash","utils/entrypoint.sh"]
