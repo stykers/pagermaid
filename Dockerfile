@@ -35,12 +35,13 @@ RUN apk add --no-cache --update \
     zbar
 
 RUN pip3 install --upgrade pip setuptools
-RUN  sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
+RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
 RUN adduser jarvis --disabled-password --home /home/jarvis
 RUN adduser jarvis wheel
 USER jarvis
 RUN mkdir /home/jarvis/instance
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /home/jarvis/instance
+RUN chmod -R +w /home/jarvis
 WORKDIR /home/jarvis/instance
 COPY ./jarvis.session ./config.env /home/jarvis/instance/
 RUN sudo pip3 install -r requirements.txt
