@@ -43,7 +43,7 @@ RUN mkdir /home/jarvis/instance
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /home/jarvis/instance
 WORKDIR /home/jarvis/instance
 COPY ./jarvis.session ./config.env /home/jarvis/instance/
-RUN chown jarvis:jarvis /home/jarvis/instance/config.env
-RUN chown jarvis:jarvis /home/jarvis/instance/jarvis.session
+RUN sudo chown jarvis:jarvis /home/jarvis/instance/config.env
+RUN sudo chown jarvis:jarvis /home/jarvis/instance/jarvis.session
 RUN sudo pip3 install -r requirements.txt
 CMD ["dash","utils/entrypoint.sh"]
