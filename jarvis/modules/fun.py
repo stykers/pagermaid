@@ -11,6 +11,7 @@ from re import sub
 from re import IGNORECASE
 from jarvis import command_help, bot
 from jarvis.events import register
+from jarvis.modules.account import fetch_user
 
 
 @register(pattern='-animate(?: |$)(.*)')
@@ -138,6 +139,26 @@ async def ship(context):
             users.append(user)
         target_1 = choice(users)
         target_2 = choice(users)
+        if context.pattern_match.group(1):
+            if context.pattern_match.group(2):
+                user = context.pattern_match.group(1)
+                if user.isnumeric():
+                    user = int(user)
+                try:
+                    target_1 = await context.client.get_entity(user)
+                except (TypeError, ValueError) as err:
+                    await context.edit(str(err))
+                    return None
+                user = context.pattern_match.group(2)
+                if user.isnumeric():
+                    user = int(user)
+                try:
+                    target_2 = await context.client.get_entity(user)
+                except (TypeError, ValueError) as err:
+                    await context.edit(str(err))
+                    return None
+            else:
+                target_1 = await fetch_user(context)
         if len(users) is 1:
             target_1 = users[0]
             target_2 = await bot.get_me()
