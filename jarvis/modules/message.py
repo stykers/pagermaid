@@ -218,7 +218,7 @@ async def meter2feet(context):
     """ Converts meter to feet. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         meter = float(context.pattern_match.group(1))
-        feet = meter // .3048
+        feet = meter / .3048
         await context.edit("Converted " + str(meter) + " meters to " + str(feet) + " feet.")
 
 
