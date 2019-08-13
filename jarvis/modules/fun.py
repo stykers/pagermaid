@@ -11,7 +11,6 @@ from re import sub
 from re import IGNORECASE
 from jarvis import command_help, bot
 from jarvis.events import register
-from jarvis.modules.account import fetch_user
 
 
 @register(pattern='-animate(?: |$)(.*)')
@@ -159,7 +158,15 @@ async def ship(context):
                     await context.edit(str(err))
                     return None
             else:
-                target_1 = await fetch_user(context)
+                string_1 = context.pattern_match.group(1)
+                user = string_1
+                if user.isnumeric():
+                    user = int(user)
+                try:
+                    target_1 = await context.client.get_entity(user)
+                except (TypeError, ValueError) as err:
+                    await context.edit(str(err))
+                    return None
         if len(users) is 1:
             target_1 = users[0]
             target_2 = await bot.get_me()
