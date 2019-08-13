@@ -62,18 +62,21 @@ async def mock(context):
 async def widen(context):
     """ Make texts weirdly wide. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
+        reply = await context.get_reply_message()
         message = context.pattern_match.group(1)
         if message:
             pass
-        elif text:
-            message = text.text
+        elif reply:
+            message = reply.text
         else:
             await context.edit("`Invalid argument.`")
             return
 
         reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
-        await context.edit(reply_text)
+        if reply.sender.is_self:
+            await reply.edit(reply_text)
+        else:
+            await context.edit(reply_text)
 
 
 @register(outgoing=True, pattern="^-fox(?: |$)(.*)")
