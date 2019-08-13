@@ -75,6 +75,7 @@ async def widen(context):
         reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
         if reply.sender.is_self:
             await reply.edit(reply_text)
+            await context.delete()
         else:
             await context.edit(reply_text)
 
