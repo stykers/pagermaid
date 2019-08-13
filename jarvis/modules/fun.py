@@ -175,7 +175,7 @@ command_help.update({
 })
 
 
-@register(outgoing=None, pattern="^-ship(?: |$)(.*)")
+@register(outgoing=True, pattern="^-ship(?: |$)(.*)")
 async def ship(context):
     """ Ship randomly generated members. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
