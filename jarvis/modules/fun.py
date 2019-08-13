@@ -132,8 +132,8 @@ async def fox(context):
                 except MessageNotModifiedError:
                     await context.edit("`Message have already been scratched.`")
                 await context.delete()
-        else:
-            await context.edit(reply_text)
+            else:
+                await context.edit(reply_text)
 command_help.update({
     "fox": "Parameter: -fox <text>\
     \nUsage: Make a fox corrupt your text."
