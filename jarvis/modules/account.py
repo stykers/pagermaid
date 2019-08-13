@@ -28,6 +28,10 @@ async def username(context):
             await context.edit("`Invalid username.`")
             return
         await context.edit("`Username have been updated.`")
+command_help.update({
+    "username": "Parameter: -username <text>\
+    \nUsage: Sets the username."
+})
 
 
 @register(outgoing=True, pattern="^-name")
@@ -50,6 +54,10 @@ async def name(context):
             await context.edit("`Invalid first name.`")
             return
         await context.edit("`Display name is successfully altered.`")
+command_help.update({
+    "name": "Parameter: -name <text> <text>\
+    \nUsage: Alters the display name."
+})
 
 
 @register(outgoing=True, pattern="^-pfp$")
@@ -79,6 +87,10 @@ async def pfp(context):
                 await context.edit("`An error occurred while the server is interpreting the command.`")
             except PhotoExtInvalidError:
                 await context.edit("`Unable to parse attachment as image.`")
+command_help.update({
+    "pfp": "Usage: -pfp\
+    \nUsage: Sets profile picture to image replied to."
+})
 
 
 @register(outgoing=True, pattern="^-bio (.*)")
@@ -92,6 +104,10 @@ async def bio(context):
             await context.edit("`Provided string is too long.`")
             return
         await context.edit("`Bio has been altered successfully.`")
+command_help.update({
+    "bio": "-bio <text>\
+    \nUsage: Sets the bio string."
+})
 
 
 @register(outgoing=True, pattern=r"^-rm_pfp")
@@ -122,38 +138,10 @@ async def rm_pfp(context):
             )
         await bot(DeletePhotosRequest(id=input_photos))
         await context.edit(f"`Removed {len(input_photos)} profile picture(s).`")
-
-
-async def fetch_user(target):
-    """ Fetch information of the target user. """
-    if target.reply_to_msg_id:
-        previous_message = await target.get_reply_message()
-        replied_user = await target.client(GetFullUserRequest(previous_message.from_id))
-    else:
-        user = target.pattern_match.group(1)
-
-        if user.isnumeric():
-            user = int(user)
-
-        if not user:
-            self_user = await target.client.get_me()
-            user = self_user.id
-
-        if target.message.entities is not None:
-            probable_user_mention_entity = target.message.entities[0]
-
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                replied_user = await target.client(GetFullUserRequest(user_id))
-                return replied_user
-        try:
-            user_object = await target.client.get_entity(user)
-            replied_user = await target.client(GetFullUserRequest(user_object.id))
-        except (TypeError, ValueError) as err:
-            await target.edit(str(err))
-            return None
-
-    return replied_user
+command_help.update({
+    "rm_pfp": "Parameter: -rm_pfp <amount>\
+    \nUsage: Deletes part or all of your profile picture history."
+})
 
 
 @register(pattern="-profile(?: |$)(.*)", outgoing=True)
@@ -192,6 +180,42 @@ async def profile(context):
 
     except TypeError:
         await context.edit(caption)
+command_help.update({
+    "profile": "Parameter: -profile <user>\
+    \nUsage: Shows user profile in a large message."
+})
+
+
+async def fetch_user(target):
+    """ Fetch information of the target user. """
+    if target.reply_to_msg_id:
+        previous_message = await target.get_reply_message()
+        replied_user = await target.client(GetFullUserRequest(previous_message.from_id))
+    else:
+        user = target.pattern_match.group(1)
+
+        if user.isnumeric():
+            user = int(user)
+
+        if not user:
+            self_user = await target.client.get_me()
+            user = self_user.id
+
+        if target.message.entities is not None:
+            probable_user_mention_entity = target.message.entities[0]
+
+            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
+                user_id = probable_user_mention_entity.user_id
+                replied_user = await target.client(GetFullUserRequest(user_id))
+                return replied_user
+        try:
+            user_object = await target.client.get_entity(user)
+            replied_user = await target.client(GetFullUserRequest(user_object.id))
+        except (TypeError, ValueError) as err:
+            await target.edit(str(err))
+            return None
+
+    return replied_user
 
 
 async def generate_strings(replied_user, event):
@@ -233,34 +257,3 @@ async def generate_strings(replied_user, event):
         if last_name is not "This user does not have a " \
                             "last name." else f"[{first_name}](tg://user?id={user_id})"
     return photo, caption
-
-
-command_help.update({
-    "username": "Parameter: -username <text>\
-    \nUsage: Sets the username."
-})
-
-command_help.update({
-    "name": "Parameter: -name <text> <text>\
-    \nUsage: Alters the display name."
-})
-
-command_help.update({
-    "pfp": "Usage: -pfp\
-    \nUsage: Sets profile picture to image replied to."
-})
-
-command_help.update({
-    "bio": "-bio <text>\
-    \nUsage: Sets the bio string."
-})
-
-command_help.update({
-    "rm_pfp": "Parameter: -rm_pfp <amount>\
-    \nUsage: Deletes part or all of your profile picture history."
-})
-
-command_help.update({
-    "profile": "Parameter: -profile <user>\
-    \nUsage: Shows user profile in a large message."
-})

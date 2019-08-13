@@ -45,6 +45,10 @@ async def userid(context):
             )
         else:
             await context.edit("`Unable to get the target message.`")
+command_help.update({
+    "userid": "Parameter: -userid\
+    \nUsage: Query the userid of the sender of the message you replied to."
+})
 
 
 @register(outgoing=True, pattern="^-chatid$")
@@ -52,6 +56,10 @@ async def chatid(context):
     """ Queries the chatid of the chat you are in. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("ChatID: `" + str(context.chat_id) + "`")
+command_help.update({
+    "chatid": "Parameter: -chatid\
+    \nUsage: Query the chatid of the chat you are in"
+})
 
 
 @register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
@@ -72,6 +80,10 @@ async def log(context):
             await context.edit("Noted.")
         else:
             await context.edit("`Logging is disabled.`")
+command_help.update({
+    "log": "Parameter: -log <text>\
+    \nUsage: Forwards a message or log some text."
+})
 
 
 @register(outgoing=True, pattern="^-leave$")
@@ -83,6 +95,10 @@ async def leave(context):
             await bot(functions.channels.LeaveChannelRequest(leave.chat_id))
         except AttributeError:
             await context.edit("You are not in a group.")
+command_help.update({
+    "leave": "Parameter: -leave\
+    \nUsage: Say goodbye and leave."
+})
 
 
 @register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
@@ -142,6 +158,10 @@ async def translate(context):
                 log_chatid,
                 log_message,
             )
+command_help.update({
+    "translate": "Parameter: -translate <text>\
+    \nUsage: Translate the target message into English."
+})
 
 
 @register(outgoing=True, pattern=r"^-tts(?: |$)([\s\S]*)")
@@ -186,6 +206,10 @@ async def tts(context):
                     log_chatid, "Generated tts for `" + message + "`."
                 )
             await context.delete()
+command_help.update({
+    "tts": "Parameter: -tts <text>\
+    \nUsage: Generates a voice message."
+})
 
 
 @register(outgoing=True, pattern="^-rng(?: |$)(.*)")
@@ -211,6 +235,10 @@ async def rng(context):
             await context.edit(result)
         except FileNotFoundError:
             await context.edit("`A util is missing.`")
+command_help.update({
+    "rng": "Parameter: -rng <integer>\
+    \nUsage: Automates keyboard spamming."
+})
 
 
 @register(outgoing=True, pattern="^-meter2feet(?: |$)(.*)")
@@ -220,6 +248,10 @@ async def meter2feet(context):
         meter = float(context.pattern_match.group(1))
         feet = meter / .3048
         await context.edit("Converted " + str(meter) + " meters to " + str(feet) + " feet.")
+command_help.update({
+    "meter2feet": "Parameter: -meter2feet <float>\
+    \nUsage: Converts meter to feet."
+})
 
 
 @register(outgoing=True, pattern="^-feet2meter(?: |$)(.*)")
@@ -229,6 +261,10 @@ async def feet2meter(context):
         feet = float(context.pattern_match.group(1))
         meter = feet * .3048
         await context.edit("Converted " + str(feet) + " meters to " + str(meter) + " feet.")
+command_help.update({
+    "feet2meter": "Parameter: -feet2meter <float>\
+    \nUsage: Converts feet to meter."
+})
 
 
 @register(outgoing=True, pattern="^-source$")
@@ -236,6 +272,10 @@ async def source(context):
     """ Prints the git repository URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("https://git.stykers.moe/scm/~stykers/jarvis.git")
+command_help.update({
+    "source": "Parameter: -source\
+    \nUsage: Prints the git repository URL."
+})
 
 
 @register(outgoing=True, pattern="^-site$")
@@ -243,6 +283,10 @@ async def site(context):
     """ Outputs the site URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("https://jarvis.stykers.moe/")
+command_help.update({
+    "site": "Parameter: -site\
+    \nUsage: Shows the site of Jarvis."
+})
 
 
 def clear_emojis(target):
@@ -250,57 +294,10 @@ def clear_emojis(target):
     return get_emoji_regexp().sub(u'', target)
 
 
-command_help.update({
-    "chatid": "Parameter: -chatid\
-    \nUsage: Query the chatid of the chat you are in"
-})
 
-command_help.update({
-    "userid": "Parameter: -userid\
-    \nUsage: Query the userid of the sender of the message you replied to."
-})
 
-command_help.update({
-    "log": "Parameter: -log\
-    \nUsage: Forwards message to logging group."
-})
 
-command_help.update({
-    "leave": "Parameter: -leave\
-    \nUsage: Say goodbye and leave."
-})
 
-command_help.update({
-    "translate": "Parameter: -translate <text>\
-    \nUsage: Translate the target message into English."
-})
 
-command_help.update({
-    "tts": "Parameter: -tts <text>\
-    \nUsage: Generates a voice message."
-})
 
-command_help.update({
-    "rng": "Parameter: -rng <integer>\
-    \nUsage: Automates keyboard spamming."
-})
 
-command_help.update({
-    "meter2feet": "Parameter: -meter2feet <float>\
-    \nUsage: Converts meter to feet."
-})
-
-command_help.update({
-    "feet2meter": "Parameter: -feet2meter <float>\
-    \nUsage: Converts feet to meter."
-})
-
-command_help.update({
-    "source": "Parameter: -source\
-    \nUsage: Prints the git repository URL."
-})
-
-command_help.update({
-    "site": "Parameter: -site\
-    \nUsage: Shows the site of Jarvis."
-})
