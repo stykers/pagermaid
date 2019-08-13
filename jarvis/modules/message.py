@@ -213,6 +213,24 @@ async def rng(context):
             await context.edit("`A util is missing.`")
 
 
+@register(outgoing=True, pattern="^-meter2feet(?: |$)(.*)")
+async def meter2feet(context):
+    """ Converts meter to feet. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        meter = float(context.pattern_match.group(1))
+        feet = meter // .3048
+        await context.edit("Converted " + str(meter) + " meters to " + str(feet) + " feet.")
+
+
+@register(outgoing=True, pattern="^-feet2meter(?: |$)(.*)")
+async def feet2meter(context):
+    """ Converts feet to meter. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        feet = float(context.pattern_match.group(1))
+        meter = feet * .3048
+        await context.edit("Converted " + str(feet) + " meters to " + str(meter) + " feet.")
+
+
 @register(outgoing=True, pattern="^-source$")
 async def source(context):
     """ Prints the git repository URL. """
