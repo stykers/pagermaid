@@ -9,6 +9,7 @@ from random import randrange
 from json import load as load_json
 from re import sub
 from re import IGNORECASE
+from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from jarvis import command_help, bot
 from jarvis.events import register
 
@@ -60,7 +61,11 @@ async def mock(context):
 
         reply_text = mocker(message)
         if reply.sender.is_self:
-            await reply.edit(reply_text)
+            try:
+                await reply.edit(reply_text)
+            except MessageNotModifiedError:
+                await context.edit("`This message is already mocked in the same way.`")
+                return
             await context.delete()
         else:
             await context.edit(reply_text)
@@ -86,7 +91,11 @@ async def widen(context):
 
         reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
         if reply.sender.is_self:
-            await reply.edit(reply_text)
+            try:
+                await reply.edit(reply_text)
+            except MessageNotModifiedError:
+                await context.edit("`This message is already widened.`")
+                return
             await context.delete()
         else:
             await context.edit(reply_text)
@@ -115,7 +124,10 @@ async def fox(context):
         input_text = " ".join(message).lower()
         reply_text = corrupt(input_text)
         if reply.sender.is_self:
-            await reply.edit(reply_text)
+            try:
+                await reply.edit(reply_text)
+            except MessageNotModifiedError:
+                await context.edit("`Message have already been scratched.`")
             await context.delete()
         else:
             await context.edit(reply_text)
