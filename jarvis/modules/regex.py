@@ -9,7 +9,7 @@ from jarvis.events import register
 deliminators = ("/", ":", "|", "_")
 
 
-@register(outgoing=True, pattern="^s")
+@register(outgoing=False, pattern="^s")
 async def sed(context):
     """ Implements regex on telegram. """
     result = format_sed(context.text)
@@ -52,6 +52,10 @@ async def sed(context):
             await context.edit("`Syntax error in pattern.`")
             return
         if text:
+            if not context.message.sender.is_self:
+                await context.client.send_message(context.chat_id,
+                                                  "*" + text + "\n\n Pattern: \"" + context.text + "\"")
+                return
             if target.sender.is_self:
                 try:
                     await target.edit(text)
