@@ -43,6 +43,37 @@ command_help.update({
 })
 
 
+@register(outgoing=True, pattern="^-date(?: |$)(.*)")
+async def date(context):
+    """ For querying date. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        date_form = "%A, %d/%m/%y"
+        country = context.pattern_match.group(1).title()
+
+        if not country:
+            time_zone = await get_timezone(region)
+            await context.edit(
+                f"**Date in {region}**\n`{datetime.now(time_zone).strftime(date_form)}`"
+            )
+            return
+
+        time_zone = await get_timezone(country)
+        if not time_zone:
+            await context.edit("`Invalid parameter.`")
+            return
+
+        try:
+            country_name = country_names[country]
+        except KeyError:
+            country_name = country
+
+        await context.edit(f"**Date in {country_name}**\n`{datetime.now(time_zone).strftime(date_form)}`")
+command_help.update({
+    "date": "Parameter: -date <region>\
+    \nUsage: Displays date of specific region, reads from config file if parameter is empty."
+})
+
+
 async def get_timezone(target):
     """ Returns timezone of the parameter in command. """
     if "(Uk)" in target:
