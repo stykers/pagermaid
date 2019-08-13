@@ -175,7 +175,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-ship(?: |$)(.*)")
+@register(outgoing=None, pattern="^-ship(?: |$)(.*)")
 async def ship(context):
     """ Ship randomly generated members. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -217,8 +217,16 @@ async def ship(context):
         if len(users) is 1:
             target_1 = users[0]
             target_2 = await bot.get_me()
-        await context.edit("**Generated couple**\n" + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
-                           + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
+        if not context.message.sender.is_self:
+            await context.client.send_message(context.chat_id, "**Generated couple**\n"
+                                              + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
+                                              + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
+        else:
+            await context.edit("**Generated couple**\n"
+                               + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
+                               + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
+
+
 command_help.update({
     "ship": "Parameter: -ship <user> <user>\
     \nUsage: Ships random person, supports defining person to ship."
