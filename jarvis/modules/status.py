@@ -35,6 +35,10 @@ async def sysinfo(context):
             await context.edit("`Neofetch does not exist on this system.`")
             return
         await context.edit("`" + result + "`")
+command_help.update({
+    "sysinfo": "Parameter: -sysinfo\
+    \nUsage: Retrieve system information via neofetch."
+})
 
 
 @register(outgoing=True, pattern="^-fortune$")
@@ -55,6 +59,10 @@ async def fortune(context):
             await context.edit("`No fortune cookies on this system.`")
             return
         await context.edit(result)
+command_help.update({
+    "fortune": "Parameter: -fortune\
+    \nUsage: Reads a fortune cookie message."
+})
 
 
 @register(outgoing=True, pattern="^-tty$")
@@ -100,6 +108,10 @@ async def tty(context):
             return
         await context.delete()
         os.remove("image.png")
+command_help.update({
+    "tty": "Parameter: -tty\
+    \nUsage: Takes screenshot of a TTY."
+})
 
 
 @register(outgoing=True, pattern="^-version$")
@@ -139,6 +151,10 @@ async def version(context):
             await context.edit(
                 "Git is malfunctioning."
             )
+command_help.update({
+    "version": "Parameter: -version\
+    \nUsage: Outputs the version and git revision."
+})
 
 
 @register(outgoing=True, pattern="^-status$")
@@ -158,6 +174,10 @@ async def status(context):
             f"Library version: {telethon_version}"
             "`"
         )
+command_help.update({
+    "status": "Parameter: -status\
+    \nUsage: Output the status of Jarvis"
+})
 
 
 @register(outgoing=True, pattern="^-speed$")
@@ -183,6 +203,10 @@ async def speed(context):
                        f"`{result['ping']}` \n"
                        "ISP "
                        f"`{result['client']['isp']}`")
+command_help.update({
+    "speed": "Parameter: -speed\
+    \nUsage: Execute the speedtest script and outputs your internet speed."
+})
 
 
 @register(outgoing=True, pattern="^-connection$")
@@ -194,6 +218,10 @@ async def connection(context):
         f"Connected Datacenter `{datacenter.this_dc}` \n"
         f"Nearest Datacenter `{datacenter.nearest_dc}`"
     )
+command_help.update({
+    "connection": "Parameter: -connection\
+    \nUsage: Shows your connection info."
+})
 
 
 @register(outgoing=True, pattern="^-ping$")
@@ -205,6 +233,10 @@ async def ping(context):
         end = datetime.now()
         duration = (end - start).microseconds / 1000
         await context.edit("`Pong!|%sms`" % duration)
+command_help.update({
+    "ping": "Parameter: -ping\
+    \nUsage: Outputs your latency to telegram."
+})
 
 
 def unit_convert(byte):
@@ -221,39 +253,3 @@ def unit_convert(byte):
         byte /= power
         zero += 1
     return f"{round(byte, 2)} {units[zero]}"
-
-
-command_help.update({
-    "sysinfo": "Parameter: -sysinfo\
-    \nUsage: Retrieve system information via neofetch."
-})
-
-command_help.update({
-    "fortune": "Parameter: -fortune\
-    \nUsage: Reads a fortune cookie message."
-})
-
-command_help.update({
-    "version": "Parameter: -version\
-    \nUsage: Outputs the version and git revision."
-})
-
-command_help.update({
-    "status": "Parameter: -status\
-    \nUsage: Output the status of Jarvis"
-})
-
-command_help.update({
-    "speed": "Parameter: -speed\
-    \nUsage: Execute the speedtest script and outputs your internet speed."
-})
-
-command_help.update({
-    "connection": "Parameter: -connection\
-    \nUsage: Shows your connection info."
-})
-
-command_help.update({
-    "ping": "Parameter: -ping\
-    \nUsage: Outputs your latency to telegram."
-})

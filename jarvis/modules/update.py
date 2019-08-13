@@ -100,8 +100,6 @@ async def upstream(context):
             '`Updated with errors, Jarvis is restarting.`'
             )
         await context.client.disconnect()
-
-
 command_help.update({
     "update": "Parameter: -update <boolean>\
     \nUsage: Checks for updates from remote origin, and apply updates to Jarvis."

@@ -38,6 +38,10 @@ async def animate(context):
             await sleep(latency)
             await context.edit(old_text)
             await sleep(latency)
+command_help.update({
+    "animate": "Parameter: -animate <text>\
+    \nUsage: Animated text via edit."
+})
 
 
 @register(outgoing=True, pattern="^-mock(?: |$)(.*)")
@@ -60,6 +64,10 @@ async def mock(context):
             await context.delete()
         else:
             await context.edit(reply_text)
+command_help.update({
+    "mock": "Parameter: -mock <text>\
+    \nUsage: Mock a string via weird caps."
+})
 
 
 @register(outgoing=True, pattern="^-widen(?: |$)(.*)")
@@ -82,6 +90,10 @@ async def widen(context):
             await context.delete()
         else:
             await context.edit(reply_text)
+command_help.update({
+    "widen": "Parameter: -widen <text>\
+    \nUsage: Widen every char in a string in a weird way."
+})
 
 
 @register(outgoing=True, pattern="^-fox(?: |$)(.*)")
@@ -107,6 +119,10 @@ async def fox(context):
             await context.delete()
         else:
             await context.edit(reply_text)
+command_help.update({
+    "fox": "Parameter: -fox <text>\
+    \nUsage: Make a fox corrupt your text."
+})
 
 
 @register(outgoing=True, pattern=r"^-owo(?: |$)([\s\S]*)")
@@ -138,6 +154,10 @@ async def owo(context):
         else:
             await context.edit("`Unable to get the target message.`")
             return
+command_help.update({
+    "owo": "Parameter: -owo <text>\
+    \nUsage: Converts messages to OwO."
+})
 
 
 @register(outgoing=True, pattern="^-ship(?: |$)(.*)")
@@ -184,6 +204,10 @@ async def ship(context):
             target_2 = await bot.get_me()
         await context.edit("**Generated couple**\n" + f"[{target_1.first_name}](tg://user?id={target_1.id})" + " + "
                            + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
+command_help.update({
+    "ship": "Parameter: -ship <user> <user>\
+    \nUsage: Ships random person, supports defining person to ship."
+})
 
 
 def last_replace(s, old, new):
@@ -314,34 +338,3 @@ def corrupt(text):
 def combine_with_diacritic(letter, diacritic_list):
     """ The fox. """
     return letter.strip() + diacritic_list[randrange(0, len(diacritic_list))].strip()
-
-
-command_help.update({
-    "animate": "Parameter: -animate <text>\
-    \nUsage: Animated text."
-})
-
-command_help.update({
-    "mock": "Parameter: -mock <text>\
-    \nUsage: Mock a string via weird caps."
-})
-
-command_help.update({
-    "widen": "Parameter: -widen <text>\
-    \nUsage: Widen every char in a string in a weird way."
-})
-
-command_help.update({
-    "fox": "Parameter: -fox <text>\
-    \nUsage: Make a fox corrupt your text."
-})
-
-command_help.update({
-    "owo": "Parameter: -owo <text>\
-    \nUsage: Converts messages to OwO."
-})
-
-command_help.update({
-    "ship": "Parameter: -ship <user> <user>\
-    \nUsage: Ships random person, supports defining person to ship."
-})

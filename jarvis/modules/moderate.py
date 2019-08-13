@@ -40,6 +40,10 @@ async def group_image(context):
                 await context.edit("`Image dimensions smaller than minimum requirements.`")
             except ImageProcessFailedError:
                 await context.edit("`Failed to process image.`")
+command_help.update({
+    "group_image": "Parameter: -group_image <image>\
+    \nUsage: Changes the group's pfp to the attachment."
+})
 
 
 @register(outgoing=True, pattern="^-admins$")
@@ -69,12 +73,6 @@ async def admins(context):
         except ChatAdminRequiredError as err:
             result += " " + str(err) + "\n"
         await context.edit(result)
-
-command_help.update({
-    "group_image": "Parameter: -group_image <image>\
-    \nUsage: Changes the group's pfp to the attachment."
-})
-
 command_help.update({
     "admins": "Parameter: -admins\
     \nUsage: Lists admins in the group."

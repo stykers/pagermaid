@@ -26,6 +26,10 @@ async def afk(context):
             await context.client.send_message(log_chatid, "User is afk, begin message logging.")
         await db_afk(reason)
         raise StopPropagation
+command_help.update({
+    "afk": "Parameter: -afk <text>\
+    \nUsage: Sets yourself to afk and enables message logging and auto response, a message cancels the status."
+})
 
 
 @register(outgoing=True)
@@ -128,9 +132,3 @@ def cleanup():
     global users
     count_msg = 0
     users = {}
-
-
-command_help.update({
-    "afk": "Parameter: -afk <text>\
-    \nUsage: Sets yourself to afk and enables message logging and auto response, a message cancels the status."
-})

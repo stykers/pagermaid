@@ -58,6 +58,10 @@ async def evaluate(context):
             await context.client.send_message(
                 log_chatid, f"Evaluated `{expression}` in the python interpreter."
             )
+command_help.update({
+    "evaluate": "Parameter: -evaluate <expression>>\
+    \nUsage: Evaluate an expression in the python interpreter."
+})
 
 
 @register(outgoing=True, pattern="^-sh(?: |$)(.*)")
@@ -129,6 +133,10 @@ async def sh(context):
                 log_chatid,
                 "Command `" + command + "` executed.",
             )
+command_help.update({
+    "sh": "Parameter: -sh <command>\
+    \nUsage: Executes a shell command."
+})
 
 
 @register(outgoing=True, pattern="^-pip(?: |$)(.*)")
@@ -177,6 +185,10 @@ async def pip(context):
                 )
         else:
             await context.edit("`Invalid argument.`")
+command_help.update({
+    "pip": "Parameter: -pip <module(s)>\
+    \nUsage: Searches pip for the requested modules."
+})
 
 
 @register(outgoing=True, pattern="^-shutdown$")
@@ -190,6 +202,10 @@ async def shutdown(context):
                 "Jarvis power off."
             )
         await context.client.disconnect()
+command_help.update({
+    "shutdown": "Parameter: -shutdown\
+    \nUsage: Shuts down Jarvis."
+})
 
 
 @register(outgoing=True, pattern="^-trace(?: |$)(.*)")
@@ -239,6 +255,10 @@ async def trace(context):
                 )
         else:
             await context.edit("`Invalid argument.`")
+command_help.update({
+    "trace": "Parameter: -trace <url>\
+    \nUsage: Traces redirect of a URL."
+})
 
 
 def url_tracer(url):
@@ -258,27 +278,7 @@ def url_tracer(url):
             break
 
 
-command_help.update({
-    "evaluate": "Parameter: -evaluate <expression>>\
-    \nUsage: Evaluate an expression in the python interpreter."
-})
 
-command_help.update({
-    "sh": "Parameter: -sh <command>\
-    \nUsage: Executes a shell command."
-})
 
-command_help.update({
-    "pip": "Parameter: -pip <module(s)>\
-    \nUsage: Searches pip for the requested modules."
-})
 
-command_help.update({
-    "shutdown": "Parameter: -shutdown\
-    \nUsage: Shuts down Jarvis."
-})
 
-command_help.update({
-    "trace": "Parameter: -trace <url>\
-    \nUsage: Traces redirect of a URL."
-})

@@ -108,6 +108,10 @@ async def sticker(context):
                 f"Sticker has been added to [this](t.me/addstickers/{packname}) pack.",
                 parse_mode='md'
             )
+command_help.update({
+    "sticker": "Parameter: -sticker <emoji>\
+    \nUsage: Collects image/sticker as sticker, specify emoji to set custom emoji."
+})
 
 
 async def resize_photo(photo):
@@ -133,13 +137,3 @@ async def resize_photo(photo):
         image.thumbnail(maxsize)
 
     return image
-
-
-command_help.update({
-    "sticker": "Parameter: -sticker\
-\nUsage: Reply -sticker to a sticker or an image to crop and add it to your pack.\
-\n\nParameter: -sticker [emoji(s)]\
-\nWorks just like -sticker but uses the emoji(s) in the parameter.\
-\n\nParameter: -sticker [id]\
-\nUsage: Adds the sticker to the specified pack but uses 👀 as emoji."
-})

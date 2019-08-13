@@ -62,6 +62,10 @@ async def genqr(context):
                 log_chatid, "Generated QR code for `" + message + "`."
             )
         await context.delete()
+command_help.update({
+    "genqr": "Parameter: -genqr <text>\
+    \nUsage: Generates a QR code sticker."
+})
 
 
 @register(pattern=r"^-parseqr$", outgoing=True)
@@ -96,12 +100,6 @@ async def parseqr(context):
                 await context.client.send_message(
                     log_chatid, "Attempted to parse non-encoded image as QR code."
                 )
-
-command_help.update({
-    "genqr": "Parameter: -genqr <text>\
-    \nUsage: Generates a QR code sticker."
-})
-
 command_help.update({
     "parseqr": "Parameter: -parseqr\
     \nUsage: Parse the attached QR code into plaintext."
