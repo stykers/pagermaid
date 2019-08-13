@@ -44,18 +44,22 @@ async def animate(context):
 async def mock(context):
     """ Mock people with weird caps. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
+        reply = await context.get_reply_message()
         message = context.pattern_match.group(1)
         if message:
             pass
-        elif text:
-            message = text.text
+        elif reply:
+            message = reply.text
         else:
             await context.edit("`Invalid arguments.`")
             return
 
-        result = mocker(message)
-        await context.edit(result)
+        reply_text = mocker(message)
+        if reply.sender.is_self:
+            await reply.edit(reply_text)
+            await context.delete()
+        else:
+            await context.edit(reply_text)
 
 
 @register(outgoing=True, pattern="^-widen(?: |$)(.*)")
@@ -84,12 +88,12 @@ async def widen(context):
 async def fox(context):
     """ Make a fox scratch your message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        text = await context.get_reply_message()
+        reply = await context.get_reply_message()
         message = context.pattern_match.group(1)
         if message:
             pass
-        elif text:
-            message = text.text
+        elif reply:
+            message = reply.text
         else:
             await context.edit(
                 "`Invalid arguments.`"
@@ -97,8 +101,12 @@ async def fox(context):
             return
 
         input_text = " ".join(message).lower()
-        corrupted_text = corrupt(input_text)
-        await context.edit(corrupted_text)
+        reply_text = corrupt(input_text)
+        if reply.sender.is_self:
+            await reply.edit(reply_text)
+            await context.delete()
+        else:
+            await context.edit(reply_text)
 
 
 @register(outgoing=True, pattern=r"^-owo(?: |$)([\s\S]*)")
