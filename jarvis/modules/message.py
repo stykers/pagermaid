@@ -286,12 +286,12 @@ command_help.update({
 })
 
 command_help.update({
-    "rng": "Parameter: -meter2feet <float>\
+    "meter2feet": "Parameter: -meter2feet <float>\
     \nUsage: Converts meter to feet."
 })
 
 command_help.update({
-    "rng": "Parameter: -feet2meter <float>\
+    "feet2meter": "Parameter: -feet2meter <float>\
     \nUsage: Converts feet to meter."
 })
 

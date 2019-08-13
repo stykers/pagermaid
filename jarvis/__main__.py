@@ -5,7 +5,7 @@ from sqlite3 import connect
 from sys import argv
 
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
-from jarvis import logs, bot, database_test
+from jarvis import logs, bot, database_test, command_help
 from jarvis.modules import all_modules
 
 db = connect("database.db")
@@ -28,7 +28,7 @@ except PhoneNumberInvalidError:
 for module_name in all_modules:
     imported_module = import_module("jarvis.modules." + module_name)
 
-logs.info("Jarvis has started, The prefix is -, type -help for help message.")
+logs.info("Jarvis have started, The prefix is -, type -help for help message.")
 
 if len(argv) not in (1, 3, 4):
     bot.disconnect()

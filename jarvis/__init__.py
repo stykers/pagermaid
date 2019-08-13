@@ -1,16 +1,15 @@
 """ Jarvis initialization. """
 
 import os
+import redis
 
 from sys import version_info
 from sys import platform
 from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
-
 from dotenv import load_dotenv
 from shutil import copyfile
 from telethon import TelegramClient
-import redis
 
 
 load_dotenv("config.env")
