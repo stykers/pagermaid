@@ -19,10 +19,13 @@ async def time(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         country = context.pattern_match.group(1).title()
         time_form = "%I:%M %p"
+        date_form = "%A %d/%m/%y"
         if not country:
             time_zone = await get_timezone(region)
             await context.edit(
-                f"**Time in {region}**\n`{datetime.now(time_zone).strftime(time_form)}`"
+                f"**Time in {region}**\n"
+                f"`{datetime.now(time_zone).strftime(date_form)} "
+                f"{datetime.now(time_zone).strftime(time_form)}`"
             )
             return
 
@@ -36,41 +39,12 @@ async def time(context):
         except KeyError:
             country_name = country
 
-        await context.edit(f"**Time in {country_name}**\n`{datetime.now(time_zone).strftime(time_form)}`")
+        await context.edit(f"**Time in {country_name}**\n"
+                           f"`{datetime.now(time_zone).strftime(date_form)} "
+                           f"{datetime.now(time_zone).strftime(time_form)}`")
 command_help.update({
     "time": "Parameter: -time <region>\
     \nUsage: Displays time of specific region, reads from config file if parameter is empty."
-})
-
-
-@register(outgoing=True, pattern="^-date(?: |$)(.*)")
-async def date(context):
-    """ For querying date. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        date_form = "%A, %d/%m/%y"
-        country = context.pattern_match.group(1).title()
-
-        if not country:
-            time_zone = await get_timezone(region)
-            await context.edit(
-                f"**Date in {region}**\n`{datetime.now(time_zone).strftime(date_form)}`"
-            )
-            return
-
-        time_zone = await get_timezone(country)
-        if not time_zone:
-            await context.edit("`Invalid parameter.`")
-            return
-
-        try:
-            country_name = country_names[country]
-        except KeyError:
-            country_name = country
-
-        await context.edit(f"**Date in {country_name}**\n`{datetime.now(time_zone).strftime(date_form)}`")
-command_help.update({
-    "date": "Parameter: -date <region>\
-    \nUsage: Displays date of specific region, reads from config file if parameter is empty."
 })
 
 
