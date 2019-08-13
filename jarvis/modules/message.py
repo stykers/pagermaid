@@ -286,6 +286,16 @@ command_help.update({
 })
 
 command_help.update({
+    "rng": "Parameter: -meter2feet <float>\
+    \nUsage: Converts meter to feet."
+})
+
+command_help.update({
+    "rng": "Parameter: -feet2meter <float>\
+    \nUsage: Converts feet to meter."
+})
+
+command_help.update({
     "source": "Parameter: -source\
     \nUsage: Prints the git repository URL."
 })
