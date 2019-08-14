@@ -260,7 +260,7 @@ async def feet2meter(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         feet = float(context.pattern_match.group(1))
         meter = feet * .3048
-        await context.edit("Converted " + str(feet) + " meters to " + str(meter) + " feet.")
+        await context.edit("Converted " + str(feet) + " feet to " + str(meter) + " meter.")
 command_help.update({
     "feet2meter": "Parameter: -feet2meter <float>\
     \nUsage: Converts feet to meter."
