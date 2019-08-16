@@ -9,7 +9,7 @@ from jarvis.events import register
 deliminators = ("/", ":", "|", "_")
 
 
-@register(outgoing=None, pattern="^s")
+@register(outgoing=True, pattern="^s")
 async def sed(context):
     """ Implements regex on telegram. """
     result = format_sed(context.text)
