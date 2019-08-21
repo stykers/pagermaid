@@ -31,24 +31,14 @@ async def meme(context):
         if target_file_path is None:
             await context.edit("`There are no attachment in target.`")
             return
-        command = "./utils/meme.sh \"" + \
-                  target_file_path + \
-                  "\" meme.png" + \
-                  " \"" + \
-                  str(string_1) + \
-                  "\" " + \
-                  "\"" + \
-                  str(string_2) + \
-                  "\""
-        execute = await async_run(
+        command = "./utils/meme.sh \"" + target_file_path + \
+                  "\" meme.png" + " \"" + str(string_1) + \
+                  "\" " + "\"" + str(string_2) + "\""
+        await async_run(
             command,
             stdout=PIPE,
             stderr=PIPE
         )
-
-        stdout, stderr = await execute.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
         try:
             await context.client.send_file(
                 context.chat_id,
