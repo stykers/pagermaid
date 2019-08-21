@@ -15,7 +15,7 @@ async def meme(context):
             return
         reply = await context.get_reply_message()
         reply_id = None
-        target_file_path = None
+        await context.edit("`Generating meme, please wait . . .`")
         if reply:
             reply_id = reply.id
             target_file_path = await context.client.download_media(
@@ -24,7 +24,6 @@ async def meme(context):
         else:
             target_file_path = await context.download_media()
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
-        await context.edit("`Generating meme, please wait . . .`")
         command = "./utils/meme.sh \"" + \
                   target_file_path + \
                   "\" meme.png" + \
