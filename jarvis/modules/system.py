@@ -265,8 +265,8 @@ command_help.update({
 async def contact(context):
     """ To contact the creator of Jarvis. """
     if not context.text[0].isalpha():
-        await context.edit("`A conversation have been opened, click [here](tg://user?id=503691334) to enter.`",
-                           parse_mode="html")
+        await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
+                           parse_mode="markdown")
         message = "Hi, I have encountered a problem with Jarvis."
         if context.pattern_match.group(1):
             message = context.pattern_match.group(1)
