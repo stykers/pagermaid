@@ -23,8 +23,10 @@ async def meme(context):
             )
         else:
             target_file_path = await context.download_media()
-        string_1, string_2 = context.pattern_match.group(1).split(',', 1)
-        if string_2 is None:
+        if ' ' in context.pattern_match.group(1):
+            string_1, string_2 = context.pattern_match.group(1).split(',', 1)
+        else:
+            string_1 = context.pattern_match.group(1)
             string_2 = " "
         if target_file_path is None:
             await context.edit("`There are no attachment in target.`")
