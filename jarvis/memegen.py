@@ -7,15 +7,14 @@ from jarvis import command_help, log, log_chatid
 from jarvis.events import register
 
 
-@register(pattern=r"^-meme(?: |$)([\s\S]*)", outgoing=True)
+@register(outgoing=True, pattern=r"^-meme(?: |$)([\s\S]*)")
 async def meme(context):
     """ Generates the meme. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
             return
         reply = await context.get_reply_message()
-        result = reply.id
-        input_string = context.pattern_match.group(1)
+        reply_id = reply.id
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
         target_file_path = await context.client.download_media(
             await context.get_reply_message()
@@ -43,11 +42,11 @@ async def meme(context):
                 await context.client.send_file(
                     context.chat_id,
                     "meme.png",
-                    reply_to=result
+                    reply_to=reply_id
                 )
                 await context.delete()
                 success = True
-                message = "Here's the generated meme."
+                message = string_1 + "` and `" + string_2
             except IndexError:
                 await context.edit("`Target is not a valid image.`")
                 success = False
