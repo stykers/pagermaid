@@ -24,6 +24,8 @@ async def meme(context):
         else:
             target_file_path = await context.download_media()
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
+        if target_file_path is None:
+            await context.edit("`There are no attachment in target.`")
         command = "./utils/meme.sh \"" + \
                   target_file_path + \
                   "\" meme.png" + \
@@ -49,7 +51,7 @@ async def meme(context):
                 reply_to=reply_id
             )
         except ValueError:
-            await context.edit("`Unsupported image type.`")
+            await context.edit("`An error occurred during the conversion.`")
             remove(target_file_path)
             return
         await context.delete()
@@ -62,5 +64,5 @@ async def meme(context):
             )
 command_help.update({
     "meme": "Parameter: -meme <image> <text>,<text>\
-    \nUsage: Generates a meme with specified image and text."
+    \nUsage: Generates a meme image with specified image and text."
 })
