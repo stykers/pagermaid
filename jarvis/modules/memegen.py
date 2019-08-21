@@ -23,7 +23,7 @@ async def meme(context):
             )
         else:
             target_file_path = await context.download_media()
-        if ' ' in context.pattern_match.group(1):
+        if ',' in context.pattern_match.group(1):
             string_1, string_2 = context.pattern_match.group(1).split(',', 1)
         else:
             string_1 = context.pattern_match.group(1)
