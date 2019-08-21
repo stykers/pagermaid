@@ -261,6 +261,24 @@ command_help.update({
 })
 
 
+@register(outgoing=True, pattern="^-contact(?: |$)(.*)")
+async def contact(context):
+    """ To contact the creator of Jarvis. """
+    if not context.text[0].isalpha():
+        await context.edit("`A conversation have been opened, click [here](tg://user?id=503691334) to enter.`")
+        message = "Hi, I have encountered a problem with Jarvis."
+        if context.pattern_match.group(1):
+            message = context.pattern_match.group(1)
+        await context.client.send_message(
+            "503691334",
+            message
+        )
+command_help.update({
+    "contact": "Parameter: -contact\
+    \nUsage: Contact the author."
+})
+
+
 def url_tracer(url):
     while True:
         yield url
@@ -276,9 +294,3 @@ def url_tracer(url):
             url = response.headers['location']
         else:
             break
-
-
-
-
-
-
