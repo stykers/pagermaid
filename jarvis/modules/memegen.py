@@ -51,6 +51,7 @@ async def meme(context):
         except ValueError:
             await context.edit("`Unsupported image type.`")
             remove(target_file_path)
+            return
         await context.delete()
         remove("meme.png")
         remove(target_file_path)
