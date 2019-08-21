@@ -34,11 +34,22 @@ async def meme(context):
         command = "./utils/meme.sh \"" + target_file_path + \
                   "\" meme.png" + " \"" + str(string_1) + \
                   "\" " + "\"" + str(string_2) + "\""
-        await async_run(
+        execute = await async_run(
             command,
             stdout=PIPE,
             stderr=PIPE
         )
+        stdout, stderr = await execute.communicate()
+        result = str(stdout.decode().strip()) \
+            + str(stderr.decode().strip())
+        if not result:
+            await context.edit("`Something wrong happened, please report this problem.`")
+            try:
+                remove("meme.png")
+                remove(target_file_path)
+            except FileNotFoundError:
+                pass
+            return
         try:
             await context.client.send_file(
                 context.chat_id,
