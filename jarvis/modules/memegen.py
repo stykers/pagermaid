@@ -26,6 +26,7 @@ async def meme(context):
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
         if target_file_path is None:
             await context.edit("`There are no attachment in target.`")
+            return
         command = "./utils/meme.sh \"" + \
                   target_file_path + \
                   "\" meme.png" + \
