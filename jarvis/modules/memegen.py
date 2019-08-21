@@ -61,6 +61,6 @@ async def meme(context):
                 log_chatid, "Meme generated with text `" + message + "`."
             )
 command_help.update({
-    "meme": "Parameter: -meme <image> <text>\
+    "meme": "Parameter: -meme <image> <text>,<text>\
     \nUsage: Generates a meme with specified image and text."
 })
