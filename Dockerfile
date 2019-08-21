@@ -29,6 +29,7 @@ RUN apk add --no-cache --update \
     python-dev \
     python3-dev \
     musl \
+    imagemagick \
     sqlite \
     figlet \
     libwebp-dev \
