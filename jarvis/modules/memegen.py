@@ -14,7 +14,9 @@ async def meme(context):
         if context.fwd_from:
             return
         reply = await context.get_reply_message()
-        reply_id = reply.id
+        reply_id = None
+        if reply:
+            reply_id = reply.id
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
         target_file_path = await context.client.download_media(
             await context.get_reply_message()
@@ -23,11 +25,11 @@ async def meme(context):
         command = "./utils/meme.sh \"" + \
                   target_file_path + \
                   "\" meme.png" + \
+                  " \"" + \
+                  str(string_1) + \
+                  "\" " + \
                   "\"" + \
-                  string_1 + \
-                  "\"" + \
-                  "\"" + \
-                  string_2 + \
+                  str(string_2) + \
                   "\""
         execute = await async_run(
             command,
