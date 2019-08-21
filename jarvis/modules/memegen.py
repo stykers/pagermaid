@@ -15,12 +15,15 @@ async def meme(context):
             return
         reply = await context.get_reply_message()
         reply_id = None
+        target_file_path = None
         if reply:
             reply_id = reply.id
+            target_file_path = await context.client.download_media(
+                await context.get_reply_message()
+            )
+        else:
+            target_file_path = await context.download_media()
         string_1, string_2 = context.pattern_match.group(1).split(',', 1)
-        target_file_path = await context.client.download_media(
-            await context.get_reply_message()
-        )
         await context.edit("`Generating meme, please wait . . .`")
         command = "./utils/meme.sh \"" + \
                   target_file_path + \
@@ -46,7 +49,8 @@ async def meme(context):
             reply_to=reply_id
         )
         await context.delete()
-        success = True
+        remove("meme.png")
+        remove(target_file_path)
         message = string_1 + "` and `" + string_2
         if log:
             await context.client.send_message(
