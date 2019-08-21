@@ -43,11 +43,15 @@ async def meme(context):
         stdout, stderr = await execute.communicate()
         result = str(stdout.decode().strip()) \
             + str(stderr.decode().strip())
-        await context.client.send_file(
-            context.chat_id,
-            "meme.png",
-            reply_to=reply_id
-        )
+        try:
+            await context.client.send_file(
+                context.chat_id,
+                "meme.png",
+                reply_to=reply_id
+            )
+        except ValueError:
+            await context.edit("`Unsupported image type.`")
+            remove(target_file_path)
         await context.delete()
         remove("meme.png")
         remove(target_file_path)
