@@ -1,17 +1,17 @@
 """ QR Code related utilities. """
 
-import os
-import pyqrcode
-
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register
+from os import remove
+from pyqrcode import create
 from pyzbar.pyzbar import decode
 from PIL import Image
+from jarvis import command_help, log, log_chatid
+from jarvis.events import register
 
 
 @register(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
 async def genqr(context):
     """ Generate QR codes. """
+    downloaded_file_name = None
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
             return
@@ -35,9 +35,9 @@ async def genqr(context):
                         message += media.decode("UTF-8") + "\n"
                     except UnicodeDecodeError:
                         await context.edit("`Unable to parse file as plaintext.`")
-                        os.remove(downloaded_file_name)
+                        remove(downloaded_file_name)
                         return
-                os.remove(downloaded_file_name)
+                remove(downloaded_file_name)
             else:
                 message = reply.message
         if message is None:
@@ -45,17 +45,17 @@ async def genqr(context):
             return
         await context.edit("`Generating QR code.`")
         try:
-            pyqrcode.create(message, error='L', mode='binary').png('qr.webp', scale=6)
+            create(message, error='L', mode='binary').png('qr.webp', scale=6)
         except UnicodeEncodeError:
             await context.edit("`Invalid characters in target string.`")
-            os.remove(downloaded_file_name)
+            remove(downloaded_file_name)
             return
         await context.client.send_file(
             context.chat_id,
             "qr.webp",
             reply_to=result
         )
-        os.remove("qr.webp")
+        remove("qr.webp")
         await context.delete()
         if log:
             await context.client.send_message(
@@ -86,7 +86,7 @@ async def parseqr(context):
                 await context.edit("`Target is not a QR code.`")
                 success = False
                 message = None
-            os.remove(target_file_path)
+            remove(target_file_path)
         except AttributeError:
             await context.edit("`Invalid argument.`")
             return

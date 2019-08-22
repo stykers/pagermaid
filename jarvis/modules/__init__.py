@@ -1,12 +1,12 @@
 """ Jarvis module init. """
 
-from jarvis import logs
 from os.path import dirname, basename, isfile
-import glob
+from glob import glob
+from jarvis import logs
 
 
 def __list_modules():
-    mod_paths = glob.glob(dirname(__file__) + "/*.py")
+    mod_paths = glob(dirname(__file__) + "/*.py")
     result = [
         basename(f)[:-3]
         for f in mod_paths

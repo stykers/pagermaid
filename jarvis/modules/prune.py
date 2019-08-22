@@ -4,6 +4,7 @@ from asyncio import sleep
 from telethon.errors import rpcbaseerrors
 from jarvis import log, log_chatid, command_help
 from jarvis.events import register
+from jarvis.utils import send_prune_notify as send_notify
 
 
 @register(outgoing=True, pattern="^-prune$")
@@ -25,12 +26,7 @@ async def prune(context):
 
             if msgs:
                 await context.client.delete_messages(chat, msgs)
-            notify = await context.client.send_message(
-                context.chat_id,
-                "Deleted "
-                + str(count)
-                + " messages.",
-            )
+            notify = send_notify(context, count)
 
             if log:
                 await context.client.send_message(
@@ -62,12 +58,7 @@ async def selfprune(context):
                 i = i + 1
                 await message.delete()
 
-            notification = await context.client.send_message(
-                context.chat_id,
-                "Deleted "
-                + str(count)
-                + " messages.",
-            )
+            notification = send_notify(context, count)
             if log:
                 await context.client.send_message(
                     log_chatid, "Deleted " +

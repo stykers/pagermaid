@@ -1,10 +1,11 @@
 """ Jarvis initialization. """
 
-import os
 import redis
 
 from sys import version_info
 from sys import platform
+from os import environ, remove
+from os.path import exists
 from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ from telethon import TelegramClient
 load_dotenv("config.env")
 
 
-debug = sb(os.environ.get("DEBUG", "False"))
+debug = sb(environ.get("DEBUG", "False"))
 if debug:
     basicConfig(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -38,9 +39,9 @@ else:
         "Your platform " + platform + " is not supported, please start the bot on Linux or BSD."
     )
 
-log_chatid = int(os.environ.get("LOG_CHATID", "0"))
+log_chatid = int(environ.get("LOG_CHATID", "0"))
 
-log = sb(os.environ.get(
+log = sb(environ.get(
     "LOG", "False"
 ))
 
@@ -50,15 +51,15 @@ if version_info[0] < 3 or version_info[1] < 6:
     )
     exit(1)
 
-if os.path.exists("database.db"):
-    os.remove("database.db")
+if exists("database.db"):
+    remove("database.db")
 else:
     logs.info("SQLite3 database file doesn't exist, generating...")
 
 copyfile("utils/database.db", "database.db")
 
-api_key = os.environ.get("API_KEY", None)
-api_hash = os.environ.get("API_HASH", None)
+api_key = environ.get("API_KEY", None)
+api_hash = environ.get("API_HASH", None)
 bot = TelegramClient("jarvis", api_key, api_hash, auto_reconnect=True)
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=3)

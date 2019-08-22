@@ -3,11 +3,6 @@
 from jarvis import command_help
 from jarvis.events import register
 
-command_help.update({
-    "help": "Parameter: -help <command>\
-    \nUsage: Shows a list of commands or help string of a single command."
-})
-
 
 @register(outgoing=True, pattern="^-help(?: |$)(.*)")
 async def help(context):
@@ -25,3 +20,7 @@ async def help(context):
                 result += "`" + str(i)
                 result += "`, "
             await context.edit(result[:-2] + "\n**Do \"-help <command>\" to view help for a specific command.**")
+command_help.update({
+    "help": "Parameter: -help <command>\
+    \nUsage: Shows a list of commands or help string of a single command."
+})

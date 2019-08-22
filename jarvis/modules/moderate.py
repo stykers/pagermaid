@@ -1,6 +1,5 @@
 """ Jarvis module to semi-automate moderation of a group. """
 
-from asyncio import sleep
 from telethon.errors import PhotoCropSizeSmallError, ImageProcessFailedError, ChatAdminRequiredError
 from telethon.tl.types import MessageMediaPhoto, ChannelParticipantsAdmins
 from telethon.tl.functions.channels import EditPhotoRequest
