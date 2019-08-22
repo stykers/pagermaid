@@ -172,7 +172,7 @@ async def status(context):
             f"Database Status: {db} \n"
             f"Kernel Version: {kernel} \n"
             f"Python Version: {python_version()} \n"
-            f"Library version: {telethon_version}"
+            f"Library version: {telethon_version.__version__}"
             "`"
         )
 command_help.update({
