@@ -1,8 +1,7 @@
 """ Module to add an image/sticker into your pack. """
 
-import io
-
 from urllib import request
+from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from jarvis import bot, command_help
 from jarvis.events import register
@@ -22,10 +21,10 @@ async def sticker(context):
         emojibypass = False
         if message and message.media:
             if isinstance(message.media, MessageMediaPhoto):
-                photo = io.BytesIO()
+                photo = BytesIO()
                 photo = await bot.download_media(message.photo, photo)
             elif "image" in message.media.document.mime_type.split('/'):
-                photo = io.BytesIO()
+                photo = BytesIO()
                 await bot.download_file(message.media.document, photo)
                 if (DocumentAttributeFilename(file_name='sticker.webp')
                         in message.media.document.attributes):
@@ -57,7 +56,7 @@ async def sticker(context):
                 request.Request(f'http://t.me/addstickers/{packname}')
             )
             htmlstr = response.read().decode("utf8").split('\n')
-            file = io.BytesIO()
+            file = BytesIO()
             file.name = "sticker.png"
             image.save(file, "PNG")
             if "  A <strong>Telegram</strong> user has created the <strong>Sticker&nbsp;Set</strong>." not in htmlstr:
