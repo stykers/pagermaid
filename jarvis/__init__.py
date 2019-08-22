@@ -59,7 +59,7 @@ copyfile("utils/database.db", "database.db")
 
 api_key = os.environ.get("API_KEY", None)
 api_hash = os.environ.get("API_HASH", None)
-bot = TelegramClient("jarvis", api_key, api_hash)
+bot = TelegramClient("jarvis", api_key, api_hash, auto_reconnect=True)
 
 redis = redis.StrictRedis(host='localhost', port=6379, db=3)
 
