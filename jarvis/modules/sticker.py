@@ -1,20 +1,19 @@
 """ Module to add an image/sticker into your pack. """
 
 import io
-import math
 
 from urllib import request
-from PIL import Image
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from jarvis import bot, command_help
 from jarvis.events import register
+from jarvis.utils import resize_photo
 
 
 # noinspection PyUnusedLocal
 @register(outgoing=True, pattern="^-sticker")
 async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
-    global emoji
+    emoji = None
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         user = await bot.get_me()
         if not user.username:
@@ -112,28 +111,3 @@ command_help.update({
     "sticker": "Parameter: -sticker <emoji>\
     \nUsage: Collects image/sticker as sticker, specify emoji to set custom emoji."
 })
-
-
-async def resize_photo(photo):
-    """ Photo resize to match sticker standards. """
-    image = Image.open(photo)
-    maxsize = (512, 512)
-    if (image.width and image.height) < 512:
-        size1 = image.width
-        size2 = image.height
-        if image.width > image.height:
-            scale = 512 / size1
-            size1new = 512
-            size2new = size2 * scale
-        else:
-            scale = 512 / size2
-            size1new = size1 * scale
-            size2new = 512
-        size1new = math.floor(size1new)
-        size2new = math.floor(size2new)
-        sizenew = (size1new, size2new)
-        image = image.resize(sizenew)
-    else:
-        image.thumbnail(maxsize)
-
-    return image

@@ -1,17 +1,16 @@
 """ This module contains utils to configure your account. """
 
-import os
-
+from os import makedirs, remove
+from os.path import isdir
 from telethon.errors import ImageProcessFailedError, PhotoCropSizeSmallError
 from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedError, AboutTooLongError, \
     FirstNameInvalidError, UsernameInvalidError
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
-from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageEntityMentionName
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
 from jarvis import command_help, bot
 from jarvis.events import register
+from jarvis.utils import generate_strings, fetch_user
 
 
 @register(outgoing=True, pattern="^-username (.*)")
@@ -79,7 +78,7 @@ async def pfp(context):
                 await bot(UploadProfilePhotoRequest(
                     await bot.upload_file(photo)
                 ))
-                os.remove(photo)
+                remove(photo)
                 await context.edit("`Profile picture has been updated.`")
             except PhotoCropSizeSmallError:
                 await context.edit("`The image dimensions are smaller than minimum requirement.`")
@@ -152,8 +151,8 @@ async def profile(context):
 
     await context.edit("`Generating user profile summary . . .`")
 
-    if not os.path.isdir("./"):
-        os.makedirs("./")
+    if not isdir("./"):
+        makedirs("./")
 
     replied_user = await fetch_user(context)
 
@@ -175,7 +174,7 @@ async def profile(context):
         )
 
         if not photo.startswith("http"):
-            os.remove(photo)
+            remove(photo)
         await context.delete()
 
     except TypeError:
@@ -184,76 +183,3 @@ command_help.update({
     "profile": "Parameter: -profile <user>\
     \nUsage: Shows user profile in a large message."
 })
-
-
-async def fetch_user(target):
-    """ Fetch information of the target user. """
-    if target.reply_to_msg_id:
-        previous_message = await target.get_reply_message()
-        replied_user = await target.client(GetFullUserRequest(previous_message.from_id))
-    else:
-        user = target.pattern_match.group(1)
-
-        if user.isnumeric():
-            user = int(user)
-
-        if not user:
-            self_user = await target.client.get_me()
-            user = self_user.id
-
-        if target.message.entities is not None:
-            probable_user_mention_entity = target.message.entities[0]
-
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                replied_user = await target.client(GetFullUserRequest(user_id))
-                return replied_user
-        try:
-            user_object = await target.client.get_entity(user)
-            replied_user = await target.client(GetFullUserRequest(user_object.id))
-        except (TypeError, ValueError) as err:
-            await target.edit(str(err))
-            return None
-
-    return replied_user
-
-
-async def generate_strings(replied_user, event):
-    """ Generates the needed strings for a user. """
-    user_id = replied_user.user.id
-    first_name = replied_user.user.first_name
-    last_name = replied_user.user.last_name
-    common_chat = replied_user.common_chats_count
-    user_name = replied_user.user.username
-    user_bio = replied_user.about
-    is_bot = replied_user.user.bot
-    restricted = replied_user.user.restricted
-    verified = replied_user.user.verified
-    photo = await event.client.download_profile_photo(
-        user_id,
-        "./" + str(user_id) + ".jpg",
-        download_big=True
-    )
-    first_name = first_name.replace("\u2060", "") if first_name else (
-        "This user does not have a first name.")
-    last_name = last_name.replace("\u2060", "") if last_name else (
-        "This user does not have a last name.")
-    user_name = "@{}".format(user_name) if user_name else (
-        "This user does not have a username.")
-    user_bio = "This user has no bio." if not user_bio else user_bio
-
-    caption = "**Profile:** \n"
-    caption += f"First Name: {first_name} \n"
-    caption += f"Last Name: {last_name} \n"
-    caption += f"Username: {user_name} \n"
-    caption += f"Bot: {is_bot} \n"
-    caption += f"Restricted: {restricted} \n"
-    caption += f"Verified: {verified} \n"
-    caption += f"ID: `{user_id}` \n \n"
-    caption += f"Bio: `{user_bio}` \n \n"
-    caption += f"Common Chats: {common_chat} \n"
-    caption += f"Permanent Link: "
-    caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \
-        if last_name is not "This user does not have a " \
-                            "last name." else f"[{first_name}](tg://user?id={user_id})"
-    return photo, caption

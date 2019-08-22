@@ -9,9 +9,10 @@ from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from platform import python_version, uname
 from shutil import which
-from telethon import __version__ as telethon_version
+from telethon import version as telethon_version
 from jarvis import command_help, redis_check
 from jarvis.events import register
+from jarvis.utils import unit_convert
 
 hostname = uname().node
 kernel = uname().release
@@ -183,6 +184,7 @@ command_help.update({
 @register(outgoing=True, pattern="^-speed$")
 async def speed(context):
     """ Tests internet speed using speedtest. """
+    result = None
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("`Executing test scripts . . .`")
         test = speedtest.Speedtest()
@@ -237,19 +239,3 @@ command_help.update({
     "ping": "Parameter: -ping\
     \nUsage: Outputs your latency to telegram."
 })
-
-
-def unit_convert(byte):
-    """ Converts byte into readable formats. """
-    power = 2 ** 10
-    zero = 0
-    units = {
-        0: '',
-        1: 'Kb/s',
-        2: 'Mb/s',
-        3: 'Gb/s',
-        4: 'Tb/s'}
-    while byte > power:
-        byte /= power
-        zero += 1
-    return f"{round(byte, 2)} {units[zero]}"

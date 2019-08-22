@@ -1,16 +1,14 @@
 """ System related utilities for Jarvis to integrate into the system. """
 
-import asyncio
-import platform
-
-from requests import head
-from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from asyncio.subprocess import PIPE
+from asyncio import create_subprocess_shell as async_execute
+from platform import node
 from getpass import getuser
 from os import remove
 from os import geteuid
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register
+from jarvis.utils import url_tracer, attach_log
 
 
 @register(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
@@ -71,7 +69,7 @@ async def sh(context):
         user = getuser()
         command = context.pattern_match.group(1)
         uid = geteuid()
-        hostname = platform.node()
+        hostname = node()
         if context.is_channel and not context.is_group:
             await context.edit("`Current configuration disables shell execution in channel.`")
             return
@@ -91,7 +89,7 @@ async def sh(context):
                 f"\n> `$` {command}"
             )
 
-        process = await asyncio.create_subprocess_shell(
+        process = await async_execute(
             command,
             stdout=PIPE,
             stderr=PIPE
@@ -147,7 +145,7 @@ async def pip(context):
         if pipmodule:
             await context.edit("`Searching pip for module . . .`")
             command = f"pip search {pipmodule}"
-            execute = await asyncio.create_subprocess_shell(
+            execute = await async_execute(
                 command,
                 stdout=PIPE,
                 stderr=PIPE,
@@ -262,32 +260,3 @@ command_help.update({
     "contact": "Parameter: -contact <message>\
     \nUsage: Contact the author."
 })
-
-
-def url_tracer(url):
-    while True:
-        yield url
-        try:
-            response = head(url)
-        except MissingSchema:
-            break
-        except InvalidURL:
-            break
-        except ConnectionError:
-            break
-        if 300 < response.status_code < 400:
-            url = response.headers['location']
-        else:
-            break
-
-
-async def attach_log(context, result):
-    file = open("output.log", "w+")
-    file.write(result)
-    file.close()
-    await context.client.send_file(
-        context.chat_id,
-        "output.log",
-        reply_to=context.id,
-    )
-    remove("output.log")
