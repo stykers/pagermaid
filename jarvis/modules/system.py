@@ -160,15 +160,7 @@ async def pip(context):
             if result:
                 if len(result) > 4096:
                     await context.edit("`Output exceeded limit, attaching file.`")
-                    file = open("output.log", "w+")
-                    file.write(result)
-                    file.close()
-                    await context.client.send_file(
-                        context.chat_id,
-                        "output.log",
-                        reply_to=context.id,
-                    )
-                    remove("output.log")
+                    await attach_log(context, result)
                     return
                 await context.edit(
                     "**Command: **\n`"
@@ -235,15 +227,7 @@ async def trace(context):
             if result:
                 if len(result) > 4096:
                     await context.edit("`Output exceeded limit, attaching file.`")
-                    file = open("output.log", "w+")
-                    file.write(result)
-                    file.close()
-                    await context.client.send_file(
-                        context.chat_id,
-                        "output.log",
-                        reply_to=context.id,
-                    )
-                    remove("output.log")
+                    await attach_log(context, result)
                     return
                 await context.edit(
                     "Redirects:\n"
@@ -295,3 +279,15 @@ def url_tracer(url):
             url = response.headers['location']
         else:
             break
+
+
+async def attach_log(context, result):
+    file = open("output.log", "w+")
+    file.write(result)
+    file.close()
+    await context.client.send_file(
+        context.chat_id,
+        "output.log",
+        reply_to=context.id,
+    )
+    remove("output.log")
