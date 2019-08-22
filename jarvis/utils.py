@@ -16,22 +16,37 @@ from pytz import timezone, country_timezones
 from jarvis import redis
 
 
-def url_tracer(url):
-    """ Method to trace URL redirects. """
-    while True:
-        yield url
-        try:
-            response = head(url)
-        except MissingSchema:
-            break
-        except InvalidURL:
-            break
-        except ConnectionError:
-            break
-        if 300 < response.status_code < 400:
-            url = response.headers['location']
-        else:
-            break
+async def db_afk(reason):
+    """ Sets user AFK data. """
+    redis.set('is_afk', reason)
+
+
+async def afk_reason():
+    """ Obtains user afk reason. """
+    return strb(redis.get('is_afk'))
+
+
+async def not_afk():
+    """ Clears afk status. """
+    redis.delete('is_afk')
+
+
+async def is_afk():
+    """ Checks if user is afk. """
+    to_check = redis.get('is_afk')
+    if to_check:
+        return True
+    else:
+        return False
+
+
+async def send_prune_notify(context, count):
+    await context.client.send_message(
+        context.chat_id,
+        "Deleted "
+        + str(count)
+        + " messages."
+    )
 
 
 async def attach_log(context, result):
@@ -45,6 +60,31 @@ async def attach_log(context, result):
         reply_to=context.id,
     )
     remove("output.log")
+
+
+async def get_timezone(target):
+    """ Returns timezone of the parameter in command. """
+    if "(Uk)" in target:
+        target = target.replace("Uk", "UK")
+    if "(Us)" in target:
+        target = target.replace("Us", "US")
+    if " Of " in target:
+        target = target.replace(" Of ", " of ")
+    if "(Western)" in target:
+        target = target.replace("(Western)", "(western)")
+    if "Minor Outlying Islands" in target:
+        target = target.replace("Minor Outlying Islands", "minor outlying islands")
+    if "Nl" in target:
+        target = target.replace("Nl", "NL")
+
+    for country_code in country_names:
+        if target == country_names[country_code]:
+            return timezone(country_timezones[country_code][0])
+    try:
+        if country_names[target]:
+            return timezone(country_timezones[target][0])
+    except KeyError:
+        return
 
 
 async def resize_photo(photo):
@@ -143,22 +183,6 @@ async def generate_strings(replied_user, event):
         if last_name is not "This user does not have a " \
                             "last name." else f"[{first_name}](tg://user?id={user_id})"
     return photo, caption
-
-
-def unit_convert(byte):
-    """ Converts byte into readable formats. """
-    power = 2 ** 10
-    zero = 0
-    units = {
-        0: '',
-        1: 'Kb/s',
-        2: 'Mb/s',
-        3: 'Gb/s',
-        4: 'Tb/s'}
-    while byte > power:
-        byte /= power
-        zero += 1
-    return f"{round(byte, 2)} {units[zero]}"
 
 
 def last_replace(s, old, new):
@@ -296,30 +320,6 @@ def strb(redis_string):
     return str(redis_string)[2:-1]
 
 
-async def is_afk():
-    """ Checks if user is afk. """
-    to_check = redis.get('is_afk')
-    if to_check:
-        return True
-    else:
-        return False
-
-
-async def db_afk(reason):
-    """ Sets user AFK data. """
-    redis.set('is_afk', reason)
-
-
-async def afk_reason():
-    """ Obtains user afk reason. """
-    return strb(redis.get('is_afk'))
-
-
-async def not_afk():
-    """ Clears afk status. """
-    redis.delete('is_afk')
-
-
 def format_sed(data):
     """ Separate sed arguments. """
     try:
@@ -371,40 +371,40 @@ def format_sed(data):
         pass
 
 
-async def send_prune_notify(context, count):
-    await context.client.send_message(
-        context.chat_id,
-        "Deleted "
-        + str(count)
-        + " messages."
-    )
-
-
 def clear_emojis(target):
     """ Removes all Emojis from provided string """
     return get_emoji_regexp().sub(u'', target)
 
 
-async def get_timezone(target):
-    """ Returns timezone of the parameter in command. """
-    if "(Uk)" in target:
-        target = target.replace("Uk", "UK")
-    if "(Us)" in target:
-        target = target.replace("Us", "US")
-    if " Of " in target:
-        target = target.replace(" Of ", " of ")
-    if "(Western)" in target:
-        target = target.replace("(Western)", "(western)")
-    if "Minor Outlying Islands" in target:
-        target = target.replace("Minor Outlying Islands", "minor outlying islands")
-    if "Nl" in target:
-        target = target.replace("Nl", "NL")
+def url_tracer(url):
+    """ Method to trace URL redirects. """
+    while True:
+        yield url
+        try:
+            response = head(url)
+        except MissingSchema:
+            break
+        except InvalidURL:
+            break
+        except ConnectionError:
+            break
+        if 300 < response.status_code < 400:
+            url = response.headers['location']
+        else:
+            break
 
-    for country_code in country_names:
-        if target == country_names[country_code]:
-            return timezone(country_timezones[country_code][0])
-    try:
-        if country_names[target]:
-            return timezone(country_timezones[target][0])
-    except KeyError:
-        return
+
+def unit_convert(byte):
+    """ Converts byte into readable formats. """
+    power = 2 ** 10
+    zero = 0
+    units = {
+        0: '',
+        1: 'Kb/s',
+        2: 'Mb/s',
+        3: 'Gb/s',
+        4: 'Tb/s'}
+    while byte > power:
+        byte /= power
+        zero += 1
+    return f"{round(byte, 2)} {units[zero]}"
