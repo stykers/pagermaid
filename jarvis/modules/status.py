@@ -120,32 +120,32 @@ async def version(context):
     """ Command to query the version of Jarvis. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if which("git") is not None:
-            invokever = "git describe --all --long"
+            command = "git describe --all --long"
             ver = await async_run(
-                invokever,
+                command,
                 stdout=PIPE,
                 stderr=PIPE,
             )
             stdout, stderr = await ver.communicate()
-            verout = str(stdout.decode().strip()) \
+            version_result = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
-            invokerev = "git rev-list --all --count"
+            command = "git rev-list --all --count"
             rev = await async_run(
-                invokerev,
+                command,
                 stdout=PIPE,
                 stderr=PIPE,
             )
             stdout, stderr = await rev.communicate()
-            revout = str(stdout.decode().strip()) \
+            revision_result = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
             await context.edit(
                 "`Jarvis Version: "
-                f"{verout}"
+                f"{version_result}"
                 "` \n"
                 "`Git Revision: "
-                f"{revout}"
+                f"{revision_result}"
                 "`"
             )
         else:

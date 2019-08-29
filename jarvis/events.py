@@ -1,6 +1,13 @@
 """ A jarvis class for event related stuff. """
 
+import traceback
+
 from telethon import events
+from time import gmtime, strftime
+from datetime import datetime
+from sys import exc_info
+from asyncio import create_subprocess_shell as async_run
+from asyncio.subprocess import PIPE
 from jarvis import bot
 
 
@@ -23,3 +30,47 @@ def register(**args):
         return func
 
     return decorator
+
+
+def diagnostics(context):
+    async def handler(exception):
+        try:
+            await context(exception)
+        except BaseException:
+            time_string = strftime("%H:%M %d/%m/%Y", gmtime())
+            command = "git rev-list --all --count"
+            rev = await async_run(
+                command,
+                stdout=PIPE,
+                stderr=PIPE,
+            )
+            stdout, stderr = await rev.communicate()
+            revision_result = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
+            create = {
+                'error': str(exc_info()[1]),
+                'date': datetime.now()
+            }
+            notification = "An error occurred while the server is interpreting this command. \n" \
+                           "If you want to help, forward the attached file and add contexts of \n" \
+                           "the error to the [tg://user?id=503691334](maintainer)."
+            report = "# Generated: " + time_string + ". \n" \
+                     "# ChatID: " + str(exception.chat_id) + ". \n" \
+                     "# UserID: " + str(exception.sender_id) + ". \n" \
+                     "# Message: " + "\n-----BEGIN TARGET MESSAGE-----\n" \
+                     "" + exception.text + "\n-----END TARGET MESSAGE-----\n" \
+                     "# Traceback: " + "\n-----BEGIN TRACEBACK-----\n" \
+                     "" + str(traceback.format_exc()) + "\n-----END TRACEBACK-----\n" \
+                     "# Error: \"" + str(exc_info()[1]) + "\". \n" \
+                     "# Revision: " + revision_result + "."
+            report_file = open("error_report.jarvis", "w+")
+            report_file.write(report)
+            report_file.close()
+
+            await context.client.send_file(
+                context.chat_id,
+                "error_report.jarvis",
+                caption=notification
+            )
+            return
+    return handler
