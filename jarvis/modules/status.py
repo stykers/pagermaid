@@ -1,18 +1,15 @@
 """ Module that show system info of the hardware the bot is running on. """
 
-import speedtest
-import os
-
+from os import remove
 from datetime import datetime
+from speedtest import Speedtest
 from telethon import functions
-from asyncio import create_subprocess_shell as async_run
-from asyncio.subprocess import PIPE
 from platform import python_version, uname
 from shutil import which
 from telethon import version as telethon_version
 from jarvis import command_help, redis_check
 from jarvis.events import register, diagnostics
-from jarvis.utils import unit_convert
+from jarvis.utils import unit_convert, execute
 
 
 hostname = uname().node
@@ -24,16 +21,7 @@ kernel = uname().release
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        command = "neofetch --stdout"
-        execute = await async_run(
-            command,
-            stdout=PIPE,
-            stderr=PIPE
-        )
-
-        stdout, stderr = await execute.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = await execute("neofetch --stdout")
         if result == "/bin/sh: neofetch: command not found":
             await context.edit("`Neofetch does not exist on this system.`")
             return
@@ -49,16 +37,7 @@ command_help.update({
 async def fortune(context):
     """ Reads a fortune cookie. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        command = "fortune"
-        execute = await async_run(
-            command,
-            stdout=PIPE,
-            stderr=PIPE
-        )
-
-        stdout, stderr = await execute.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = await execute("fortune")
         if result == "/bin/sh: fortune: command not found":
             await context.edit("`No fortune cookies on this system.`")
             return
@@ -75,29 +54,21 @@ async def tty(context):
     """ Screenshots a TTY and prints it. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("`Taking screenshot of framebuffer . . .`")
-        command = "fbdump | magick - image.png"
-        execute = await async_run(
-            command,
-            stdout=PIPE,
-            stderr=PIPE
-        )
         message_id_to_reply = context.message.reply_to_msg_id
         if not message_id_to_reply:
             message_id_to_reply = None
-        stdout, stderr = await execute.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = await execute("fbdump | magick - image.png")
         if result == "/bin/sh: fbdump: command not found":
             await context.edit("`fbdump does not exist on this system.`")
-            os.remove("image.png")
+            remove("image.png")
             return
         if result == "/bin/sh: convert: command not found":
             await context.edit("`ImageMagick does not exist on this system.`")
-            os.remove("image.png")
+            remove("image.png")
             return
         if result == "Failed to open /dev/fb0: Permission denied":
             await context.edit("`User not in video group.`")
-            os.remove("image.png")
+            remove("image.png")
             return
         try:
             await context.client.send_file(
@@ -112,7 +83,7 @@ async def tty(context):
             await context.edit("`File is not generated due to unexpected error.`")
             return
         await context.delete()
-        os.remove("image.png")
+        remove("image.png")
 command_help.update({
     "tty": "Parameter: -tty\
     \nUsage: Takes screenshot of a TTY."
@@ -125,25 +96,8 @@ async def version(context):
     """ Command to query the version of Jarvis. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if which("git") is not None:
-            command = "git describe --all --long"
-            ver = await async_run(
-                command,
-                stdout=PIPE,
-                stderr=PIPE,
-            )
-            stdout, stderr = await ver.communicate()
-            version_result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
-
-            command = "git rev-list --all --count"
-            rev = await async_run(
-                command,
-                stdout=PIPE,
-                stderr=PIPE,
-            )
-            stdout, stderr = await rev.communicate()
-            revision_result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+            version_result = await execute("git describe --all --long")
+            revision_result = await execute("git rev-list --all --count")
 
             await context.edit(
                 "`Jarvis Version: "
@@ -187,14 +141,14 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-speed$")
+@register(outgoing=True, pattern="^-speedtest$")
 @diagnostics
-async def speed(context):
+async def speedtest(context):
     """ Tests internet speed using speedtest. """
     result = None
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         await context.edit("`Executing test scripts . . .`")
-        test = speedtest.Speedtest()
+        test = Speedtest()
 
         test.get_best_server()
         test.download()

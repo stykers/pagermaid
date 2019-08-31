@@ -206,12 +206,9 @@ async def rng(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         try:
             length = context.pattern_match.group(1)
-            if length:
-                command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c " + length + " ; echo \'\'"
-            else:
-                command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c 64 ; echo \'\'"
-            result = await execute(command)
-
+            if not length:
+                length = 64
+            result = await execute(f"head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c {length} ; echo \'\'")
             await context.edit(result)
         except FileNotFoundError:
             await context.edit("`A util is missing.`")
@@ -228,15 +225,12 @@ async def slepkat(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         try:
             length = context.pattern_match.group(1)
-            if length:
-                command = "head -c 65536 /dev/urandom | tr -dc Zz | head -c " + length + " ; echo \'\'"
-            else:
-                command = "head -c 65536 /dev/urandom | tr -dc Zz | head -c 64 ; echo \'\'"
-            result = await execute(command)
-
+            if not length:
+                length = 64
+            result = await execute(f"head -c 65536 /dev/urandom | tr -dc Zz | head -c {length} ; echo \'\'")
             await context.edit(result)
         except FileNotFoundError:
-            await context.edit("`A util is missing.`")
+            await context.edit("`Kat didn't bring /usr/bin/head.`")
 command_help.update({
     "slepkat": "Parameter: -slepkat <integer>\
     \nUsage: Sleepykat simulator."

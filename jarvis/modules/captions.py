@@ -1,16 +1,15 @@
-""" Jarvis module for generating memes. """
+""" Jarvis module for adding captions to image. """
 
 from os import remove
-from asyncio import create_subprocess_shell as async_run
-from asyncio.subprocess import PIPE
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
+from jarvis.utils import execute
 
 
-@register(outgoing=True, pattern="^-meme(?: |$)(.*)")
+@register(outgoing=True, pattern="^-caption(?: |$)(.*)")
 @diagnostics
-async def meme(context):
-    """ Generates the meme. """
+async def caption(context):
+    """ Generates images with captions. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
             return
@@ -32,17 +31,9 @@ async def meme(context):
         if target_file_path is None:
             await context.edit("`There are no attachment in target.`")
             return
-        command = "./utils/meme.sh \"" + target_file_path + \
-                  "\" meme.png" + " \"" + str(string_1) + \
-                  "\" " + "\"" + str(string_2) + "\""
-        execute = await async_run(
-            command,
-            stdout=PIPE,
-            stderr=PIPE
-        )
-        stdout, stderr = await execute.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = await execute("./utils/meme.sh \"" + target_file_path +
+                               "\" meme.png" + " \"" + str(string_1) +
+                               "\" " + "\"" + str(string_2) + "\"")
         if not result:
             await context.edit("`Something wrong happened, please report this problem.`")
             try:
@@ -67,9 +58,9 @@ async def meme(context):
         message = string_1 + "` and `" + string_2
         if log:
             await context.client.send_message(
-                log_chatid, "Meme generated with text `" + message + "`."
+                log_chatid, "Captions `" + message + "` added to an image."
             )
 command_help.update({
-    "meme": "Parameter: -meme <image> <text>,<text>\
-    \nUsage: Generates a meme image with specified image and text."
+    "caption": "Parameter: -caption <text>,<text> <image>\
+    \nUsage: Adds two lines of captions to an image."
 })
