@@ -32,10 +32,10 @@ def register(**args):
     return decorator
 
 
-def diagnostics(context):
-    async def handler(exception):
+def diagnostics(function):
+    async def handler(context):
         try:
-            await context(exception)
+            await function(context)
         except BaseException:
             time_string = strftime("%H:%M %d/%m/%Y", gmtime())
             command = "git rev-list --all --count"
@@ -55,10 +55,10 @@ def diagnostics(context):
                            "If you want to help, forward the attached file and add contexts of \n" \
                            "the error to the [tg://user?id=503691334](maintainer)."
             report = "# Generated: " + time_string + ". \n" \
-                     "# ChatID: " + str(exception.chat_id) + ". \n" \
-                     "# UserID: " + str(exception.sender_id) + ". \n" \
+                     "# ChatID: " + str(context.chat_id) + ". \n" \
+                     "# UserID: " + str(context.sender_id) + ". \n" \
                      "# Message: " + "\n-----BEGIN TARGET MESSAGE-----\n" \
-                     "" + exception.text + "\n-----END TARGET MESSAGE-----\n" \
+                     "" + context.text + "\n-----END TARGET MESSAGE-----\n" \
                      "# Traceback: " + "\n-----BEGIN TRACEBACK-----\n" \
                      "" + str(traceback.format_exc()) + "\n-----END TRACEBACK-----\n" \
                      "# Error: \"" + str(exc_info()[1]) + "\". \n" \
