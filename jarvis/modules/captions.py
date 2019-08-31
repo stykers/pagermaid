@@ -15,7 +15,7 @@ async def caption(context):
             return
         reply = await context.get_reply_message()
         reply_id = None
-        await context.edit("`Generating meme, please wait . . .`")
+        await context.edit("`Rendering image, please wait . . .`")
         if reply:
             reply_id = reply.id
             target_file_path = await context.client.download_media(
