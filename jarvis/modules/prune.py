@@ -3,11 +3,12 @@
 from asyncio import sleep
 from telethon.errors import rpcbaseerrors
 from jarvis import log, log_chatid, command_help
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import send_prune_notify as send_notify
 
 
 @register(outgoing=True, pattern="^-prune$")
+@diagnostics
 async def prune(context):
     """ Purge every single message after the message you replied to. """
     try:
@@ -44,6 +45,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-selfprune")
+@diagnostics
 async def selfprune(context):
     """ Prune self message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -77,6 +79,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-delete$")
+@diagnostics
 async def delete(context):
     """ Deletes the replied message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -103,6 +106,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-edit")
+@diagnostics
 async def edit(context):
     """ Edits your last message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -126,6 +130,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-timed")
+@diagnostics
 async def timed(context):
     """ A timed message that deletes itself. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

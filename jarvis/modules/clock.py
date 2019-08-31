@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 from pytz import country_names
 from jarvis import command_help
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import get_timezone
 
 load_dotenv("config.env")
@@ -13,6 +13,7 @@ region = environ.get("APPLICATION_REGION", "United States")
 
 
 @register(outgoing=True, pattern="^-time(?: |$)(.*)")
+@diagnostics
 async def time(context):
     """ For querying time. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

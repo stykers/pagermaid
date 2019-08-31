@@ -4,10 +4,11 @@ from os import remove
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from jarvis import command_help, log, log_chatid
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-meme(?: |$)(.*)")
+@diagnostics
 async def meme(context):
     """ Generates the meme. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

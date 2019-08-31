@@ -16,6 +16,22 @@ from pytz import timezone, country_timezones
 from jarvis import redis
 
 
+async def changelog_gen(repo, diff):
+    result = ''
+    d_form = "%d/%m/%y"
+    for c in repo.iter_commits(diff):
+        result += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
+    return result
+
+
+async def branch_check(branch):
+    official = ['master', 'staging']
+    for k in official:
+        if k == branch:
+            return 1
+    return
+
+
 async def db_afk(reason):
     """ Sets user AFK data. """
     redis.set('is_afk', reason)

@@ -11,14 +11,16 @@ from platform import python_version, uname
 from shutil import which
 from telethon import version as telethon_version
 from jarvis import command_help, redis_check
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import unit_convert
+
 
 hostname = uname().node
 kernel = uname().release
 
 
 @register(outgoing=True, pattern="^-sysinfo$")
+@diagnostics
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -43,6 +45,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-fortune$")
+@diagnostics
 async def fortune(context):
     """ Reads a fortune cookie. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -67,6 +70,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-tty$")
+@diagnostics
 async def tty(context):
     """ Screenshots a TTY and prints it. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -116,6 +120,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-version$")
+@diagnostics
 async def version(context):
     """ Command to query the version of Jarvis. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -159,6 +164,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-status$")
+@diagnostics
 async def status(context):
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if not redis_check():
@@ -182,6 +188,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-speed$")
+@diagnostics
 async def speed(context):
     """ Tests internet speed using speedtest. """
     result = None
@@ -212,6 +219,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-connection$")
+@diagnostics
 async def connection(context):
     """ Shows connection info. """
     datacenter = await context.client(functions.help.GetNearestDcRequest())
@@ -227,6 +235,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-ping$")
+@diagnostics
 async def ping(context):
     """ Calculates the latency of the bot host. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

@@ -4,11 +4,12 @@ from asyncio import sleep
 from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from jarvis import command_help, bot
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import mocker, corrupt, owoifier
 
 
 @register(pattern='-animate(?: |$)(.*)')
+@diagnostics
 async def animate(context):
     """ Command for animated texts. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -40,6 +41,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-mock(?: |$)(.*)")
+@diagnostics
 async def mock(context):
     """ Mock people with weird caps. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -71,6 +73,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-widen(?: |$)(.*)")
+@diagnostics
 async def widen(context):
     """ Make texts weirdly wide. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -102,6 +105,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-fox(?: |$)(.*)")
+@diagnostics
 async def fox(context):
     """ Make a fox scratch your message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -135,6 +139,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-owo(?: |$)([\s\S]*)")
+@diagnostics
 async def owo(context):
     """ Makes messages become owo. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -170,6 +175,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-ship(?: |$)(.*)")
+@diagnostics
 async def ship(context):
     """ Ship randomly generated members. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

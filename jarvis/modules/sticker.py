@@ -4,12 +4,13 @@ from urllib import request
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from jarvis import bot, command_help
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import resize_photo
 
 
 # noinspection PyUnusedLocal
 @register(outgoing=True, pattern="^-sticker")
+@diagnostics
 async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
     emoji = None

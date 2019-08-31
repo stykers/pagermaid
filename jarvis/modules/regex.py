@@ -3,11 +3,12 @@
 from sre_constants import error as sre_err
 from re import match, sub, I, IGNORECASE
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import format_sed
 
 
 @register(outgoing=True, pattern="^s")
+@diagnostics
 async def sed(context):
     """ Implements regex on telegram. """
     result = format_sed(context.text)

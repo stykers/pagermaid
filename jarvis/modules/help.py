@@ -1,10 +1,11 @@
 """ The help module. """
 
 from jarvis import command_help
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-help(?: |$)(.*)")
+@diagnostics
 async def help(context):
     """ The help command,"""
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

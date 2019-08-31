@@ -4,10 +4,11 @@ from telethon.errors import PhotoCropSizeSmallError, ImageProcessFailedError, Ch
 from telethon.tl.types import MessageMediaPhoto, ChannelParticipantsAdmins
 from telethon.tl.functions.channels import EditPhotoRequest
 from jarvis import command_help, log, log_chatid, bot, redis_check
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-group_image$")
+@diagnostics
 async def group_image(context):
     """ Sets image of a group. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -46,6 +47,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-admins$")
+@diagnostics
 async def admins(context):
     """ Lists admins of the group chat. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

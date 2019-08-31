@@ -7,11 +7,12 @@ from getpass import getuser
 from os import remove
 from os import geteuid
 from jarvis import command_help, log, log_chatid
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import url_tracer, attach_log
 
 
 @register(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
+@diagnostics
 async def evaluate(context):
     """ Evaluate a python expression. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -63,6 +64,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-sh(?: |$)(.*)")
+@diagnostics
 async def sh(context):
     """ For calling a binary from the shell. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -138,13 +140,14 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-pip(?: |$)(.*)")
+@diagnostics
 async def pip(context):
     """ Search pip for module. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        pipmodule = context.pattern_match.group(1)
-        if pipmodule:
+        target = context.pattern_match.group(1)
+        if target:
             await context.edit("`Searching pip for module . . .`")
-            command = f"pip search {pipmodule}"
+            command = f"pip search {target}"
             execute = await async_execute(
                 command,
                 stdout=PIPE,
@@ -182,6 +185,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-shutdown$")
+@diagnostics
 async def shutdown(context):
     """ To re-execute Jarvis. """
     if not context.text[0].isalpha():
@@ -199,6 +203,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-trace(?: |$)(.*)")
+@diagnostics
 async def trace(context):
     """ Trace URL redirects. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -244,6 +249,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-contact(?: |$)(.*)")
+@diagnostics
 async def contact(context):
     """ To contact the creator of Jarvis. """
     if not context.text[0].isalpha():

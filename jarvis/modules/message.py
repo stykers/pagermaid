@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from jarvis import command_help, bot, log, log_chatid
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log
 
 load_dotenv("config.env")
@@ -17,6 +17,7 @@ lang = environ.get("APPLICATION_LANGUAGE", "en")
 
 
 @register(outgoing=True, pattern="^-userid$")
+@diagnostics
 async def userid(context):
     """ Queries the userid of a user. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -51,6 +52,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-chatid$")
+@diagnostics
 async def chatid(context):
     """ Queries the chatid of the chat you are in. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -62,6 +64,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
+@diagnostics
 async def log(context):
     """ Forwards a message into log group """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -86,6 +89,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-leave$")
+@diagnostics
 async def leave(context):
     """ It leaves you from the group. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -101,6 +105,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
+@diagnostics
 async def translate(context):
     """ Jarvis universal translator. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -148,6 +153,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-tts(?: |$)([\s\S]*)")
+@diagnostics
 async def tts(context):
     """ Send TTS stuff as voice message. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -196,6 +202,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-rng(?: |$)(.*)")
+@diagnostics
 async def rng(context):
     """ Automates keyboard spamming. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -225,6 +232,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-meter2feet(?: |$)(.*)")
+@diagnostics
 async def meter2feet(context):
     """ Converts meter to feet. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -238,6 +246,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-feet2meter(?: |$)(.*)")
+@diagnostics
 async def feet2meter(context):
     """ Converts feet to meter. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -251,6 +260,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-source$")
+@diagnostics
 async def source(context):
     """ Prints the git repository URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -262,6 +272,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-site$")
+@diagnostics
 async def site(context):
     """ Outputs the site URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):

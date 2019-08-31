@@ -1,12 +1,13 @@
 """ Jarvis auto-response for when you are AFK. """
 
 from telethon.events import StopPropagation
-from jarvis import log, log_chatid, command_help, count_msg, users, redis_check
-from jarvis.events import register
+from jarvis import log, log_chatid, command_help, redis_check
+from jarvis.events import register, diagnostics
 from jarvis.utils import afk_reason, is_afk, not_afk, db_afk
 
 
 @register(outgoing=True, pattern="^-afk")
+@diagnostics
 async def afk(context):
     """ To set yourself as afk. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -32,6 +33,7 @@ command_help.update({
 
 
 @register(outgoing=True)
+@diagnostics
 async def back(context):
     if not redis_check():
         return
@@ -66,6 +68,7 @@ async def back(context):
 
 
 @register(incoming=True, disable_edited=True)
+@diagnostics
 async def mention_respond(context):
     """ Auto-respond to mentions. """
     global count_msg
@@ -97,6 +100,7 @@ async def mention_respond(context):
 
 
 @register(incoming=True)
+@diagnostics
 async def afk_on_pm(context):
     global count_msg
     if not redis_check():

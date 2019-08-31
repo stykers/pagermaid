@@ -9,11 +9,12 @@ from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRe
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
 from jarvis import command_help, bot
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 from jarvis.utils import generate_strings, fetch_user
 
 
 @register(outgoing=True, pattern="^-username (.*)")
+@diagnostics
 async def username(context):
     """ Reconfigure your username. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -34,6 +35,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-name")
+@diagnostics
 async def name(context):
     """ Updates your display name. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -60,6 +62,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-pfp$")
+@diagnostics
 async def pfp(context):
     """ Sets your profile picture. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -93,6 +96,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-bio (.*)")
+@diagnostics
 async def bio(context):
     """ Sets your bio. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -110,6 +114,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-rm_pfp")
+@diagnostics
 async def rm_pfp(context):
     """ Removes your profile picture. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
@@ -144,6 +149,7 @@ command_help.update({
 
 
 @register(pattern="-profile(?: |$)(.*)", outgoing=True)
+@diagnostics
 async def profile(context):
     """ Queries profile of a user. """
     if context.fwd_from:

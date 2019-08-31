@@ -5,25 +5,11 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
 from jarvis import command_help, log, log_chatid
-from jarvis.events import register
+from jarvis.events import register, diagnostics
+from jarvis.utils import changelog_gen, branch_check
 
 
-async def changelog_gen(repo, diff):
-    result = ''
-    d_form = "%d/%m/%y"
-    for c in repo.iter_commits(diff):
-        result += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
-    return result
-
-
-async def official_check(branch):
-    official = ['master', 'staging']
-    for k in official:
-        if k == branch:
-            return 1
-    return
-
-
+@diagnostics
 @register(outgoing=True, pattern="^-update(?: |$)(.*)")
 async def upstream(context):
     await context.edit("`Checking remote origin for updates . . .`")
@@ -43,7 +29,7 @@ async def upstream(context):
         return
 
     active_branch = repo.active_branch.name
-    if not await official_check(active_branch):
+    if not await branch_check(active_branch):
         await context.edit(
             f"This branch is not being maintained: {active_branch}.")
         return

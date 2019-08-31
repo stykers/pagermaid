@@ -5,10 +5,11 @@ from pyqrcode import create
 from pyzbar.pyzbar import decode
 from PIL import Image
 from jarvis import command_help, log, log_chatid
-from jarvis.events import register
+from jarvis.events import register, diagnostics
 
 
 @register(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
+@diagnostics
 async def genqr(context):
     """ Generate QR codes. """
     downloaded_file_name = None
@@ -69,6 +70,7 @@ command_help.update({
 
 
 @register(pattern=r"^-parseqr$", outgoing=True)
+@diagnostics
 async def parseqr(context):
     """ Parse QR code into plaintext. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
