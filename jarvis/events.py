@@ -51,8 +51,8 @@ def diagnostics(function):
             #     'error': str(exc_info()[1]),
             #     'date': datetime.now()
             # }
-            notification = "An error occurred while the server is interpreting this command. \n" \
-                           "If you want to help, forward the attached file and add contexts of \n" \
+            notification = "An error occurred while the server is interpreting this command." \
+                           "If you want to help, forward the attached file and add contexts of" \
                            "the error to the [maintainer](tg://user?id=503691334)."
             report = "# Generated: " + time_string + ". \n" \
                      "# ChatID: " + str(context.chat_id) + ". \n" \
