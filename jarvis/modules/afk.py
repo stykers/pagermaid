@@ -35,6 +35,7 @@ command_help.update({
 @register(outgoing=True)
 @diagnostics
 async def back(context):
+    global count_msg
     if not redis_check():
         return
     afk_query = await is_afk()

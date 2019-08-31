@@ -6,6 +6,7 @@ from telethon import events
 from time import gmtime, strftime
 from os import remove
 from sys import exc_info
+from telethon.events import StopPropagation
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from jarvis import bot
@@ -36,6 +37,8 @@ def diagnostics(function):
     async def handler(context):
         try:
             await function(context)
+        except StopPropagation:
+            pass
         except BaseException:
             time_string = strftime("%H:%M %d/%m/%Y", gmtime())
             command = "git rev-list --all --count"
