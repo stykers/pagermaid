@@ -4,6 +4,7 @@ config.env
 database.db
 jarvis.session
 jarvis.session-journal
+*.rewrite.py
 __pycache__/*
 jarvis/__pycache__/*
 jarvis/modules/__pycache__/*
