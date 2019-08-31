@@ -47,10 +47,10 @@ def diagnostics(function):
             stdout, stderr = await rev.communicate()
             revision_result = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
-            create = {
-                'error': str(exc_info()[1]),
-                'date': datetime.now()
-            }
+            # create = {
+            #     'error': str(exc_info()[1]),
+            #     'date': datetime.now()
+            # }
             notification = "An error occurred while the server is interpreting this command. \n" \
                            "If you want to help, forward the attached file and add contexts of \n" \
                            "the error to the [maintainer](tg://user?id=503691334)."
