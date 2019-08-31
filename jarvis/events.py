@@ -4,7 +4,7 @@ import traceback
 
 from telethon import events
 from time import gmtime, strftime
-from datetime import datetime
+from os import remove
 from sys import exc_info
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
@@ -72,5 +72,6 @@ def diagnostics(function):
                 "error_report.jarvis",
                 caption=notification
             )
+            remove("error_report.jarvis")
             return
     return handler
