@@ -10,7 +10,7 @@ from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log
+from jarvis.utils import clear_emojis, attach_log, execute
 
 load_dotenv("config.env")
 lang = environ.get("APPLICATION_LANGUAGE", "en")
@@ -212,15 +212,7 @@ async def rng(context):
                 command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c " + length + " ; echo \'\'"
             else:
                 command = "head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c 64 ; echo \'\'"
-            execute = await async_run(
-                command,
-                stdout=PIPE,
-                stderr=PIPE
-            )
-
-            stdout, stderr = await execute.communicate()
-            result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+            result = await execute(command)
 
             await context.edit(result)
         except FileNotFoundError:
@@ -228,6 +220,28 @@ async def rng(context):
 command_help.update({
     "rng": "Parameter: -rng <integer>\
     \nUsage: Automates keyboard spamming."
+})
+
+
+@register(outgoing=True, pattern="^-slepkat(?: |$)(.*)")
+@diagnostics
+async def slepkat(context):
+    """ Sleepykat simulator. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        try:
+            length = context.pattern_match.group(1)
+            if length:
+                command = "head -c 65536 /dev/urandom | tr -dc Zz | head -c " + length + " ; echo \'\'"
+            else:
+                command = "head -c 65536 /dev/urandom | tr -dc Zz | head -c 64 ; echo \'\'"
+            result = await execute(command)
+
+            await context.edit(result)
+        except FileNotFoundError:
+            await context.edit("`A util is missing.`")
+command_help.update({
+    "slepkat": "Parameter: -slepkat <integer>\
+    \nUsage: Sleepykat simulator."
 })
 
 

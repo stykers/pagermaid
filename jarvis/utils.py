@@ -13,7 +13,22 @@ from pytz import country_names
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from pytz import timezone, country_timezones
+from asyncio import create_subprocess_shell
+from asyncio.subprocess import PIPE
 from jarvis import redis
+
+
+async def execute(command):
+    executor = await create_subprocess_shell(
+        command,
+        stdout=PIPE,
+        stderr=PIPE
+    )
+
+    stdout, stderr = await executor.communicate()
+    result = str(stdout.decode().strip()) \
+           + str(stderr.decode().strip())
+    return result
 
 
 async def changelog_gen(repo, diff):
