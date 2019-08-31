@@ -1,14 +1,12 @@
 """ System related utilities for Jarvis to integrate into the system. """
 
-from asyncio.subprocess import PIPE
-from asyncio import create_subprocess_shell as async_execute
 from platform import node
 from getpass import getuser
 from os import remove
 from os import geteuid
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import url_tracer, attach_log
+from jarvis.utils import url_tracer, attach_log, execute
 
 
 @register(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
@@ -91,14 +89,7 @@ async def sh(context):
                 f"\n> `$` {command}"
             )
 
-        process = await async_execute(
-            command,
-            stdout=PIPE,
-            stderr=PIPE
-        )
-        stdout, stderr = await process.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = await execute(command)
 
         if result:
             if len(result) > 4096:
@@ -148,15 +139,7 @@ async def pip(context):
         if target:
             await context.edit("`Searching pip for module . . .`")
             command = f"pip search {target}"
-            execute = await async_execute(
-                command,
-                stdout=PIPE,
-                stderr=PIPE,
-            )
-
-            stdout, stderr = await execute.communicate()
-            result = str(stdout.decode().strip()) \
-                + str(stderr.decode().strip())
+            result = await execute(command)
 
             if result:
                 if len(result) > 4096:

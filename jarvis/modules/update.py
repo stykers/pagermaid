@@ -3,7 +3,6 @@
 from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
-
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import changelog_gen, branch_check

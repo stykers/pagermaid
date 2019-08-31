@@ -6,8 +6,6 @@ from os import remove
 from gtts import gTTS
 from telethon import functions
 from dotenv import load_dotenv
-from asyncio import create_subprocess_shell as async_run
-from asyncio.subprocess import PIPE
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log, execute
