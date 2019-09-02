@@ -167,7 +167,7 @@ async def speedtest(context):
                        "ISP "
                        f"`{result['client']['isp']}`")
 command_help.update({
-    "speed": "Parameter: -speed\
+    "speedtest": "Parameter: -speedtest\
     \nUsage: Execute the speedtest script and outputs your internet speed."
 })
 
