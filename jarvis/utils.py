@@ -83,7 +83,7 @@ async def is_afk():
 
 
 async def send_prune_notify(context, count):
-    await context.client.send_message(
+    return await context.client.send_message(
         context.chat_id,
         "Deleted "
         + str(count)

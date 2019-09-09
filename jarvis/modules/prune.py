@@ -27,7 +27,7 @@ async def prune(context):
 
             if msgs:
                 await context.client.delete_messages(chat, msgs)
-            notify = send_notify(context, count)
+            notification = await send_notify(context, count)
 
             if log:
                 await context.client.send_message(
@@ -35,7 +35,7 @@ async def prune(context):
                                 str(count) + " messages."
                 )
             await sleep(3)
-            await notify.delete()
+            await notification.delete()
     except TypeError:
         await context.edit("`Please reply to a message.`")
 command_help.update({
@@ -60,7 +60,7 @@ async def selfprune(context):
                 i = i + 1
                 await message.delete()
 
-            notification = send_notify(context, count)
+            notification = await send_notify(context, count)
             if log:
                 await context.client.send_message(
                     log_chatid, "Deleted " +
@@ -70,8 +70,6 @@ async def selfprune(context):
             await notification.delete()
         except ValueError:
             await context.edit("`Invalid parameter.`")
-        except:
-            await context.edit("`An error occurred while the server is interpreting this command.`")
 command_help.update({
     "selfprune": "Parameter: -selfprune <integer>\
     \nUsage: Deletes your own messages."
@@ -146,8 +144,6 @@ async def timed(context):
                 await context.client.send_message(log_chatid, "Created timed message.")
         except ValueError:
             await context.edit("`Invalid parameter.`")
-        except:
-            await context.edit("`An error occurred while the server is interpreting this command.`")
 command_help.update({
     "timed": "Parameter: -timed <integer> <string>\
     \nUsage: Generate messages that deletes itself."
