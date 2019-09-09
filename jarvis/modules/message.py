@@ -8,7 +8,7 @@ from telethon import functions
 from dotenv import load_dotenv
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log, execute
+from jarvis.utils import clear_emojis, attach_log, execute, random_gen
 
 load_dotenv("config.env")
 lang = environ.get("APPLICATION_LANGUAGE", "en")
@@ -204,14 +204,7 @@ command_help.update({
 async def rng(context):
     """ Automates keyboard spamming. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        try:
-            length = context.pattern_match.group(1)
-            if not length:
-                length = 64
-            result = await execute(f"head -c 65536 /dev/urandom | tr -dc A-Za-z0-9 | head -c {length} ; echo \'\'")
-            await context.edit(result)
-        except FileNotFoundError:
-            await context.edit("`A util is missing.`")
+        await random_gen(context, "A-Za-z0-9")
 command_help.update({
     "rng": "Parameter: -rng <integer>\
     \nUsage: Automates keyboard spamming."
@@ -223,17 +216,22 @@ command_help.update({
 async def slepkat(context):
     """ Sleepykat simulator. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        try:
-            length = context.pattern_match.group(1)
-            if not length:
-                length = 64
-            result = await execute(f"head -c 65536 /dev/urandom | tr -dc Zz | head -c {length} ; echo \'\'")
-            await context.edit(result)
-        except FileNotFoundError:
-            await context.edit("`Kat didn't bring /usr/bin/head.`")
+        await random_gen(context, "Zz")
 command_help.update({
     "slepkat": "Parameter: -slepkat <integer>\
     \nUsage: Sleepykat simulator."
+})
+
+
+@register(outgoing=True, pattern="^-aaa(?: |$)(.*)")
+@diagnostics
+async def aaa(context):
+    """ Generates screams. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await random_gen(context, "Aa")
+command_help.update({
+    "aaa": "Parameter: -aaa <integer>\
+    \nUsage: Generates screams."
 })
 
 

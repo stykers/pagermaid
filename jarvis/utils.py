@@ -31,6 +31,17 @@ async def execute(command):
     return result
 
 
+async def random_gen(context, selection):
+    try:
+        length = context.pattern_match.group(1)
+        if not length:
+            length = 64
+        result = await execute(f"head -c 65536 /dev/urandom | tr -dc {selection} | head -c {length} ; echo \'\'")
+        await context.edit(result)
+    except FileNotFoundError:
+        await context.edit("`Kat didn't bring /usr/bin/head.`")
+
+
 async def changelog_gen(repo, diff):
     result = ''
     d_form = "%d/%m/%y"
