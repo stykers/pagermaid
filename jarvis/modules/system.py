@@ -168,7 +168,6 @@ command_help.update({
 
 
 @register(outgoing=True, pattern="^-shutdown$")
-@diagnostics
 async def shutdown(context):
     """ To re-execute Jarvis. """
     if not context.text[0].isalpha():
