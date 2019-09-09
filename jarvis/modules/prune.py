@@ -34,7 +34,7 @@ async def prune(context):
                     log_chatid, "Deleted " +
                                 str(count) + " messages."
                 )
-            await sleep(3)
+            await sleep(0.5)
             await notification.delete()
     except TypeError:
         await context.edit("`Please reply to a message.`")
@@ -66,7 +66,7 @@ async def selfprune(context):
                     log_chatid, "Deleted " +
                                 str(count) + " messages."
                 )
-            await sleep(3)
+            await sleep(0.5)
             await notification.delete()
         except ValueError:
             await context.edit("`Invalid parameter.`")
