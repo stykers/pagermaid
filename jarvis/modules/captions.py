@@ -92,8 +92,16 @@ async def ocr(context):
             except FileNotFoundError:
                 pass
             return
-        await context.edit(result)
+        success = False
+        if result == "/bin/sh: fbdump: command not found":
+            await context.edit("A utility is missing.")
+        else:
+            result = await execute(f"tesseract {target_file_path} stdout", False)
+            await context.edit(f"**Extracted text: **\n{result}")
+            success = True
         remove(target_file_path)
+        if not success:
+            return
         if log:
             await context.client.send_message(
                 log_chatid, "Performed OCR on an image."

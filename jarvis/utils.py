@@ -18,7 +18,7 @@ from asyncio.subprocess import PIPE
 from jarvis import redis
 
 
-async def execute(command):
+async def execute(command, pass_error=True):
     executor = await create_subprocess_shell(
         command,
         stdout=PIPE,
@@ -26,8 +26,11 @@ async def execute(command):
     )
 
     stdout, stderr = await executor.communicate()
-    result = str(stdout.decode().strip()) \
-           + str(stderr.decode().strip())
+    if pass_error:
+        result = str(stdout.decode().strip()) \
+                 + str(stderr.decode().strip())
+    else:
+        result = str(stdout.decode().strip())
     return result
 
 
