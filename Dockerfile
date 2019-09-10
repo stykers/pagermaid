@@ -5,6 +5,7 @@ RUN apk add --no-cache --update \
     git \
     dash \
     libffi-dev \
+    tesseract-ocr \
     openssl-dev \
     bzip2-dev \
     zlib-dev \
