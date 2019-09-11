@@ -8,7 +8,7 @@ from telethon import functions
 from dotenv import load_dotenv
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log, execute, random_gen
+from jarvis.utils import clear_emojis, attach_log, random_gen
 
 load_dotenv("config.env")
 lang = environ.get("APPLICATION_LANGUAGE", "en")
