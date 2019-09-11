@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /var/lib/jarvis
+source venv/bin/activate
+exec chpst -u jarvis:jarvis:wheel:tty:video /usr/bin/env python3 -m jarvis
