@@ -237,11 +237,11 @@ async def contact(context):
     if not context.text[0].isalpha():
         await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
                            parse_mode="markdown")
-        message = "Hi, I have encountered a problem with Jarvis."
+        message = "Hi, I would like to report something about Jarvis."
         if context.pattern_match.group(1):
             message = context.pattern_match.group(1)
         await context.client.send_message(
-            "503691334",
+            503691334,
             message
         )
 command_help.update({

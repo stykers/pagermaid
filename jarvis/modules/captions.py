@@ -31,13 +31,13 @@ async def caption(context):
         if target_file_path is None:
             await context.edit("`There are no attachment in target.`")
             return
-        result = await execute("./utils/meme.sh \"" + target_file_path +
-                               "\" meme.png" + " \"" + str(string_1) +
+        result = await execute("./utils/caption.sh \"" + target_file_path +
+                               "\" result.png" + " \"" + str(string_1) +
                                "\" " + "\"" + str(string_2) + "\"")
         if not result:
             await context.edit("`Something wrong happened, please report this problem.`")
             try:
-                remove("meme.png")
+                remove("result.png")
                 remove(target_file_path)
             except FileNotFoundError:
                 pass
@@ -45,7 +45,7 @@ async def caption(context):
         try:
             await context.client.send_file(
                 context.chat_id,
-                "meme.png",
+                "result.png",
                 reply_to=reply_id
             )
         except ValueError:
@@ -53,7 +53,7 @@ async def caption(context):
             remove(target_file_path)
             return
         await context.delete()
-        remove("meme.png")
+        remove("result.png")
         remove(target_file_path)
         message = string_1 + "` and `" + string_2
         if log:
