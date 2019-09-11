@@ -1,7 +1,7 @@
 """ Jarvis auto-response for when you are AFK. """
 
 from telethon.events import StopPropagation
-from jarvis import log, log_chatid, command_help, redis_check
+from jarvis import log, log_chatid, command_help, redis_check, count_msg, users
 from jarvis.events import register, diagnostics
 from jarvis.utils import afk_reason, is_afk, not_afk, db_afk
 
@@ -23,7 +23,10 @@ async def afk(context):
             reason = 'rest'
         await context.edit("Entering afk status.")
         if log:
-            await context.client.send_message(log_chatid, "User is afk, begin message logging.")
+            await context.client.send_message(
+                log_chatid,
+                "User is afk, begin message logging."
+            )
         await db_afk(reason)
         raise StopPropagation
 command_help.update({
