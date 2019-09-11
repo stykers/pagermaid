@@ -79,7 +79,7 @@ async def upstream(context):
         upstream_remote.git.reset('--hard')
         if log:
             await context.client.send_message(
-                log_chatid, "Update failed, resetting."
+                log_chatid, "Jarvis failed to update."
             )
         await context.edit(
             '`Updated with errors, Jarvis is restarting.`'
