@@ -121,40 +121,18 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-pip(?: |$)(.*)")
+@register(outgoing=True, pattern="^-upgrade_modules(?: |$)(.*)")
 @diagnostics
-async def pip(context):
-    """ Search pip for module. """
+async def upgrade_modules(context):
+    """ Upgrade pip modules. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        target = context.pattern_match.group(1)
-        if target:
-            await context.edit("`Searching pip for module . . .`")
-            command = f"pip search {target}"
-            result = await execute(command)
-
-            if result:
-                if len(result) > 4096:
-                    await context.edit("`Output exceeded limit, attaching file.`")
-                    await attach_log(context, result)
-                    return
-                await context.edit(
-                    "**Command: **\n`"
-                    f"{command}"
-                    "`\n**Output: **\n`"
-                    f"{result}"
-                    "`"
-                )
-            else:
-                await context.edit(
-                    "**Command: **\n`"
-                    f"{command}"
-                    "`\n**Output: **\n`No output.`"
-                )
-        else:
-            await context.edit("`Invalid argument.`")
+        await context.edit("`Installing updates . . .`")
+        result = await execute("pip install -r requirements.txt --upgrade")
+        await attach_log(context, result)
+        await context.edit("``Finished updating, restart if Jarvis is misbehaving.")
 command_help.update({
-    "pip": "Parameter: -pip <module(s)>\
-    \nUsage: Searches pip for the requested modules."
+    "upgrade_modules": "Parameter: -upgrade_modules\
+    \nUsage: Upgrades all modules if you are using a virtualenv."
 })
 
 
