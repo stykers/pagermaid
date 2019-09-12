@@ -129,7 +129,7 @@ async def upgrade_modules(context):
         await context.edit("`Installing updates . . .`")
         result = await execute("pip install -r requirements.txt --upgrade")
         await attach_log(context, result)
-        await context.edit("``Finished updating, restart if Jarvis is misbehaving.")
+        await context.edit("`Finished updating, restart if Jarvis is misbehaving.`")
 command_help.update({
     "upgrade_modules": "Parameter: -upgrade_modules\
     \nUsage: Upgrades all modules if you are using a virtualenv."
