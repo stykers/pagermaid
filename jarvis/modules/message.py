@@ -4,8 +4,8 @@ from os import environ
 from googletrans import Translator, LANGUAGES
 from os import remove
 from gtts import gTTS
-from telethon import functions
 from dotenv import load_dotenv
+from telethon.tl.functions.messages import DeleteChatUserRequest
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log, random_gen
@@ -91,9 +91,11 @@ command_help.update({
 async def leave(context):
     """ It leaves you from the group. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("Goodbye.")
+        await context.edit("Wasted my time, bye.")
         try:
-            await bot(functions.channels.LeaveChannelRequest(leave.chat_id))
+            await bot(DeleteChatUserRequest(chat_id=context.chat_id,
+                                            user_id=context.sender_id
+                                            ))
         except AttributeError:
             await context.edit("You are not in a group.")
 command_help.update({
