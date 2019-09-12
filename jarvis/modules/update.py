@@ -5,7 +5,7 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import changelog_gen, branch_check
+from jarvis.utils import changelog_gen, branch_check, execute
 
 
 @diagnostics
@@ -67,6 +67,8 @@ async def upstream(context):
 
     try:
         upstream_remote.pull(active_branch)
+        await execute("pip install -r requirements.txt --upgrade")
+        await execute("pip install -r requirements.txt")
         if log:
             await context.client.send_message(
                 log_chatid, "Jarvis have been updated."
