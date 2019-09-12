@@ -93,16 +93,7 @@ async def sh(context):
 
         if result:
             if len(result) > 4096:
-                output = open("output.txt", "w+")
-                output.write(result)
-                output.close()
-                await context.client.send_file(
-                    context.chat_id,
-                    "output.log",
-                    reply_to=context.id,
-                    caption="`Output exceeded limit, attaching file.`",
-                )
-                remove("output.txt")
+                await attach_log(context, result)
                 return
 
             if uid is 0:
