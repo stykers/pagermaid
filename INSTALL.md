@@ -47,7 +47,16 @@ python3 -m jarvis
 ```
 
 ## Deploy init scripts
+Make sure you have ran Jarvis at least once or have the
+ session file in place before starting the service.
 - Runit: make a dir in /etc/sv/jarvis and copy utils/run to
  it
 - SystemD: copy utils/jarvis.service into /var/lib/systemd/system
 - Direct: run utils/start.sh
+
+## Authentication
+Sometimes (or most of the times) when you deploy Jarvis on
+ a server, you will have problems during login, when this
+ happens, finish the configuration step and then run
+ utils/mksession.py on your PC, and push the jarvis.session
+ to the server.
