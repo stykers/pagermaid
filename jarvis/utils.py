@@ -220,8 +220,8 @@ async def generate_strings(replied_user, event):
     caption += f"Bot: {is_bot} \n"
     caption += f"Restricted: {restricted} \n"
     caption += f"Verified: {verified} \n"
-    caption += f"ID: `{user_id}` \n \n"
-    caption += f"Bio: `{user_bio}` \n \n"
+    caption += f"ID: `{user_id}` \n"
+    caption += f"Bio: `{user_bio}` \n"
     caption += f"Common Chats: {common_chat} \n"
     caption += f"Permanent Link: "
     caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \

@@ -16,7 +16,7 @@ async def group_image(context):
         chat = await context.get_chat()
         photo = None
 
-        if not chat.admin_rights or chat.creator:
+        if not chat.admin_rights or not chat.creator:
             await context.edit("`Lacking permissions to edit group image.`")
             return
 

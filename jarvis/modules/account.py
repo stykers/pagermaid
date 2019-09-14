@@ -182,9 +182,11 @@ async def profile(context):
         if not photo.startswith("http"):
             remove(photo)
         await context.delete()
-
+        return
     except TypeError:
         await context.edit(caption)
+
+    remove(photo)
 command_help.update({
     "profile": "Parameter: -profile <user>\
     \nUsage: Shows user profile in a large message."
