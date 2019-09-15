@@ -8,8 +8,8 @@ footer=$4
 font=./utils/Impact-Regular.ttf
 
 width=$(identify -format %w "${src}")
-let caption_height=width/8
-let strokewidth=width/500
+caption_height=$((width/8))
+strokewidth=$((width/500))
 
 convert "${src}"       \
   -background none   \
