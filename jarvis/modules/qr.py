@@ -2,10 +2,15 @@
 
 from os import remove
 from pyqrcode import create
-from pyzbar.pyzbar import decode
 from PIL import Image
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
+try:
+    from pyzbar.pyzbar import decode
+except ImportError:
+    zBarFailure = True
+    decode = None
+    pass
 
 
 @register(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
@@ -75,6 +80,9 @@ async def parseqr(context):
     """ Parse QR code into plaintext. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if context.fwd_from:
+            return
+        if zBarFailure:
+            await context.edit("`ZBar is not installed!`")
             return
         target_file_path = await context.client.download_media(
             await context.get_reply_message()
