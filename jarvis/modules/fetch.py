@@ -1,11 +1,13 @@
 """ Jarvis module for content modules. """
 
+from youtube_dl import YoutubeDL
 from pytube import YouTube
 from pytube.helpers import safe_filename
 from requests import get
 from os import remove
 from jarvis import bot, command_help, log, log_chatid
 from jarvis.events import register, diagnostics
+from jarvis.utils import execute
 
 
 @register(outgoing=True, pattern=r"^-youtube (\S*) ?(\S*)")

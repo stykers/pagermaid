@@ -27,3 +27,4 @@ dnspython
 pyqrcode
 pypng
 qrtools
+youtube-dl
