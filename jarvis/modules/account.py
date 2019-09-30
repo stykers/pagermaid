@@ -156,18 +156,17 @@ async def profile(context):
         return
 
     await context.edit("`Generating user profile summary . . .`")
-
-    if not isdir("./"):
-        makedirs("./")
-
     replied_user = await fetch_user(context)
+    caption = await generate_strings(replied_user)
+    reply_to = context.message.reply_to_msg_id
+    photo = await context.client.download_profile_photo(
+        replied_user.user.id,
+        "./" + str(replied_user.user.id) + ".jpg",
+        download_big=True
+    )
 
-    photo, caption = await generate_strings(replied_user, context)
-
-    message_id_to_reply = context.message.reply_to_msg_id
-
-    if not message_id_to_reply:
-        message_id_to_reply = None
+    if not reply_to:
+        reply_to = None
 
     try:
         await context.client.send_file(
@@ -176,7 +175,7 @@ async def profile(context):
             caption=caption,
             link_preview=False,
             force_document=False,
-            reply_to=message_id_to_reply
+            reply_to=reply_to
         )
 
         if not photo.startswith("http"):

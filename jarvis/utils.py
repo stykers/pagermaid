@@ -189,7 +189,7 @@ async def fetch_user(target):
     return replied_user
 
 
-async def generate_strings(replied_user, event):
+async def generate_strings(replied_user):
     """ Generates the needed strings for a user. """
     user_id = replied_user.user.id
     first_name = replied_user.user.first_name
@@ -200,11 +200,6 @@ async def generate_strings(replied_user, event):
     is_bot = replied_user.user.bot
     restricted = replied_user.user.restricted
     verified = replied_user.user.verified
-    photo = await event.client.download_profile_photo(
-        user_id,
-        "./" + str(user_id) + ".jpg",
-        download_big=True
-    )
     first_name = first_name.replace("\u2060", "") if first_name else (
         "This user does not have a first name.")
     last_name = last_name.replace("\u2060", "") if last_name else (
@@ -227,7 +222,7 @@ async def generate_strings(replied_user, event):
     caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \
         if last_name is not "This user does not have a " \
                             "last name." else f"[{first_name}](tg://user?id={user_id})"
-    return photo, caption
+    return caption
 
 
 def last_replace(s, old, new):

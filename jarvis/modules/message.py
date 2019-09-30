@@ -6,6 +6,8 @@ from os import remove
 from gtts import gTTS
 from dotenv import load_dotenv
 from telethon.tl.functions.messages import DeleteChatUserRequest
+from telethon.tl.functions.channels import LeaveChannelRequest
+from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log, random_gen
@@ -96,7 +98,9 @@ async def leave(context):
             await bot(DeleteChatUserRequest(chat_id=context.chat_id,
                                             user_id=context.sender_id
                                             ))
-        except AttributeError:
+        except ChatIdInvalidError:
+            await bot(LeaveChannelRequest(chatid))
+        except PeerIdInvalidError:
             await context.edit("You are not in a group.")
 command_help.update({
     "leave": "Parameter: -leave\
