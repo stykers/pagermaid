@@ -13,6 +13,7 @@ RUN apk add --no-cache --update \
     sqlite-dev \
     build-base \
     fortune \
+    figlet \
     python3 \
     redis \
     libxslt-dev \

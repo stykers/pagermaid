@@ -10,7 +10,7 @@ from telethon.tl.functions.channels import LeaveChannelRequest
 from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log, random_gen
+from jarvis.utils import clear_emojis, attach_log, random_gen, execute
 
 load_dotenv("config.env")
 lang = environ.get("APPLICATION_LANGUAGE", "en")
@@ -290,4 +290,20 @@ async def site(context):
 command_help.update({
     "site": "Parameter: -site\
     \nUsage: Shows the site of Jarvis."
+})
+
+
+@register(outgoing=True, pattern="^-asciiart(?: |$)(.*)")
+@diagnostics
+async def asciiart(context):
+    """ Generates ASCII art for provided strings. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if not context.pattern_match.group(1):
+            await context.edit("`Invalid arguments.`")
+            return
+        output = await execute(f"figlet -f ./utils/graffiti.flf '{context.pattern_match.group(1)}'")
+        await context.edit(f"`{output}`")
+command_help.update({
+    "asciiart": "Parameter: -asciiart <text>\
+     \nUsage: Generates ASCII art for target text."
 })
