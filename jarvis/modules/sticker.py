@@ -90,15 +90,15 @@ A pack can't have more than 120 stickers at the moment.":
                         pack += 1
                         pack_name = f"a{user.id}_by_{user.username}_{pack}"
                         pack_title = f"@{user.username}'s collection ({pack})"
-                        await context.edit("`Switching to Pack " + str(pack) +
-                                           " due to insufficient space`")
+                        await context.edit("Creating new pack " + str(pack) +
+                                           " since existing pack is full.")
                         await conversation.send_message(pack_name)
                         chat_response = await conversation.get_response()
                         if chat_response.text == "Invalid pack selected.":
                             await add_sticker(conversation, command, pack_title, pack_name, bot, animated, message,
                                               context, file, emoji)
                             await context.edit(
-                                f"Sticker has been added to [this](t.me/addstickers/{pack_name}) alternative pack.)",
+                                f"Sticker has been added to [this](t.me/addstickers/{pack_name}) alternative pack.",
                                 parse_mode='md')
                             return
                     if animated:
