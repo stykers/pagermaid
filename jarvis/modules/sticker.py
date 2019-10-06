@@ -46,7 +46,6 @@ async def sticker(context):
             return
 
         if photo:
-            await context.edit("Collecting sticker . . .")
             split_strings = context.text.split()
             if not custom_emoji:
                 emoji = "👀"
@@ -70,8 +69,8 @@ async def sticker(context):
                 file.name = "sticker.png"
                 image.save(file, "PNG")
             else:
-                pack_name += "_anim"
-                pack_title += " animated"
+                pack_name += "_animated"
+                pack_title += " (animated)"
                 command = '/newanimated'
 
             response = request.urlopen(
@@ -83,7 +82,6 @@ async def sticker(context):
                 async with bot.conversation('Stickers') as conversation:
                     await conversation.send_message('/addsticker')
                     await conversation.get_response()
-                    # Ensure user doesn't get spamming notifications
                     await bot.send_read_acknowledge(conversation.chat_id)
                     await conversation.send_message(pack_name)
                     chat_response = await conversation.get_response()
