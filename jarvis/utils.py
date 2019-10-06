@@ -18,6 +18,38 @@ from asyncio.subprocess import PIPE
 from jarvis import redis
 
 
+async def add_sticker(conversation, command, pack_title, pack_name, bot, animated, message, context, file, emoji):
+    await conversation.send_message(command)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.send_message(pack_title)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    if animated:
+        await bot.forward_messages(
+            'Stickers', [message.id], context.chat_id)
+    else:
+        file.seek(0)
+        await conversation.send_file(file, force_document=True)
+    await conversation.get_response()
+    await conversation.send_message(emoji)
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await conversation.send_message("/publish")
+    if animated:
+        await conversation.get_response()
+        await conversation.send_message(f"<{pack_title}>")
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.send_message("/skip")
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await conversation.send_message(pack_name)
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+
+
 async def execute(command, pass_error=True):
     executor = await create_subprocess_shell(
         command,
