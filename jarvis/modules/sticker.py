@@ -90,8 +90,8 @@ A pack can't have more than 120 stickers at the moment.":
                         pack += 1
                         pack_name = f"a{user.id}_by_{user.username}_{pack}"
                         pack_title = f"@{user.username}'s collection ({pack})"
-                        await context.edit("Creating new pack " + str(pack) +
-                                           " since existing pack is full.")
+                        await context.edit("Switching to pack " + str(pack) +
+                                           " since previous pack is full.")
                         await conversation.send_message(pack_name)
                         chat_response = await conversation.get_response()
                         if chat_response.text == "Invalid pack selected.":
