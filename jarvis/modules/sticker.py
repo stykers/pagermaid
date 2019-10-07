@@ -5,7 +5,7 @@ from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from jarvis import bot, command_help
 from jarvis.events import register, diagnostics
-from jarvis.utils import add_sticker, resize_image
+from jarvis.utils import add_sticker, resize_image, upload_sticker
 
 
 @register(outgoing=True, pattern="^-sticker")
@@ -103,13 +103,7 @@ A pack can't have more than 120 stickers at the moment.":
                                 f"Sticker has been added to [this](t.me/addstickers/{pack_name}) alternative pack.",
                                 parse_mode='md')
                             return
-                    if animated:
-                        await bot.forward_messages('Stickers', [message.id],
-                                                   context.chat_id)
-                    else:
-                        file.seek(0)
-                        await context.edit("Uploading image . . .")
-                        await conversation.send_file(file, force_document=True)
+                    await upload_sticker(animated, bot, message, context, file, conversation)
                     await conversation.get_response()
                     await conversation.send_message(emoji)
                     await bot.send_read_acknowledge(conversation.chat_id)
