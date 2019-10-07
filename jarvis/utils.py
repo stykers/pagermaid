@@ -30,6 +30,7 @@ async def add_sticker(conversation, command, pack_title, pack_name, bot, animate
             'Stickers', [message.id], context.chat_id)
     else:
         file.seek(0)
+        await context.edit("Uploading image . . .")
         await conversation.send_file(file, force_document=True)
     await conversation.get_response()
     await conversation.send_message(emoji)
@@ -164,7 +165,7 @@ async def get_timezone(target):
         return
 
 
-async def resize_photo(photo):
+async def resize_image(photo):
     """ Photo resize to match sticker standards. """
     image = Image.open(photo)
     maxsize = (512, 512)

@@ -5,7 +5,7 @@ from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from jarvis import bot, command_help
 from jarvis.events import register, diagnostics
-from jarvis.utils import add_sticker, resize_photo
+from jarvis.utils import add_sticker, resize_image
 
 
 @register(outgoing=True, pattern="^-sticker")
@@ -27,6 +27,7 @@ async def sticker(context):
                 photo = await bot.download_media(message.photo, photo)
             elif "image" in message.media.document.mime_type.split('/'):
                 photo = BytesIO()
+                await context.edit("Downloading image . . .")
                 await bot.download_file(message.media.document, photo)
                 if (DocumentAttributeFilename(file_name='sticker.webp') in
                         message.media.document.attributes):
@@ -65,7 +66,8 @@ async def sticker(context):
             file = BytesIO()
 
             if not animated:
-                image = await resize_photo(photo)
+                await context.edit("Resizing image . . .")
+                image = await resize_image(photo)
                 file.name = "sticker.png"
                 image.save(file, "PNG")
             else:
@@ -91,7 +93,7 @@ A pack can't have more than 120 stickers at the moment.":
                         pack_name = f"a{user.id}_by_{user.username}_{pack}"
                         pack_title = f"@{user.username}'s collection ({pack})"
                         await context.edit("Switching to pack " + str(pack) +
-                                           " since previous pack is full.")
+                                           " since previous pack is full . . .")
                         await conversation.send_message(pack_name)
                         chat_response = await conversation.get_response()
                         if chat_response.text == "Invalid pack selected.":
@@ -106,6 +108,7 @@ A pack can't have more than 120 stickers at the moment.":
                                                    context.chat_id)
                     else:
                         file.seek(0)
+                        await context.edit("Uploading image . . .")
                         await conversation.send_file(file, force_document=True)
                     await conversation.get_response()
                     await conversation.send_message(emoji)
