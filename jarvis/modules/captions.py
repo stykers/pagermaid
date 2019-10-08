@@ -136,7 +136,7 @@ async def highlight(context):
                 return
         lexer = guess_lexer(message)
         formatter = img.JpgImageFormatter(style="colorful")
-        result = await syntax_highlight(message, lexer, formatter, outfile=None)
+        result = syntax_highlight(message, lexer, formatter, outfile=None)
         await context.edit("Uploading image . . .")
         await context.client.send_file(
             context.chat_id,
