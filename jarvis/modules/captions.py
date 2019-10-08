@@ -110,3 +110,36 @@ command_help.update({
     "ocr": "Parameter: -ocr <image>\
     \nUsage: Extracts texts from images."
 })
+
+
+@register(outgoing=True, pattern="^-highlight(?: |$)(.*)")
+@diagnostics
+async def highlight(context):
+    """ Generates syntax highlighted images. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if context.fwd_from:
+            return
+        reply = await context.get_reply_message()
+        reply_id = None
+        await context.edit("`Rendering image, please wait . . .`")
+        if reply:
+            reply_id = reply.id
+            message = reply.text
+        else:
+            if context.pattern_match.group(1):
+                message = context.pattern_match.group(1)
+            else:
+                await context.edit("`Unable to retrieve target message.`")
+                return
+        source_file = open("output.log", "w+")
+        source_file.write(message)
+        source_file.close()
+        await execute("pygmentize -f png -O full,style=colorful -o highlight.png output.log")
+        await context.client.send_file(
+            context.chat_id,
+            "highlight.png",
+            reply_to=reply_id,
+        )
+        await context.delete()
+        remove("output.log")
+        remove("highlight.png")

@@ -28,3 +28,4 @@ pyqrcode
 pypng
 qrtools
 youtube-dl
+pygments
