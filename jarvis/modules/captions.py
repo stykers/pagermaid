@@ -136,11 +136,11 @@ async def highlight(context):
                 return
         lexer = guess_lexer(message)
         formatter = img.JpgImageFormatter(style="colorful")
-        await highlight(message, lexer, formatter, outfile="result.jpg")
+        result = await highlight(message, lexer, formatter)
         await context.edit("Uploading image . . .")
         await context.client.send_file(
             context.chat_id,
-            "result.jpg",
+            result,
             reply_to=reply_id
         )
         await context.delete()
