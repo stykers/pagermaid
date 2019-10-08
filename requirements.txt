@@ -1,5 +1,6 @@
 pyzbar
 Pillow>=5.3.0
+pillow
 aiohttp
 cowpy
 emoji
