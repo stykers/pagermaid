@@ -1,7 +1,7 @@
 """ Jarvis module for adding captions to image. """
 
 from os import remove
-from pygments import highlight
+from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
 from jarvis import command_help, log, log_chatid
@@ -136,7 +136,7 @@ async def highlight(context):
                 return
         lexer = guess_lexer(message)
         formatter = img.JpgImageFormatter(style="colorful")
-        result = await highlight(message, lexer, formatter)
+        result = await syntax_highlight(message, lexer, formatter, outfile=None)
         await context.edit("Uploading image . . .")
         await context.client.send_file(
             context.chat_id,
