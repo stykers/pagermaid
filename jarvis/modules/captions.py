@@ -1,6 +1,9 @@
 """ Jarvis module for adding captions to image. """
 
 from os import remove
+from pygments import highlight
+from pygments.formatters import img
+from pygments.lexers import guess_lexer
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import execute
@@ -15,7 +18,7 @@ async def caption(context):
             return
         reply = await context.get_reply_message()
         reply_id = None
-        await context.edit("`Rendering image, please wait . . .`")
+        await context.edit("Rendering image, please wait . . .")
         if reply:
             reply_id = reply.id
             target_file_path = await context.client.download_media(
@@ -121,7 +124,7 @@ async def highlight(context):
             return
         reply = await context.get_reply_message()
         reply_id = None
-        await context.edit("`Rendering image, please wait . . .`")
+        await context.edit("Rendering image, please wait . . .")
         if reply:
             reply_id = reply.id
             message = reply.text
@@ -131,15 +134,13 @@ async def highlight(context):
             else:
                 await context.edit("`Unable to retrieve target message.`")
                 return
-        source_file = open("output.log", "w+")
-        source_file.write(message)
-        source_file.close()
-        await execute("pygmentize -f png -O full,style=colorful -o highlight.png output.log")
+        lexer = guess_lexer(message)
+        formatter = img.JpgImageFormatter(style="colorful")
+        result = highlight(message, lexer, formatter, outfile=None)
+        await context.edit("Uploading image . . .")
         await context.client.send_file(
             context.chat_id,
-            "highlight.png",
-            reply_to=reply_id,
+            result,
+            reply_to=reply_id
         )
         await context.delete()
-        remove("output.log")
-        remove("highlight.png")
