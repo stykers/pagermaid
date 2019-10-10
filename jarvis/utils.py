@@ -63,10 +63,10 @@ async def make_top_cloud(context):
         pass
     load_dotenv("config.env")
     if not width or not height:
-        width = environ.get("WIDTH", "1920")
-        height = environ.get("HEIGHT", "1080")
+        width = int(environ.get("WIDTH", "1920"))
+        height = int(environ.get("HEIGHT", "1080"))
     background = environ.get("BACKGROUND", "#101010")
-    margin = environ.get("MARGIN", "20")
+    margin = int(environ.get("MARGIN", "20"))
 
     cloud = WordCloud(
       background_color=background,
