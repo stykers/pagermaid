@@ -24,6 +24,7 @@ RUN apk add --no-cache --update \
     libpq \
     build-base \
     linux-headers \
+    freetype-dev \
     jpeg-dev \
     curl \
     neofetch \
