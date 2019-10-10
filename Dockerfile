@@ -44,7 +44,7 @@ USER jarvis
 RUN mkdir /jarvis/instance
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /jarvis/instance
 WORKDIR /jarvis/instance
-COPY ./jarvis.session ./config.env /home/jarvis/instance/
+COPY ./jarvis.session ./config.env /jarvis/instance/
 RUN sudo chown jarvis:jarvis /jarvis/instance/config.env
 RUN sudo chown jarvis:jarvis /jarvis/instance/jarvis.session
 RUN python3 -m virtualenv venv
