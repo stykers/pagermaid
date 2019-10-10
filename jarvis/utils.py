@@ -24,8 +24,7 @@ from jarvis import redis
 async def make_top_cloud(context):
     await context.edit("Generating image . . .")
     command_list = []
-    output = await execute("top -b -n 1")
-    output = output.split("\n")[7:]
+    output = str(await execute("top -b -n 1")).split("\n")[7:]
     for line in output[:-1]:
         line = sub(r'\s+', ' ', line).strip()
         fields = line.split(" ")
