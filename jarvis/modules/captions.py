@@ -162,7 +162,8 @@ async def topcloud(context):
         await context.client.send_file(
             context.chat_id,
             "cloud.png",
-            reply_to=None
+            reply_to=None,
+            caption="Word cloud of processes depending on resource usage."
         )
         remove("cloud.png")
         await context.delete()
