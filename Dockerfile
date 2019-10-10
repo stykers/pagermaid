@@ -20,6 +20,7 @@ RUN apk add --no-cache --update \
     libxml2 \
     libxml2-dev \
     py-pip \
+    py-virtualenv \
     libpq \
     build-base \
     linux-headers \
@@ -36,17 +37,16 @@ RUN apk add --no-cache --update \
     figlet \
     libwebp-dev \
     zbar
-
-RUN pip3 install --upgrade pip setuptools
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
-RUN adduser jarvis --disabled-password --home /home/jarvis
+RUN adduser jarvis --disabled-password --home /jarvis
 RUN adduser jarvis wheel
 USER jarvis
-RUN mkdir /home/jarvis/instance
-RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /home/jarvis/instance
-WORKDIR /home/jarvis/instance
+RUN mkdir /jarvis/instance
+RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /jarvis/instance
+WORKDIR /jarvis/instance
 COPY ./jarvis.session ./config.env /home/jarvis/instance/
-RUN sudo chown jarvis:jarvis /home/jarvis/instance/config.env
-RUN sudo chown jarvis:jarvis /home/jarvis/instance/jarvis.session
-RUN sudo pip3 install -r requirements.txt
+RUN sudo chown jarvis:jarvis /jarvis/instance/config.env
+RUN sudo chown jarvis:jarvis /jarvis/instance/jarvis.session
+RUN python3 -m virtualenv venv
+RUN source venv/bin/activate; pip3 install -r requirements.txt
 CMD ["dash","utils/entrypoint.sh"]

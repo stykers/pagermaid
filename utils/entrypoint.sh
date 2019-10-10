@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 redis-server --daemonize yes
-python3 -m jarvis
-exit 0
+source venv/bin/activate
+/usr/bin/env python3 -m jarvis
