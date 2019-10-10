@@ -1,46 +1,35 @@
-FROM alpine:edge
-RUN sed -e 's;^#http\(.*\)/v3.9/community;http\1/v3.9/community;g' -i /etc/apk/repositories
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
-RUN apk add --no-cache --update \
+FROM archlinux/base:latest
+RUN pacman -Syu --needed --noconfirm \
     git \
-    dash \
-    libffi-dev \
-    tesseract-ocr \
-    openssl-dev \
-    bzip2-dev \
-    zlib-dev \
-    readline-dev \
-    sqlite-dev \
-    build-base \
-    fortune \
+    libffi \
+    tesseract \
+    openssl \
+    bzip2 \
+    zlib \
+    readline \
+    sqlite \
+    fortune-mod \
     figlet \
-    python3 \
+    python-virtualenv \
     redis \
-    libxslt-dev \
+    libxslt \
     libxml2 \
-    libxml2-dev \
-    py-pip \
-    py-virtualenv \
-    libpq \
-    build-base \
-    linux-headers \
-    freetype-dev \
-    jpeg-dev \
+    libpqxx \
+    linux-api-headers \
+    freetype2 \
+    jpeg-archive \
     curl \
+    wget \
     neofetch \
     sudo \
     gcc \
-    python-dev \
-    python3-dev \
-    musl \
+    gcc8 \
     imagemagick \
-    sqlite \
-    figlet \
-    libwebp-dev \
+    libwebp \
     zbar
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
-RUN adduser jarvis --disabled-password --home /jarvis
-RUN adduser jarvis wheel
+RUN useradd jarvis -r -m -d /jarvis
+RUN usermod -aG wheel,users jarvis
 USER jarvis
 RUN mkdir /jarvis/instance
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /jarvis/instance
