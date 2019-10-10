@@ -18,13 +18,17 @@ from telethon.tl.types import MessageEntityMentionName
 from pytz import timezone, country_timezones
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
+from pathlib import Path
 from jarvis import redis
 
 
 async def make_top_cloud(context):
     await context.edit("Generating image . . .")
     command_list = []
-    output = str(await execute("top -b -n 1")).split("\n")[7:]
+    if not Path('/usr/bin/top').is_symlink():
+        output = str(await execute("top -b -n 1")).split("\n")[7:]
+    else:
+        output = str(await execute("top -b -n 1")).split("\n")[4:]
     for line in output[:-1]:
         line = sub(r'\s+', ' ', line).strip()
         fields = line.split(" ")
