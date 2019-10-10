@@ -1,9 +1,12 @@
 """ Libraries for python modules. """
 
-from os import remove
+from os import remove, popen
 from emoji import get_emoji_regexp
 from requests import head
 from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
+from wordcloud import WordCloud
+from dotenv import load_dotenv
+from os import environ
 from PIL import Image
 from math import floor
 from random import random, randint, randrange, seed, choice
@@ -16,6 +19,62 @@ from pytz import timezone, country_timezones
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from jarvis import redis
+
+
+async def make_top_cloud(context):
+    await context.edit("Generating image . . .")
+    command_list = []
+    output = await execute("top -b -n 1").split("\n")[7:]
+    for line in output[:-1]:
+        line = sub(r'\s+', ' ', line).strip()
+        fields = line.split(" ")
+        try:
+            if fields[11].count("/") > 0:
+                command = fields[11].split("/")[0]
+            else:
+                command = fields[11]
+
+            cpu = float(fields[8].replace(",", "."))
+            mem = float(fields[9].replace(",", "."))
+
+            if command != "top":
+                command_list.append((command, cpu, mem))
+        except:
+            pass
+    command_dict = {}
+    for command, cpu, mem in command_list:
+        if command in command_dict:
+            command_dict[command][0] += cpu
+            command_dict[command][1] += mem
+        else:
+            command_dict[command] = [cpu + 1, mem + 1]
+
+    resource_dict = {}
+
+    for command, [cpu, mem] in command_dict.items():
+        resource_dict[command] = (cpu ** 2 + mem ** 2) ** 0.5
+
+    width, height = None, None
+    try:
+        width, height = ((popen("xrandr | grep '*'").read()).split()[0]).split("x")
+        width = int(width)
+        height = int(height)
+    except:
+        pass
+    load_dotenv("config.env")
+    if not width or not height:
+        width = environ.get("WIDTH", "1920")
+        height = environ.get("HEIGHT", "1080")
+    background = environ.get("BACKGROUND", "#101010")
+    margin = environ.get("MARGIN", "20")
+
+    cloud = WordCloud(
+      background_color=background,
+      width=width - 2 * int(margin),
+      height=height - 2 * int(margin)
+    ).generate_from_frequencies(resource_dict)
+
+    cloud.to_file("cloud.png")
 
 
 async def upload_sticker(animated, bot, message, context, file, conversation):

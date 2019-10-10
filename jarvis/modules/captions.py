@@ -6,7 +6,7 @@ from pygments.formatters import img
 from pygments.lexers import guess_lexer
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import execute
+from jarvis.utils import execute, make_top_cloud
 
 
 @register(outgoing=True, pattern="^-caption(?: |$)(.*)")
@@ -144,3 +144,29 @@ async def highlight(context):
             reply_to=reply_id
         )
         await context.delete()
+command_help.update({
+    "highlight": "Parameter: -highlight <image>\
+    \nUsage: Generates syntax highlighted images."
+})
+
+
+@register(outgoing=True, pattern="^-topcloud(?: |$)(.*)")
+@diagnostics
+async def topcloud(context):
+    """ Generates a word cloud of resource-hungry processes. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if context.fwd_from:
+            return
+        await make_top_cloud(context)
+        await context.edit("Uploading image . . .")
+        await context.client.send_file(
+            context.chat_id,
+            "cloud.png",
+            reply_to=None
+        )
+        remove("cloud.png")
+        await context.delete()
+command_help.update({
+    "topcloud": "Parameter: -topcloud <image>\
+    \nUsage: Generates a word cloud of resource-hungry processes."
+})

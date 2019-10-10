@@ -1,5 +1,4 @@
 pyzbar
-Pillow>=5.3.0
 pillow
 aiohttp
 cowpy
@@ -30,3 +29,5 @@ pypng
 qrtools
 youtube-dl
 pygments
+matplotlib
+wordcloud
