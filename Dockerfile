@@ -50,4 +50,4 @@ RUN sudo chown jarvis:jarvis /jarvis/instance/config.env
 RUN sudo chown jarvis:jarvis /jarvis/instance/jarvis.session
 RUN python3 -m virtualenv venv
 RUN source venv/bin/activate; pip3 install -r requirements.txt
-CMD ["dash","utils/entrypoint.sh"]
+CMD ["bash","utils/entrypoint.sh"]
