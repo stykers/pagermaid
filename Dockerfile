@@ -26,7 +26,8 @@ RUN pacman -Syu --needed --noconfirm \
     gcc8 \
     imagemagick \
     libwebp \
-    zbar
+    zbar \
+    procps-ng
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
 RUN useradd jarvis -r -m -d /jarvis
 RUN usermod -aG wheel,users jarvis
