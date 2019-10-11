@@ -30,7 +30,7 @@ git_check() {
     echo "Git appears to be present, moving on . . ."
   else
     echo "Git is not installed on this system, please"
-    echo "install docker and re-run this script."
+    echo "install git and re-run this script."
     exit 1
   fi
 }
