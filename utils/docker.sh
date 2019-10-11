@@ -27,12 +27,13 @@ else
   echo "This user has no access to docker, please add"
   echo "yourself to the docker group or run the script"
   echo "as superuser."
+  exit 1
 fi
 
 echo "Downloading repository . . ."
 rm -rf /tmp/jarvis
 git clone https://git.stykers.moe/scm/~stykers/jarvis.git /tmp/jarvis
-cd /tmp/jarvis || return
+cd /tmp/jarvis || exit
 
 echo "Generating config file . . ."
 cp config.gen.env config.env
