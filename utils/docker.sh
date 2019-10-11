@@ -23,6 +23,18 @@ docker_check() {
   fi
 }
 
+git_check() {
+  echo "Checking for git . . ."
+  if command -v docker;
+  then
+    echo "Git appears to be present, moving on . . ."
+  else
+    echo "Git is not installed on this system, please"
+    echo "install docker and re-run this script."
+    exit 1
+  fi
+}
+
 access_check() {
   echo "Testing for docker access . . ."
   if [ -w /var/run/docker.sock ]
@@ -93,6 +105,7 @@ start_docker() {
 start_installation() {
   welcome
   docker_check
+  git_check
   access_check
   download_repo
   configure
