@@ -25,7 +25,7 @@ docker_check() {
 
 git_check() {
   echo "Checking for git . . ."
-  if command -v docker;
+  if command -v git;
   then
     echo "Git appears to be present, moving on . . ."
   else
