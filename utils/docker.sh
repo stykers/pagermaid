@@ -59,11 +59,11 @@ configure() {
   printf "Please enter application region (Example: United States): "
   read -r application_region <&1
   sed -i "s/United States/$application_region/" $config_file
-  printf "Enable logging? [Y/n]"
+  printf "Enable logging? [Y/n] "
   read -r logging_confirmation <&1
   case $logging_confirmation in
       [yY][eE][sS]|[yY])
-		    printf "Please enter your logging group/channel chatid: "
+		    printf "Please enter your logging group/channel ChatID: "
 		    read -r log_chatid <&1
 		    sed -i "s/en/$log_chatid/" $config_file
 		    sed -i "s/LOG=False/LOG=True/" $config_file
