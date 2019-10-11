@@ -44,28 +44,29 @@ download_repo() {
 }
 
 configure() {
+  $config_file=config.env
   echo "Generating config file . . ."
   cp config.gen.env config.env
   printf "Please enter application API Key: "
   read -r api_key <&1
-  sed -i "s/ID_HERE/$api_key/"
+  sed -i "s/ID_HERE/$api_key/" $config_file
   printf "Please enter application API Hash: "
   read -r api_hash <&1
-  sed -i "s/HASH_HERE/$api_hash/"
+  sed -i "s/HASH_HERE/$api_hash/" $config_file
   printf "Please enter application language (Example: en): "
   read -r application_language <&1
-  sed -i "s/en/$application_language/"
+  sed -i "s/en/$application_language/" $config_file
   printf "Please enter application region (Example: United States): "
   read -r application_region <&1
-  sed -i "s/United States/$application_region/"
+  sed -i "s/United States/$application_region/" $config_file
   printf "Enable logging? [Y/n]"
   read -r logging_confirmation <&1
   case $logging_confirmation in
       [yY][eE][sS]|[yY])
 		    printf "Please enter your logging group/channel chatid: "
 		    read -r log_chatid <&1
-		    sed -i "s/en/$log_chatid/"
-		    sed -i "s/LOG=False/LOG=True/"
+		    sed -i "s/en/$log_chatid/" $config_file
+		    sed -i "s/LOG=False/LOG=True/" $config_file
 		    ;;
       [nN][oO]|[nN])
 		    echo "Moving on . . ."
