@@ -47,23 +47,23 @@ configure() {
   echo "Generating config file . . ."
   cp config.gen.env config.env
   printf "Please enter application API Key: "
-  read -r api_key
+  read -r api_key <&1
   sed -i "s/ID_HERE/$api_key/"
   printf "Please enter application API Hash: "
-  read -r api_hash
+  read -r api_hash <&1
   sed -i "s/HASH_HERE/$api_hash/"
   printf "Please enter application language (Example: en): "
-  read -r application_language
+  read -r application_language <&1
   sed -i "s/en/$application_language/"
   printf "Please enter application region (Example: United States): "
-  read -r application_region
+  read -r application_region <&1
   sed -i "s/United States/$application_region/"
   printf "Enable logging? [Y/n]"
-  read -r logging_confirmation
+  read -r logging_confirmation <&1
   case $logging_confirmation in
       [yY][eE][sS]|[yY])
 		    printf "Please enter your logging group/channel chatid: "
-		    read -r log_chatid
+		    read -r log_chatid <&1
 		    sed -i "s/en/$log_chatid/"
 		    sed -i "s/LOG=False/LOG=True/"
 		    ;;
