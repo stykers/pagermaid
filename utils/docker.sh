@@ -44,7 +44,7 @@ download_repo() {
 }
 
 configure() {
-  $config_file=config.env
+  config_file=config.env
   echo "Generating config file . . ."
   cp config.gen.env config.env
   printf "Please enter application API Key: "
