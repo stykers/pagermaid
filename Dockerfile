@@ -37,7 +37,7 @@ RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /jarvis/
 WORKDIR /jarvis/instance
 COPY ./jarvis.session* ./config.env /jarvis/instance/
 RUN sudo chown jarvis:jarvis /jarvis/instance/config.env
-RUN sudo chown jarvis:jarvis /jarvis/instance/jarvis.session
+RUN sudo chown -f jarvis:jarvis /jarvis/instance/jarvis.session
 RUN python3 -m virtualenv venv
 RUN source venv/bin/activate; pip3 install -r requirements.txt
 CMD ["sh","utils/entrypoint.sh"]
