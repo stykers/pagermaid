@@ -3,6 +3,24 @@
 Here are the installation instructions of Jarvis, with support
  for a variation of init systems.
 
+## Quick start
+If your system is compatible with docker, and you want a 
+snappy and supported environment, docker is the way for you.
+Tho this will limit system-wide utilities to inside the container.
+
+Create your application at https://my.telegram.org/, and 
+run this command:
+```shell script
+curl -fsSL https://git.stykers.moe/users/stykers/repos/jarvis/raw/utils/docker.sh | sh
+```
+If you want to inspect the script content before running:
+```shell script
+curl https://git.stykers.moe/users/stykers/repos/jarvis/raw/utils/docker.sh -o docker.sh
+vim docker.sh
+chmod 0755 docker.sh
+./docker.sh
+```
+
 ## Requirements
 You need Linux or *BSD for this software, and your system
  should run at least python 3.6, virtualenv support is

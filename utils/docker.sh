@@ -87,7 +87,7 @@ build_docker() {
 start_docker() {
   echo "Starting docker container . . ."
   echo "After logging in, press Ctrl + C to make the container restart in background mode."
-  docker run -it --restart=always --name=jarvis --hostname=jarvis jarvis
+  docker run -it --restart=always --name=jarvis --hostname=jarvis jarvis <&1
 }
 
 start_installation() {
