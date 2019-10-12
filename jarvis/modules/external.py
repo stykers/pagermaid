@@ -113,6 +113,7 @@ command_help.update({
 
 
 @register(outgoing=True, pattern=r"^-google(?: |$)([\s\S]*)")
+@diagnostics
 async def google(context):
     """ Searches Google for a string. """
     query = context.pattern_match.group(1)
@@ -123,6 +124,7 @@ async def google(context):
         query = query.replace("page=" + page[0], "")
     except IndexError:
         page = 1
+    await context.edit("Pulling results . . .")
     search_args = (str(query), int(page))
     google_search = GoogleSearch()
     search_results = google_search.search(*search_args)
