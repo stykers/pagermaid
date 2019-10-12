@@ -1,9 +1,11 @@
 """ Jarvis features that uses external HTTP APIs other than Telegram. """
 
 from googletrans import Translator, LANGUAGES
+from re import findall
 from os import remove, environ
 from dotenv import load_dotenv
 from gtts import gTTS
+from search_engine_parser import GoogleSearch
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log
@@ -107,4 +109,41 @@ async def tts(context):
 command_help.update({
     "tts": "Parameter: -tts <text>\
     \nUsage: Generates a voice message."
+})
+
+
+@register(outgoing=True, pattern=r"^-google(?: |$)([\s\S]*)")
+async def google(context):
+    """ Searches Google for a string. """
+    query = context.pattern_match.group(1)
+    page = findall(r"page=\d+", query)
+    try:
+        page = page[0]
+        page = page.replace("page=", "")
+        query = query.replace("page=" + page[0], "")
+    except IndexError:
+        page = 1
+    search_args = (str(query), int(page))
+    google_search = GoogleSearch()
+    search_results = google_search.search(*search_args)
+    result = ""
+    for i in range(10):
+        try:
+            title = search_results["titles"][i]
+            link = search_results["links"][i]
+            desc = search_results["descriptions"][i]
+            result += f"\n[{title}]({link}) [{i}]\n`{desc}`\n"
+        except IndexError:
+            break
+    await context.edit(f"**Google** |`{query}`| 🎙 🔍 \n"
+                       f"{result}",
+                       link_preview=False)
+    if log:
+        await context.client.send_message(
+            log_chatid,
+            "Queried `" + query + "` on Google Search.",
+        )
+command_help.update({
+    "google": "Parameter: -google <text>\
+    \nUsage: Searches Google for a string."
 })
