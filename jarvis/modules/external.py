@@ -4,10 +4,9 @@ from googletrans import Translator, LANGUAGES
 from os import remove, environ
 from dotenv import load_dotenv
 from gtts import gTTS
-from googlesearch.googlesearch import GoogleSearch
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log
+from jarvis.utils import clear_emojis, attach_log, GoogleSearch
 
 
 load_dotenv("config.env")
