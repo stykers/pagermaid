@@ -11,6 +11,7 @@ from jarvis.utils import clear_emojis, attach_log, GoogleSearch
 
 load_dotenv("config.env")
 lang = environ.get("APPLICATION_LANGUAGE", "en")
+result_length = environ.get("RESULT_LENGTH", 5)
 
 
 @register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
@@ -120,13 +121,13 @@ async def google(context):
     results = ""
     count = 0
     for result in search_results.results:
-        if count == 10:
+        if count == result_length:
             break
         count += 1
         title = result.title
         link = result.url
         desc = result.text
-        results += f"\n[{title}]({link}) [{count}]\n`{desc}`\n"
+        results += f"\n[{title}]({link}) \n`{desc}`\n"
     await context.edit(f"**Google** |`{query}`| 🎙 🔍 \n"
                        f"{results}",
                        link_preview=False)
