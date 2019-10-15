@@ -280,3 +280,16 @@ command_help.update({
     "asciiart": "Parameter: -asciiart <text>\
      \nUsage: Generates ASCII art for target text."
 })
+
+
+@register(outgoing=True, pattern="^T_T$")
+async def cri(context):
+    """ T^T """
+    okay = "T_T"
+    for _ in range(10):
+        okay = okay[:-1] + "_T"
+        await context.edit(okay)
+command_help.update({
+    "cri": "Parameter: T_T\
+     \nUsage: Weirdly edits cri messages."
+})
