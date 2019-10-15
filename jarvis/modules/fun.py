@@ -289,6 +289,7 @@ async def cri(context):
     for _ in range(10):
         okay = okay[:-1] + "_T"
         await context.edit(okay)
+    await context.edit("T_T")
 command_help.update({
     "cri": "Parameter: T_T\
      \nUsage: Weirdly edits cri messages."
