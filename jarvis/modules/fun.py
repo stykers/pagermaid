@@ -293,3 +293,15 @@ command_help.update({
     "cri": "Parameter: T_T\
      \nUsage: Weirdly edits cri messages."
 })
+
+
+@register(outgoing=True, pattern="^OwO$")
+async def wink(context):
+    """ OwO """
+    await context.edit("OwU")
+    await sleep(.3)
+    await context.edit("OwO")
+command_help.update({
+    "cri": "Parameter: T_T\
+     \nUsage: Weirdly edits cri messages."
+})
