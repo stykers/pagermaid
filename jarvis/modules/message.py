@@ -213,7 +213,7 @@ async def tuxsay(context):
         if not context.pattern_match.group(1):
             await context.edit("`Invalid arguments.`")
             return
-        await context.edit(cow.Tux().milk(context.pattern_match.group(1)))
+        await context.edit(f"`{cow.Tux().milk(context.pattern_match.group(1))}`")
 command_help.update({
     "asciiart": "Parameter: -asciiart <text>\
      \nUsage: Generates ASCII art for target text."
