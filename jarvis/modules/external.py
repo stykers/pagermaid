@@ -118,17 +118,18 @@ async def google(context):
     query = context.pattern_match.group(1)
     await context.edit("Pulling results . . .")
     search_results = GoogleSearch().search(query=query)
-    result = ""
-    for i in range(10):
-        try:
-            title = search_results["titles"][i]
-            link = search_results["links"][i]
-            desc = search_results["descriptions"][i]
-            result += f"\n[{title}]({link}) [{i}]\n`{desc}`\n"
-        except IndexError:
+    results = ""
+    count = 0
+    for result in search_results.results:
+        if count == 10:
             break
+        count += 1
+        title = result.title
+        link = result.url
+        desc = result.text
+        results += f"\n[{title}]({link}) [{count}]\n`{desc}`\n"
     await context.edit(f"**Google** |`{query}`| 🎙 🔍 \n"
-                       f"{result}",
+                       f"{results}",
                        link_preview=False)
     if log:
         await context.client.send_message(
