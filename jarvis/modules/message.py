@@ -3,6 +3,7 @@
 from telethon.tl.functions.messages import DeleteChatUserRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
 from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
+from cowpy import cow
 from jarvis import command_help, bot, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import random_gen, execute
@@ -198,6 +199,21 @@ async def asciiart(context):
             return
         output = await execute(f"figlet -f ./utils/graffiti.flf '{context.pattern_match.group(1)}'")
         await context.edit(f"`{output}`")
+command_help.update({
+    "asciiart": "Parameter: -asciiart <text>\
+     \nUsage: Generates ASCII art for target text."
+})
+
+
+@register(outgoing=True, pattern="^-tuxsay(?: |$)(.*)")
+@diagnostics
+async def tuxsay(context):
+    """ Generates ASCII art for Tux saying stuff. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if not context.pattern_match.group(1):
+            await context.edit("`Invalid arguments.`")
+            return
+        await context.edit(cow.Tux().milk(context.pattern_match.group(1)))
 command_help.update({
     "asciiart": "Parameter: -asciiart <text>\
      \nUsage: Generates ASCII art for target text."
