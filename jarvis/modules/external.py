@@ -1,11 +1,10 @@
 """ Jarvis features that uses external HTTP APIs other than Telegram. """
 
 from googletrans import Translator, LANGUAGES
-from re import findall
 from os import remove, environ
 from dotenv import load_dotenv
 from gtts import gTTS
-from search_engine_parser import GoogleSearch
+from googlesearch.googlesearch import GoogleSearch
 from jarvis import command_help, log, log_chatid
 from jarvis.events import register, diagnostics
 from jarvis.utils import clear_emojis, attach_log
@@ -117,17 +116,8 @@ command_help.update({
 async def google(context):
     """ Searches Google for a string. """
     query = context.pattern_match.group(1)
-    page = findall(r"page=\d+", query)
-    try:
-        page = page[0]
-        page = page.replace("page=", "")
-        query = query.replace("page=" + page[0], "")
-    except IndexError:
-        page = 1
     await context.edit("Pulling results . . .")
-    search_args = (str(query), int(page))
-    google_search = GoogleSearch()
-    search_results = google_search.search(*search_args)
+    search_results = GoogleSearch().search(query=query)
     result = ""
     for i in range(10):
         try:
