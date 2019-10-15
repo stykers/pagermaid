@@ -3,9 +3,10 @@
 from asyncio import sleep
 from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
+from cowpy import cow
 from jarvis import command_help, bot
 from jarvis.events import register, diagnostics
-from jarvis.utils import mocker, corrupt, owoifier
+from jarvis.utils import mocker, corrupt, owoifier, execute, random_gen
 
 
 @register(pattern='-animate(?: |$)(.*)')
@@ -223,4 +224,59 @@ async def ship(context):
 command_help.update({
     "ship": "Parameter: -ship <user> <user>\
     \nUsage: Ships random person, supports defining person to ship."
+})
+
+
+@register(outgoing=True, pattern="^-slepkat(?: |$)(.*)")
+@diagnostics
+async def slepkat(context):
+    """ Sleepykat simulator. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await random_gen(context, "Zz")
+command_help.update({
+    "slepkat": "Parameter: -slepkat <integer>\
+    \nUsage: Sleepykat simulator."
+})
+
+
+@register(outgoing=True, pattern="^-aaa(?: |$)(.*)")
+@diagnostics
+async def aaa(context):
+    """ Generates screams. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        await random_gen(context, "Aa")
+command_help.update({
+    "aaa": "Parameter: -aaa <integer>\
+    \nUsage: Generates screams."
+})
+
+
+@register(outgoing=True, pattern="^-asciiart(?: |$)(.*)")
+@diagnostics
+async def asciiart(context):
+    """ Generates ASCII art for provided strings. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if not context.pattern_match.group(1):
+            await context.edit("`Invalid arguments.`")
+            return
+        output = await execute(f"figlet -f ./utils/graffiti.flf '{context.pattern_match.group(1)}'")
+        await context.edit(f"`{output}`")
+command_help.update({
+    "asciiart": "Parameter: -asciiart <text>\
+     \nUsage: Generates ASCII art for target text."
+})
+
+
+@register(outgoing=True, pattern="^-tuxsay(?: |$)(.*)")
+@diagnostics
+async def tuxsay(context):
+    """ Generates ASCII art for Tux saying stuff. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if not context.pattern_match.group(1):
+            await context.edit("`Invalid arguments.`")
+            return
+        await context.edit(f"```{cow.Tux().milk(context.pattern_match.group(1))} \n ```")
+command_help.update({
+    "asciiart": "Parameter: -asciiart <text>\
+     \nUsage: Generates ASCII art for target text."
 })
