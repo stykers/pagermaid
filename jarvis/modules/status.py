@@ -9,7 +9,7 @@ from shutil import which
 from telethon import version as telethon_version
 from jarvis import command_help, redis_check
 from jarvis.events import register, diagnostics
-from jarvis.utils import unit_convert, execute
+from jarvis.utils import unit_convert, execute, make_top_cloud
 
 
 hostname = uname().node
@@ -201,4 +201,27 @@ async def ping(context):
 command_help.update({
     "ping": "Parameter: -ping\
     \nUsage: Outputs your latency to telegram."
+})
+
+
+@register(outgoing=True, pattern="^-topcloud(?: |$)(.*)")
+@diagnostics
+async def topcloud(context):
+    """ Generates a word cloud of resource-hungry processes. """
+    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
+        if context.fwd_from:
+            return
+        await make_top_cloud(context)
+        await context.edit("Uploading image . . .")
+        await context.client.send_file(
+            context.chat_id,
+            "cloud.png",
+            reply_to=None,
+            caption="Cloud of running processes."
+        )
+        remove("cloud.png")
+        await context.delete()
+command_help.update({
+    "topcloud": "Parameter: -topcloud <image>\
+    \nUsage: Generates a word cloud of resource-hungry processes."
 })
