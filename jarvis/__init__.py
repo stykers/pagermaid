@@ -4,12 +4,10 @@ import redis
 
 from sys import version_info
 from sys import platform
-from os import environ, remove
-from os.path import exists
+from os import environ
 from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
 from dotenv import load_dotenv
-from shutil import copyfile
 from telethon import TelegramClient
 
 
@@ -36,8 +34,9 @@ if platform == "linux" or platform == "linux2" or platform == "darwin" or platfo
     )
 else:
     logs.error(
-        "Your platform " + platform + " is not supported, please start the bot on Linux or BSD."
+        "Your platform " + platform + " is not supported, please start Jarvis on Linux or *BSD."
     )
+    exit(1)
 
 log_chatid = int(environ.get("LOG_CHATID", "0"))
 
@@ -50,13 +49,6 @@ if version_info[0] < 3 or version_info[1] < 6:
         "Please upgrade your python interpreter to at least 3.6."
     )
     exit(1)
-
-if exists("database.db"):
-    remove("database.db")
-else:
-    logs.info("SQLite3 database file doesn't exist, generating...")
-
-copyfile("utils/database.db", "database.db")
 
 api_key = environ.get("API_KEY", None)
 api_hash = environ.get("API_HASH", None)

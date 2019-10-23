@@ -7,6 +7,7 @@ from telethon import functions
 from platform import python_version, uname
 from shutil import which
 from telethon import version as telethon_version
+from sys import platform
 from jarvis import command_help, redis_check
 from jarvis.events import register, diagnostics
 from jarvis.utils import unit_convert, execute, make_top_cloud
@@ -130,6 +131,7 @@ async def status(context):
             "Jarvis is online. \n\n"
             f"Hostname: {hostname} \n"
             f"Database Status: {db} \n"
+            f"Host Platform: {platform} \n"
             f"Kernel Version: {kernel} \n"
             f"Python Version: {python_version()} \n"
             f"Library version: {telethon_version.__version__}"
