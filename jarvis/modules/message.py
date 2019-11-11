@@ -162,3 +162,15 @@ command_help.update({
     "site": "Parameter: -site\
     \nUsage: Shows the site of Jarvis."
 })
+
+
+@register(outgoing=True, pattern="^-contextcrusher$")
+@diagnostics
+async def contextcrusher(context):
+    """ Crushes a message and outputs the context as a string. """
+    await context.edit(str(await context.get_reply_message()))
+command_help.update({
+    "contextcrusher": "Parameter: -contextcrusher\
+    \nUsage: Crushes a message and outputs the context as a string."
+})
+
