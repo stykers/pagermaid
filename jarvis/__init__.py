@@ -1,10 +1,9 @@
 """ Jarvis initialization. """
 
-import redis
-
 from sys import version_info
 from sys import platform
 from os import environ
+from redis import StrictRedis
 from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
 from dotenv import load_dotenv
@@ -54,7 +53,7 @@ api_key = environ.get("API_KEY", None)
 api_hash = environ.get("API_HASH", None)
 bot = TelegramClient("jarvis", api_key, api_hash, auto_reconnect=True)
 
-redis = redis.StrictRedis(host='localhost', port=6379, db=3)
+redis = StrictRedis(host='localhost', port=6379, db=3)
 
 
 def redis_check():

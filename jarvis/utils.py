@@ -185,8 +185,7 @@ async def not_afk():
 
 async def is_afk():
     """ Checks if user is afk. """
-    to_check = redis.get('is_afk')
-    if to_check:
+    if redis.get('is_afk'):
         return True
     else:
         return False
