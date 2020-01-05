@@ -215,7 +215,7 @@ async def ship(context):
                 except (TypeError, ValueError) as err:
                     await context.edit(str(err))
                     return None
-        if len(users) is 1:
+        if len(users) == 1:
             target_1 = users[0]
             target_2 = await bot.get_me()
         await context.edit("**Generated couple**\n"

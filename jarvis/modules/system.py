@@ -78,7 +78,7 @@ async def sh(context):
             await context.edit("`Invalid argument.`")
             return
 
-        if uid is 0:
+        if uid == 0:
             await context.edit(
                 f"`{user}`@{hostname} ~"
                 f"\n> `#` {command}"
@@ -96,7 +96,7 @@ async def sh(context):
                 await attach_log(context, result)
                 return
 
-            if uid is 0:
+            if uid == 0:
                 await context.edit(
                     f"`{user}`@{hostname} ~"
                     f"\n> `#` {command}"
