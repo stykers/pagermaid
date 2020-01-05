@@ -26,7 +26,6 @@ from pathlib import Path
 from collections import deque
 from pagermaid import redis
 
-
 load_dotenv("config.env")
 
 
@@ -80,9 +79,9 @@ async def make_top_cloud(context):
     margin = int(environ.get("MARGIN", "20"))
 
     cloud = WordCloud(
-      background_color=background,
-      width=width - 2 * int(margin),
-      height=height - 2 * int(margin)
+        background_color=background,
+        width=width - 2 * int(margin),
+        height=height - 2 * int(margin)
     ).generate_from_frequencies(resource_dict)
 
     cloud.to_file("cloud.png")
@@ -326,8 +325,8 @@ async def generate_strings(replied_user):
     caption += f"Common Chats: {common_chat} \n"
     caption += f"Permanent Link: "
     caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \
-        if last_name is not "This user does not have a " \
-                            "last name." else f"[{first_name}](tg://user?id={user_id})"
+        if last_name != "This user does not have a " \
+                        "last name." else f"[{first_name}](tg://user?id={user_id})"
     return caption
 
 
@@ -563,9 +562,9 @@ class GoogleSearch:
     TOTAL_SELECTOR = "#resultStats"
     RESULTS_PER_PAGE = 10
     DEFAULT_HEADERS = [
-            ('User-Agent', USER_AGENT),
-            ("Accept-Language", "en-US,en;q=0.5"),
-        ]
+        ('User-Agent', USER_AGENT),
+        ("Accept-Language", "en-US,en;q=0.5"),
+    ]
 
     def search(self, query, num_results=10, prefetch_pages=True, prefetch_threads=10):
         search_results = []
