@@ -8,9 +8,9 @@ from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedE
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
-from jarvis import command_help, bot
-from jarvis.events import register, diagnostics
-from jarvis.utils import generate_strings, fetch_user
+from pagermaid import command_help, bot
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import generate_strings, fetch_user
 
 
 @register(outgoing=True, pattern="^-username (.*)")

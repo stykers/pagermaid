@@ -1,11 +1,11 @@
-""" Jarvis module to handle sticker collection. """
+""" PagerMaid module to handle sticker collection. """
 
 from urllib import request
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
-from jarvis import bot, command_help
-from jarvis.events import register, diagnostics
-from jarvis.utils import add_sticker, resize_image, upload_sticker
+from pagermaid import bot, command_help
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import add_sticker, resize_image, upload_sticker
 
 
 @register(outgoing=True, pattern="^-sticker")

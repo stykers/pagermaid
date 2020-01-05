@@ -3,8 +3,8 @@
 from os import remove
 from pyqrcode import create
 from PIL import Image
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register, diagnostics
+from pagermaid import command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
 try:
     from pyzbar.pyzbar import decode
 except ImportError:

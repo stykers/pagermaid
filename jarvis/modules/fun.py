@@ -4,9 +4,9 @@ from asyncio import sleep
 from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
-from jarvis import command_help, bot
-from jarvis.events import register, diagnostics
-from jarvis.utils import mocker, corrupt, owoifier, execute, random_gen
+from pagermaid import command_help, bot
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 
 
 @register(pattern='-animate(?: |$)(.*)')

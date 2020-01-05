@@ -1,10 +1,10 @@
-""" Jarvis module to semi-automate moderation of a group. """
+""" PagerMaid module to semi-automate moderation of a group. """
 
 from telethon.errors import PhotoCropSizeSmallError, ImageProcessFailedError, ChatAdminRequiredError
 from telethon.tl.types import MessageMediaPhoto, ChannelParticipantsAdmins
 from telethon.tl.functions.channels import EditPhotoRequest
-from jarvis import command_help, log, log_chatid, bot, redis_check
-from jarvis.events import register, diagnostics
+from pagermaid import command_help, log, log_chatid, bot, redis_check
+from pagermaid.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-group_image$")

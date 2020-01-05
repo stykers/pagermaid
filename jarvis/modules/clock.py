@@ -4,9 +4,9 @@ from os import environ
 from dotenv import load_dotenv
 from datetime import datetime
 from pytz import country_names
-from jarvis import command_help
-from jarvis.events import register, diagnostics
-from jarvis.utils import get_timezone
+from pagermaid import command_help
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import get_timezone
 
 load_dotenv("config.env")
 region = environ.get("APPLICATION_REGION", "United States")

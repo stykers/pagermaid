@@ -24,7 +24,7 @@ from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
-from jarvis import redis
+from pagermaid import redis
 
 
 load_dotenv("config.env")

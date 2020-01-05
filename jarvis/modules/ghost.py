@@ -1,7 +1,7 @@
 """ Ghost a user by sending read to every single message they send. """
 
-from jarvis import redis, redis_check, command_help, log, log_chatid
-from jarvis.events import register, diagnostics
+from pagermaid import redis, redis_check, command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-ghost_enable$")

@@ -1,10 +1,10 @@
-""" Jarvis regex utility. """
+""" PagerMaid regex utility. """
 
 from sre_constants import error as sre_err
 from re import match, sub, I, IGNORECASE
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
-from jarvis.events import register, diagnostics
-from jarvis.utils import format_sed
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import format_sed
 
 
 @register(outgoing=True, pattern="^s")

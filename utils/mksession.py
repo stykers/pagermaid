@@ -6,5 +6,5 @@ load_dotenv("config.env")
 API_KEY = os.environ.get("API_KEY", None)
 API_HASH = os.environ.get("API_HASH", None)
 
-bot = TelegramClient('jarvis', API_KEY, API_HASH)
+bot = TelegramClient('pagermaid', API_KEY, API_HASH)
 bot.start()

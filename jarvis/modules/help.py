@@ -1,7 +1,7 @@
 """ The help module. """
 
-from jarvis import command_help
-from jarvis.events import register, diagnostics
+from pagermaid import command_help
+from pagermaid.events import register, diagnostics
 
 
 @register(outgoing=True, pattern="^-help(?: |$)(.*)")

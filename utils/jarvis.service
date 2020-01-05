@@ -1,5 +1,5 @@
 [Unit]
-Description=Jarvis telegram utility daemon
+Description=PagerMaid telegram utility daemon
 After=network.target
 
 [Install]
@@ -7,7 +7,7 @@ WantedBy=multi-user.target
 
 [Service]
 Type=simple
-User=jarvis
-WorkingDirectory=/var/lib/jarvis
-ExecStart=/bin/bash -c "source venv/bin/activate; /usr/bin/env python3 -m jarvis"
+User=pagermaid
+WorkingDirectory=/var/lib/pagermaid
+ExecStart=/bin/bash -c "source venv/bin/activate; /usr/bin/env python3 -m pagermaid"
 Restart=always

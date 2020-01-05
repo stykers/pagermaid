@@ -1,12 +1,12 @@
-""" Jarvis module for adding captions to image. """
+""" PagerMaid module for adding captions to image. """
 
 from os import remove
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register, diagnostics
-from jarvis.utils import execute
+from pagermaid import command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import execute
 
 
 @register(outgoing=True, pattern="^-caption(?: |$)(.*)")

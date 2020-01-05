@@ -1,9 +1,9 @@
-""" Jarvis launch sequence. """
+""" PagerMaid launch sequence. """
 
 from importlib import import_module
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
-from jarvis import logs, bot
-from jarvis.modules import all_modules
+from pagermaid import logs, bot
+from pagermaid.modules import all_modules
 
 invalid_phone = '\nInvalid phone number entered.' \
                 '\nPlease make sure you specified' \
@@ -16,8 +16,8 @@ except PhoneNumberInvalidError:
     exit(1)
 
 for module_name in all_modules:
-    imported_module = import_module("jarvis.modules." + module_name)
+    imported_module = import_module("pagermaid.modules." + module_name)
 
-logs.info("Jarvis have started, The prefix is -, type -help for help message.")
+logs.info("PagerMaid have started, The prefix is -, type -help for help message.")
 
 bot.run_until_disconnected()

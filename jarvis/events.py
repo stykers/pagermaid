@@ -1,4 +1,4 @@
-""" A jarvis class for event related stuff. """
+""" A pagermaid class for event related stuff. """
 
 import traceback
 
@@ -9,7 +9,7 @@ from sys import exc_info
 from telethon.events import StopPropagation
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
-from jarvis import bot
+from pagermaid import bot
 
 
 def register(**args):
@@ -66,15 +66,15 @@ def diagnostics(function):
                      "" + str(traceback.format_exc()) + "\n-----END TRACEBACK-----\n" \
                      "# Error: \"" + str(exc_info()[1]) + "\". \n" \
                      "# Revision: " + revision_result + "."
-            report_file = open("error_report.jarvis", "w+")
+            report_file = open("error_report.pagermaid", "w+")
             report_file.write(report)
             report_file.close()
 
             await context.client.send_file(
                 context.chat_id,
-                "error_report.jarvis",
+                "error_report.pagermaid",
                 caption=notification
             )
-            remove("error_report.jarvis")
+            remove("error_report.pagermaid")
             return
     return handler

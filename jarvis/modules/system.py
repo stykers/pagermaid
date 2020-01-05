@@ -1,12 +1,12 @@
-""" System related utilities for Jarvis to integrate into the system. """
+""" System related utilities for PagerMaid to integrate into the system. """
 
 from platform import node
 from getpass import getuser
 from os import remove
 from os import geteuid
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register, diagnostics
-from jarvis.utils import url_tracer, attach_log, execute
+from pagermaid import command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import url_tracer, attach_log, execute
 
 
 @register(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
@@ -129,7 +129,7 @@ async def upgrade_modules(context):
         await context.edit("`Installing updates . . .`")
         result = await execute("pip install -r requirements.txt --upgrade")
         await attach_log(context, result)
-        await context.edit("`Finished updating, restart if Jarvis is misbehaving.`")
+        await context.edit("`Finished updating, restart if PagerMaid is misbehaving.`")
 command_help.update({
     "upgrade_modules": "Parameter: -upgrade_modules\
     \nUsage: Upgrades all modules if you are using a virtualenv."
@@ -138,18 +138,18 @@ command_help.update({
 
 @register(outgoing=True, pattern="^-restart$")
 async def restart(context):
-    """ To re-execute Jarvis. """
+    """ To re-execute PagerMaid. """
     if not context.text[0].isalpha():
         await context.edit("`Attempting re-execution.`")
         if log:
             await context.client.send_message(
                 log_chatid,
-                "Jarvis power off."
+                "PagerMaid power off."
             )
         await context.client.disconnect()
 command_help.update({
     "restart": "Parameter: -restart\
-    \nUsage: Restarts Jarvis."
+    \nUsage: Restarts PagerMaid."
 })
 
 
@@ -202,11 +202,11 @@ command_help.update({
 @register(outgoing=True, pattern="^-contact(?: |$)(.*)")
 @diagnostics
 async def contact(context):
-    """ To contact the creator of Jarvis. """
+    """ To contact the creator of PagerMaid. """
     if not context.text[0].isalpha():
         await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
                            parse_mode="markdown")
-        message = "Hi, I would like to report something about Jarvis."
+        message = "Hi, I would like to report something about PagerMaid."
         if context.pattern_match.group(1):
             message = context.pattern_match.group(1)
         await context.client.send_message(

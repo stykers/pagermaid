@@ -29,15 +29,15 @@ RUN pacman -Syu --needed --noconfirm \
     zbar \
     procps-ng
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
-RUN useradd jarvis -r -m -d /jarvis
-RUN usermod -aG wheel,users jarvis
-USER jarvis
-RUN mkdir /jarvis/instance
-RUN git clone -b master https://git.stykers.moe/scm/~stykers/jarvis.git /jarvis/instance
-WORKDIR /jarvis/instance
-COPY ./jarvis.session* ./config.env /jarvis/instance/
-RUN sudo chown jarvis:jarvis /jarvis/instance/config.env
-RUN sudo chown -f jarvis:jarvis /jarvis/instance/jarvis.session; exit 0
+RUN useradd pagermaid -r -m -d /pagermaid
+RUN usermod -aG wheel,users pagermaid
+USER pagermaid
+RUN mkdir /pagermaid/instance
+RUN git clone -b master https://git.stykers.moe/scm/~stykers/pagermaid.git /pagermaid/instance
+WORKDIR /pagermaid/instance
+COPY ./pagermaid.session* ./config.env /pagermaid/instance/
+RUN sudo chown pagermaid:pagermaid /pagermaid/instance/config.env
+RUN sudo chown -f pagermaid:pagermaid /pagermaid/instance/pagermaid.session; exit 0
 RUN python3 -m virtualenv venv
 RUN source venv/bin/activate; pip3 install -r requirements.txt
 CMD ["sh","utils/entrypoint.sh"]

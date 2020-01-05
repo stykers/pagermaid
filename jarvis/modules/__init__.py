@@ -1,8 +1,8 @@
-""" Jarvis module init. """
+""" PagerMaid module init. """
 
 from os.path import dirname, basename, isfile
 from glob import glob
-from jarvis import logs
+from pagermaid import logs
 
 
 def __list_modules():

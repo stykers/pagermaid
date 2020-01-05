@@ -1,11 +1,11 @@
-""" Pulls in the new version of Jarvis from the git server. """
+""" Pulls in the new version of PagerMaid from the git server. """
 
 from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register, diagnostics
-from jarvis.utils import changelog_gen, branch_check, execute
+from pagermaid import command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import changelog_gen, branch_check, execute
 
 
 @diagnostics
@@ -13,7 +13,7 @@ from jarvis.utils import changelog_gen, branch_check, execute
 async def upstream(context):
     await context.edit("`Checking remote origin for updates . . .`")
     parameter = context.pattern_match.group(1)
-    repo_url = 'https://git.stykers.moe/scm/~stykers/jarvis.git'
+    repo_url = 'https://git.stykers.moe/scm/~stykers/pagermaid.git'
 
     try:
         repo = Repo()
@@ -43,7 +43,7 @@ async def upstream(context):
     changelog = await changelog_gen(repo, f'HEAD..upstream/{active_branch}')
 
     if not changelog:
-        await context.edit(f"`Jarvis is up to date with branch `**{active_branch}**`.`")
+        await context.edit(f"`PagerMaid is up to date with branch `**{active_branch}**`.`")
         return
 
     if parameter != "true":
@@ -71,23 +71,23 @@ async def upstream(context):
         await execute("pip install -r requirements.txt")
         if log:
             await context.client.send_message(
-                log_chatid, "Jarvis have been updated."
+                log_chatid, "PagerMaid have been updated."
             )
         await context.edit(
-            '`Update successful, Jarvis is restarting.`'
+            '`Update successful, PagerMaid is restarting.`'
             )
         await context.client.disconnect()
     except GitCommandError:
         upstream_remote.git.reset('--hard')
         if log:
             await context.client.send_message(
-                log_chatid, "Jarvis failed to update."
+                log_chatid, "PagerMaid failed to update."
             )
         await context.edit(
-            '`Updated with errors, Jarvis is restarting.`'
+            '`Updated with errors, PagerMaid is restarting.`'
             )
         await context.client.disconnect()
 command_help.update({
     "update": "Parameter: -update <boolean>\
-    \nUsage: Checks for updates from remote origin, and apply updates to Jarvis."
+    \nUsage: Checks for updates from remote origin, and apply updates to PagerMaid."
 })

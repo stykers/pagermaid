@@ -2,9 +2,9 @@
 
 from asyncio import sleep
 from telethon.errors import rpcbaseerrors
-from jarvis import log, log_chatid, command_help
-from jarvis.events import register, diagnostics
-from jarvis.utils import send_prune_notify as send_notify
+from pagermaid import log, log_chatid, command_help
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import send_prune_notify as send_notify
 
 
 @register(outgoing=True, pattern="^-prune$")

@@ -1,4 +1,4 @@
 #!/bin/sh
-cd /var/lib/jarvis
+cd /var/lib/pagermaid
 source venv/bin/activate
-exec chpst -u jarvis:jarvis:wheel:tty:video /usr/bin/env python3 -m jarvis
+exec chpst -u pagermaid:pagermaid:wheel:tty:video /usr/bin/env python3 -m pagermaid

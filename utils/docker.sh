@@ -2,7 +2,7 @@
 
 welcome() {
   echo ""
-  echo "Welcome to Jarvis docker installer."
+  echo "Welcome to PagerMaid docker installer."
   echo "The installation process will begin"
   echo "in 5 seconds, if you wish to cancel,"
   echo "please abort within 5 seconds."
@@ -50,9 +50,9 @@ access_check() {
 
 download_repo() {
   echo "Downloading repository . . ."
-  rm -rf /tmp/jarvis
-  git clone https://git.stykers.moe/scm/~stykers/jarvis.git /tmp/jarvis
-  cd /tmp/jarvis || exit
+  rm -rf /tmp/pagermaid
+  git clone https://git.stykers.moe/scm/~stykers/pagermaid.git /tmp/pagermaid
+  cd /tmp/pagermaid || exit
 }
 
 configure() {
@@ -96,23 +96,23 @@ configure() {
 }
 
 build_docker() {
-  printf "Please enter the name of the Jarvis container: "
+  printf "Please enter the name of the PagerMaid container: "
   read -r container_name <&1
   echo "Building docker image . . ."
   docker rm -f "$container_name" > /dev/null 2>&1
-  docker build . --force-rm --no-cache -t jarvis_"$container_name"
+  docker build . --force-rm --no-cache -t pagermaid_"$container_name"
 }
 
 start_docker() {
   echo "Starting docker container . . ."
   echo "After logging in, press Ctrl + C to make the container restart in background mode."
   sleep 3
-  docker run -it --restart=always --name="$container_name" --hostname="$container_name" jarvis_"$container_name" <&1
+  docker run -it --restart=always --name="$container_name" --hostname="$container_name" pagermaid_"$container_name" <&1
 }
 
 cleanup() {
   echo "Cleaning up . . ."
-  rm -rf /tmp/jarvis
+  rm -rf /tmp/pagermaid
 }
 
 start_installation() {

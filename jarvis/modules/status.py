@@ -8,9 +8,9 @@ from platform import python_version, uname
 from shutil import which
 from telethon import version as telethon_version
 from sys import platform
-from jarvis import command_help, redis_check
-from jarvis.events import register, diagnostics
-from jarvis.utils import unit_convert, execute, make_top_cloud
+from pagermaid import command_help, redis_check
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import unit_convert, execute, make_top_cloud
 
 
 hostname = uname().node
@@ -94,14 +94,14 @@ command_help.update({
 @register(outgoing=True, pattern="^-version$")
 @diagnostics
 async def version(context):
-    """ Command to query the version of Jarvis. """
+    """ Command to query the version of PagerMaid. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         if which("git") is not None:
             version_result = await execute("git describe --all --long")
             revision_result = await execute("git rev-list --all --count")
 
             await context.edit(
-                "`Jarvis Version: "
+                "`PagerMaid Version: "
                 f"{version_result}"
                 "` \n"
                 "`Git Revision: "
@@ -128,7 +128,7 @@ async def status(context):
             db = "Connected to Redis."
         await context.edit(
             "`"
-            "Jarvis is online. \n\n"
+            "PagerMaid is online. \n\n"
             f"Hostname: {hostname} \n"
             f"Database Status: {db} \n"
             f"Host Platform: {platform} \n"
@@ -139,7 +139,7 @@ async def status(context):
         )
 command_help.update({
     "status": "Parameter: -status\
-    \nUsage: Output the status of Jarvis"
+    \nUsage: Output the status of PagerMaid"
 })
 
 

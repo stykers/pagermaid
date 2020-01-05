@@ -3,9 +3,9 @@
 from telethon.tl.functions.messages import DeleteChatUserRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
 from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
-from jarvis import command_help, bot, log, log_chatid
-from jarvis.events import register, diagnostics
-from jarvis.utils import random_gen
+from pagermaid import command_help, bot, log, log_chatid
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import random_gen
 
 
 @register(outgoing=True, pattern="^-userid$")
@@ -145,7 +145,7 @@ command_help.update({
 async def source(context):
     """ Prints the git repository URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("https://git.stykers.moe/scm/~stykers/jarvis.git")
+        await context.edit("https://git.stykers.moe/scm/~stykers/pagermaid.git")
 command_help.update({
     "source": "Parameter: -source\
     \nUsage: Prints the git repository URL."
@@ -157,10 +157,10 @@ command_help.update({
 async def site(context):
     """ Outputs the site URL. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        await context.edit("https://jarvis.stykers.moe/")
+        await context.edit("https://pagermaid.stykers.moe/")
 command_help.update({
     "site": "Parameter: -site\
-    \nUsage: Shows the site of Jarvis."
+    \nUsage: Shows the site of PagerMaid."
 })
 
 

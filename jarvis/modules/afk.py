@@ -1,9 +1,9 @@
-""" Jarvis auto-response for when you are AFK. """
+""" PagerMaid auto-response for when you are AFK. """
 
 from telethon.events import StopPropagation
-from jarvis import log, log_chatid, command_help, redis_check, count_msg, users
-from jarvis.events import register, diagnostics
-from jarvis.utils import afk_reason, is_afk, not_afk, db_afk
+from pagermaid import log, log_chatid, command_help, redis_check, count_msg, users
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import afk_reason, is_afk, not_afk, db_afk
 
 
 @register(outgoing=True, pattern="^-afk")

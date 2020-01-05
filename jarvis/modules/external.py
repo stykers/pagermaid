@@ -1,12 +1,12 @@
-""" Jarvis features that uses external HTTP APIs other than Telegram. """
+""" PagerMaid features that uses external HTTP APIs other than Telegram. """
 
 from googletrans import Translator, LANGUAGES
 from os import remove, environ
 from dotenv import load_dotenv
 from gtts import gTTS
-from jarvis import command_help, log, log_chatid
-from jarvis.events import register, diagnostics
-from jarvis.utils import clear_emojis, attach_log, GoogleSearch
+from pagermaid import command_help, log, log_chatid
+from pagermaid.events import register, diagnostics
+from pagermaid.utils import clear_emojis, attach_log, GoogleSearch
 
 
 load_dotenv("config.env")
@@ -17,7 +17,7 @@ result_length = environ.get("RESULT_LENGTH", 5)
 @register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
 @diagnostics
 async def translate(context):
-    """ Jarvis universal translator. """
+    """ PagerMaid universal translator. """
     if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
         translator = Translator()
         text = await context.get_reply_message()
