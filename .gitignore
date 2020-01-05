@@ -1,10 +1,9 @@
 venv/
 .idea/
 config.env
-database.db
-jarvis.session
-jarvis.session-journal
+pagermaid.session
+pagermaid.session-journal
 *.rewrite.py
 __pycache__/*
-jarvis/__pycache__/*
-jarvis/modules/__pycache__/*
+pagermaid/__pycache__/*
+pagermaid/modules/__pycache__/*
