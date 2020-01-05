@@ -75,9 +75,14 @@ configure() {
   read -r logging_confirmation <&1
   case $logging_confirmation in
       [yY][eE][sS]|[yY])
-		    printf "Please enter your logging group/channel ChatID: "
+		    printf "Please enter your logging group/channel ChatID (press Enter if you want to log into Kat): "
 		    read -r log_chatid <&1
-		    sed -i "s/en/$log_chatid/" $config_file
+		    if [ -z "$log_chatid" ]
+		    then
+		      echo "Setting log target to Kat."
+		    else
+		      sed -i "s/503691334/$log_chatid/" $config_file
+		    fi
 		    sed -i "s/LOG=False/LOG=True/" $config_file
 		    ;;
       [nN][oO]|[nN])
@@ -91,15 +96,23 @@ configure() {
 }
 
 build_docker() {
+  printf "Please enter the name of the Jarvis container: "
+  read -r container_name <&1
   echo "Building docker image . . ."
-  docker rm -f jarvis > /dev/null 2>&1
-  docker build . --force-rm --no-cache -t jarvis
+  docker rm -f "$container_name" > /dev/null 2>&1
+  docker build . --force-rm --no-cache -t jarvis_"$container_name"
 }
 
 start_docker() {
   echo "Starting docker container . . ."
   echo "After logging in, press Ctrl + C to make the container restart in background mode."
-  docker run -it --restart=always --name=jarvis --hostname=jarvis jarvis <&1
+  sleep 3
+  docker run -it --restart=always --name="$container_name" --hostname="$container_name" jarvis_"$container_name" <&1
+}
+
+cleanup() {
+  echo "Cleaning up . . ."
+  rm -rf /tmp/jarvis
 }
 
 start_installation() {
@@ -111,6 +124,7 @@ start_installation() {
   configure
   build_docker
   start_docker
+  cleanup
 }
 
 start_installation
