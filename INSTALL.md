@@ -6,7 +6,7 @@ Here are the installation instructions of Jarvis, with support
 ## Quick start
 If your system is compatible with docker, and you want a 
 snappy and supported environment, docker is the way for you.
-Tho this will limit system-wide utilities to inside the container.
+Tho this will limit system-wide utilities to within the container.
 
 Create your application at https://my.telegram.org/, and 
 run this command:
@@ -41,6 +41,11 @@ APPLICATION_LANGUAGE="en"
 APPLICATION_REGION="United States"
 LOG=False
 LOG_CHATID=503691334
+RESULT_LENGTH=5
+WIDTH=1920
+HEIGHT=1080
+BACKGROUND="#101010"
+MARGIN=20
 ```
 You should definitely update the LOG_CHATID before enabling
  logging (or not if you are close friends with me), but first
@@ -57,7 +62,7 @@ Copy the Jarvis work dir to /var/lib, and enter
 ```shell script
 pip3 install -r requirements.txt
 ```
-Now make sure zbar, neofetch, tesseract and imagemagick
+Now make sure zbar, neofetch, tesseract and ImageMagick
  packages are installed via your package manager, and you
  are ready to start Jarvis.
 ```shell script
