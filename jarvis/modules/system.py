@@ -136,8 +136,8 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-shutdown$")
-async def shutdown(context):
+@register(outgoing=True, pattern="^-restart$")
+async def restart(context):
     """ To re-execute Jarvis. """
     if not context.text[0].isalpha():
         await context.edit("`Attempting re-execution.`")
@@ -148,8 +148,8 @@ async def shutdown(context):
             )
         await context.client.disconnect()
 command_help.update({
-    "shutdown": "Parameter: -shutdown\
-    \nUsage: Shuts down Jarvis."
+    "restart": "Parameter: -restart\
+    \nUsage: Restarts Jarvis."
 })
 
 
