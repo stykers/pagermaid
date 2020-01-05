@@ -12,7 +12,6 @@ google_auth_oauthlib
 google_images_download
 googletrans
 gsearch
-gtts
 hachoir
 pybase64
 python-dotenv
