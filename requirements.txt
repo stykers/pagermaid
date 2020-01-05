@@ -31,3 +31,4 @@ youtube-dl
 pygments
 matplotlib
 wordcloud
+lxml
