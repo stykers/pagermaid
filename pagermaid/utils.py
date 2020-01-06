@@ -167,29 +167,6 @@ async def branch_check(branch):
     return
 
 
-async def db_afk(reason):
-    """ Sets user AFK data. """
-    redis.set('is_afk', reason)
-
-
-async def afk_reason():
-    """ Obtains user afk reason. """
-    return strb(redis.get('is_afk'))
-
-
-async def not_afk():
-    """ Clears afk status. """
-    redis.delete('is_afk')
-
-
-async def is_afk():
-    """ Checks if user is afk. """
-    if redis.get('is_afk'):
-        return True
-    else:
-        return False
-
-
 async def send_prune_notify(context, count):
     return await context.client.send_message(
         context.chat_id,
