@@ -17,14 +17,14 @@ async def ghost_enable(context):
         if log:
             await context.client.send_message(
                 log_chatid,
-                "UserID " + str(context.chat_id) + " added to list of ghosted users.")
+                "ChatID " + str(context.chat_id) + " added to list of ghosted users.")
     elif context.pattern_match.group(1) == 'false':
         redis.delete("ghosted.chat_id." + str(context.chat_id))
         await context.delete()
         if log:
             await context.client.send_message(
                 log_chatid,
-                "UserID " + str(context.chat_id) + " removed from list of ghosted users.")
+                "ChatID " + str(context.chat_id) + " removed from list of ghosted users.")
     else:
         await context.edit("Invalid argument.")
 command_help.update({
