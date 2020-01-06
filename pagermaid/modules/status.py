@@ -161,17 +161,18 @@ async def speedtest(context):
     test.results.share()
     result = test.results.dict()
 
+    await context.edit("Timestamp "
+                       f"`{result['timestamp']}` \n\n"
+                       "Upload "
+                       f"`{unit_convert(result['upload'])}` \n"
+                       "Download "
+                       f"`{unit_convert(result['download'])}` \n"
+                       "Latency "
+                       f"`{result['ping']}` \n"
+                       "ISP "
+                       f"`{result['client']['isp']}`")
 
-await context.edit("Timestamp "
-                   f"`{result['timestamp']}` \n\n"
-                   "Upload "
-                   f"`{unit_convert(result['upload'])}` \n"
-                   "Download "
-                   f"`{unit_convert(result['download'])}` \n"
-                   "Latency "
-                   f"`{result['ping']}` \n"
-                   "ISP "
-                   f"`{result['client']['isp']}`")
+
 command_help.update({
     "speedtest": "Parameter: -speedtest\
     \nUsage: Execute the speedtest script and outputs your internet speed."

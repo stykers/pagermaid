@@ -1,7 +1,7 @@
 # Installation
 
-Here are the installation instructions of PagerMaid, with support
- for a variation of init systems.
+Here are instructions you will need to get PagerMaid started, with
+ support for various init systems.
 
 ## Quick start
 If your system is compatible with docker, and you want a 
