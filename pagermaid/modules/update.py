@@ -75,7 +75,7 @@ async def upstream(context):
             )
         await context.edit(
             '`Update successful, PagerMaid is restarting.`'
-            )
+        )
         await context.client.disconnect()
     except GitCommandError:
         upstream_remote.git.reset('--hard')
@@ -85,8 +85,10 @@ async def upstream(context):
             )
         await context.edit(
             '`Updated with errors, PagerMaid is restarting.`'
-            )
+        )
         await context.client.disconnect()
+
+
 command_help.update({
     "update": "Parameter: -update <boolean>\
     \nUsage: Checks for updates from remote origin, and apply updates to PagerMaid."

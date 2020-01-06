@@ -10,25 +10,26 @@ from pagermaid.utils import afk_reason, is_afk, not_afk, db_afk
 @diagnostics
 async def afk(context):
     """ To set yourself as afk. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        if not redis_check():
-            await context.edit("`The database is malfunctioning.`")
-            return
-        message = context.text
-        try:
-            reason = str(message[5:])
-        except:
-            reason = ''
-        if not reason:
-            reason = 'rest'
-        await context.edit("Entering afk status.")
-        if log:
-            await context.client.send_message(
-                log_chatid,
-                "User is afk, begin message logging."
-            )
-        await db_afk(reason)
-        raise StopPropagation
+    if not redis_check():
+        await context.edit("`The database is malfunctioning.`")
+        return
+    message = context.text
+    try:
+        reason = str(message[5:])
+    except:
+        reason = ''
+    if not reason:
+        reason = 'rest'
+    await context.edit("Entering afk status.")
+    if log:
+        await context.client.send_message(
+            log_chatid,
+            "User is afk, begin message logging."
+        )
+    await db_afk(reason)
+    raise StopPropagation
+
+
 command_help.update({
     "afk": "Parameter: -afk <text>\
     \nUsage: Sets yourself to afk and enables message logging and auto response, a message cancels the status."

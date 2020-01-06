@@ -16,32 +16,33 @@ region = environ.get("APPLICATION_REGION", "United States")
 @diagnostics
 async def time(context):
     """ For querying time. """
-    if not context.text[0].isalpha() and context.text[0] not in ("/", "#", "@", "!"):
-        country = context.pattern_match.group(1).title()
-        time_form = "%I:%M %p"
-        date_form = "%A %d/%m/%y"
-        if not country:
-            time_zone = await get_timezone(region)
-            await context.edit(
-                f"**Time in {region}**\n"
-                f"`{datetime.now(time_zone).strftime(date_form)} "
-                f"{datetime.now(time_zone).strftime(time_form)}`"
-            )
-            return
+    country = context.pattern_match.group(1).title()
+    time_form = "%I:%M %p"
+    date_form = "%A %d/%m/%y"
+    if not country:
+        time_zone = await get_timezone(region)
+        await context.edit(
+            f"**Time in {region}**\n"
+            f"`{datetime.now(time_zone).strftime(date_form)} "
+            f"{datetime.now(time_zone).strftime(time_form)}`"
+        )
+        return
 
-        time_zone = await get_timezone(country)
-        if not time_zone:
-            await context.edit("`Invalid parameter.`")
-            return
+    time_zone = await get_timezone(country)
+    if not time_zone:
+        await context.edit("`Invalid parameter.`")
+        return
 
-        try:
-            country_name = country_names[country]
-        except KeyError:
-            country_name = country
+    try:
+        country_name = country_names[country]
+    except KeyError:
+        country_name = country
 
-        await context.edit(f"**Time in {country_name}**\n"
-                           f"`{datetime.now(time_zone).strftime(date_form)} "
-                           f"{datetime.now(time_zone).strftime(time_form)}`")
+    await context.edit(f"**Time in {country_name}**\n"
+                       f"`{datetime.now(time_zone).strftime(date_form)} "
+                       f"{datetime.now(time_zone).strftime(time_form)}`")
+
+
 command_help.update({
     "time": "Parameter: -time <region>\
     \nUsage: Displays time of specific region, reads from config file if parameter is empty."
