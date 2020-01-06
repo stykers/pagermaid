@@ -5,8 +5,9 @@ Here are instructions you will need to get PagerMaid started, with
 
 ## Quick start
 If your system is compatible with docker, and you want a 
-snappy and supported environment, docker is the way for you.
-Tho this will limit system-wide utilities to within the container.
+snappy and supported environment, docker will get you started
+ very quickly. Despite the convenience, this installation method
+ limits system-wide utilities to within the container.
 
 Create your application at https://my.telegram.org/, and 
 run this command:
@@ -26,34 +27,13 @@ You need Linux or *BSD for this software, and your system
  should run at least python 3.6, virtualenv support is
   recommended.
 
-Assuming you have settled your python environment (python
- interpreter, virtualenv and such), let's move on to
-  configuration.
+Assuming your python environment meets the standards,
+ let's move on to configuration.
 
 ## Configuration
 Copy the file config.gen.env to config.env, and open it with
- your favorite text editor, it should look like this:
-```.env
-API_KEY="ID_HERE"
-API_HASH="HASH_HERE"
-DEBUG=False
-APPLICATION_LANGUAGE="en"
-APPLICATION_REGION="United States"
-LOG=False
-LOG_CHATID=503691334
-RESULT_LENGTH=5
-WIDTH=1920
-HEIGHT=1080
-BACKGROUND="#101010"
-MARGIN=20
-```
-You should definitely update the LOG_CHATID before enabling
- logging (or not if you are close friends with me), but first
- we need to get the bot started, go to
- https://my.telegram.org/apps and create an application,
- fill in the config file API credentials from the data
- provided, and set language to your language code,
- and set region to your country **full name**.
+ your favorite text editor. Edit the config file until you are
+ satisfied with the settings.
 
 ## Installation
 Copy the PagerMaid work dir to /var/lib, and enter
