@@ -5,7 +5,7 @@ Here are instructions you will need to get PagerMaid started, with
 
 ## Quick start
 If your system is compatible with docker, and you want a 
-snappy and supported environment, docker will get you started
+snappy and supported installation, docker will get you started
  very quickly. Despite the convenience, this installation method
  limits system-wide utilities to within the container.
 
