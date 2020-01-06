@@ -4,6 +4,8 @@ from googletrans import Translator, LANGUAGES
 from os import remove, environ
 from dotenv import load_dotenv
 from gtts import gTTS
+from re import compile as regex_compile
+from pagermaid.utils import fetch_youtube_audio
 from pagermaid import command_help, log, log_chatid
 from pagermaid.events import register, diagnostics
 from pagermaid.utils import clear_emojis, attach_log, GoogleSearch
@@ -142,4 +144,32 @@ async def google(context):
 command_help.update({
     "google": "Parameter: -google <text>\
     \nUsage: Searches Google for a string."
+})
+
+
+@register(outgoing=True, pattern=r"^-fetchaudio(?: |$)([\s\S]*)")
+@diagnostics
+async def fetchaudio(context):
+    """ Fetches audio from provided URL. """
+    url = context.pattern_match.group(1)
+    reply = await context.get_reply_message()
+    reply_id = None
+    await context.edit("Fetching audio . . .")
+    if reply:
+        reply_id = reply.id
+    if url is None:
+        await context.edit("Invalid arguments.")
+        return
+    youtube_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\.com)?/.+")
+    if youtube_pattern.match(url):
+        await fetch_youtube_audio(context, url, reply_id)
+        if log:
+            await context.client.send_message(
+                log_chatid, "Fetched audio from `" + url + "`."
+            )
+
+
+command_help.update({
+    "fetchaudio": "Parameter: -fetchaudio <url>\
+    \nUsage: Fetches audio from multiple platforms."
 })

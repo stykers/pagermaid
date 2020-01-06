@@ -24,9 +24,34 @@ from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
-from pagermaid import redis
+from youtube_dl import YoutubeDL
+
 
 load_dotenv("config.env")
+
+
+async def fetch_youtube_audio(context, url, reply_id):
+    youtube_dl_options = {
+        'format': 'bestaudio/best',
+        'outtmpl': "output.%(ext)s",
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+    YoutubeDL(youtube_dl_options).download([url])
+    try:
+        await context.client.send_file(
+            context.chat_id,
+            "output.mp3",
+            reply_to=reply_id
+        )
+    except ValueError:
+        await context.edit("`An error occurred during the download.`")
+        return
+    await context.delete()
+    remove("output.mp3")
 
 
 async def make_top_cloud(context):
@@ -50,7 +75,7 @@ async def make_top_cloud(context):
 
             if command != "top":
                 command_list.append((command, cpu, mem))
-        except:
+        except BaseException:
             pass
     command_dict = {}
     for command, cpu, mem in command_list:
@@ -70,7 +95,7 @@ async def make_top_cloud(context):
         width, height = ((popen("xrandr | grep '*'").read()).split()[0]).split("x")
         width = int(width)
         height = int(height)
-    except:
+    except BaseException:
         pass
     if not width or not height:
         width = int(environ.get("WIDTH", "1920"))
