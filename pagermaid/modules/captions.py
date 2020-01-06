@@ -6,27 +6,16 @@ from pygments.formatters import img
 from pygments.lexers import guess_lexer
 from pagermaid import command_help, log, log_chatid
 from pagermaid.events import register, diagnostics
-from pagermaid.utils import execute
+from pagermaid.utils import execute, obtain_source_file, upload_result_image
 
 
 @register(outgoing=True, pattern="^-convert(?: |$)(.*)")
 @diagnostics
 async def extract(context):
     """ Converts image to png. """
-    if context.fwd_from:
-        return
-    reply = await context.get_reply_message()
-    reply_id = None
-    await context.edit("Rendering image, please wait . . .")
-    if reply:
-        reply_id = reply.id
-        target_file_path = await context.client.download_media(
-            await context.get_reply_message()
-        )
-    else:
-        target_file_path = await context.download_media()
-    if target_file_path is None:
-        await context.edit("`There are no attachment in target.`")
+    try:
+        reply_id, target_file_path = await obtain_source_file(context)
+    except ValueError:
         return
     result = await execute("./utils/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str("") +
@@ -73,45 +62,17 @@ async def caption(context):
     else:
         await context.edit("Invalid syntax.")
         return
-    if context.fwd_from:
-        return
-    reply = await context.get_reply_message()
-    reply_id = None
-    await context.edit("Rendering image, please wait . . .")
-    if reply:
-        reply_id = reply.id
-        target_file_path = await context.client.download_media(
-            await context.get_reply_message()
-        )
-    else:
-        target_file_path = await context.download_media()
-    if target_file_path is None:
-        await context.edit("`There are no attachment in target.`")
+    try:
+        reply_id, target_file_path = await obtain_source_file(context)
+    except ValueError:
         return
     result = await execute("./utils/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str(string_1) +
                            "\" " + "\"" + str(string_2) + "\"")
-    if not result:
-        await context.edit("`Something wrong happened, please report this problem.`")
-        try:
-            remove("result.png")
-            remove(target_file_path)
-        except FileNotFoundError:
-            pass
-        return
     try:
-        await context.client.send_file(
-            context.chat_id,
-            "result.png",
-            reply_to=reply_id
-        )
+        await upload_result_image(context, result, target_file_path, reply_id)
     except ValueError:
-        await context.edit("`An error occurred during the conversion.`")
-        remove(target_file_path)
         return
-    await context.delete()
-    remove("result.png")
-    remove(target_file_path)
     message = string_1 + "` and `" + string_2
     if log:
         await context.client.send_message(
