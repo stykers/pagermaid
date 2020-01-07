@@ -25,12 +25,17 @@ async def ghost_enable(context):
             await context.client.send_message(
                 log_chatid,
                 "ChatID " + str(context.chat_id) + " removed from list of ghosted users.")
+    elif context.pattern_match.group(1) == 'status':
+        if redis.get("ghosted.chat_id." + str(context.chat_id)):
+            await context.edit("Current chat is ghosted.")
+        else:
+            await context.edit("Current chat is not ghosted.")
     else:
         await context.edit("Invalid argument.")
 
 
 command_help.update({
-    "ghost": "Parameter: -ghost <true|false>\
+    "ghost": "Parameter: -ghost <true|false|status>\
     \nUsage: Toggles ghosting of user, requires redis."
 })
 

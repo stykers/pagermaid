@@ -29,7 +29,7 @@ logs = getLogger(__name__)
 if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7"\
         or platform == "freebsd8" or platform == "freebsdN" or platform == "openbsd6":
     logs.info(
-        "Detected platform as " + platform + ", chainloading PagerMaid."
+        "Detected platform as " + platform + ", proceeding to early load process of PagerMaid."
     )
 else:
     logs.error(
@@ -53,7 +53,7 @@ api_key = environ.get("API_KEY", None)
 api_hash = environ.get("API_HASH", None)
 bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
 
-redis = StrictRedis(host='localhost', port=6379, db=3)
+redis = StrictRedis(host='localhost', port=6379, db=14)
 
 
 def redis_check():
