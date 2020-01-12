@@ -20,7 +20,7 @@ kernel = uname().release
 @diagnostics
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
-    result = await execute("neofetch --stdout")
+    result = await execute("neofetch --config none --stdout")
     if result == "/bin/sh: neofetch: command not found":
         await context.edit("`Neofetch does not exist on this system.`")
         return
