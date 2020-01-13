@@ -4,11 +4,11 @@ from telethon.tl.functions.messages import DeleteChatUserRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
 from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
 from pagermaid import command_help, bot, log, log_chatid
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import random_gen
 
 
-@register(outgoing=True, pattern="^-userid$")
+@listener(outgoing=True, pattern="^-userid$")
 @diagnostics
 async def userid(context):
     """ Queries the userid of a user. """
@@ -44,7 +44,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-chatid$")
+@listener(outgoing=True, pattern="^-chatid$")
 @diagnostics
 async def chatid(context):
     """ Queries the chatid of the chat you are in. """
@@ -57,7 +57,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
+@listener(outgoing=True, pattern=r"^-log(?: |$)([\s\S]*)")
 @diagnostics
 async def log(context):
     """ Forwards a message into log group """
@@ -83,7 +83,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-leave$")
+@listener(outgoing=True, pattern="^-leave$")
 @diagnostics
 async def leave(context):
     """ It leaves you from the group. """
@@ -104,7 +104,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-rng(?: |$)(.*)")
+@listener(outgoing=True, pattern="^-rng(?: |$)(.*)")
 @diagnostics
 async def rng(context):
     """ Automates keyboard spamming. """
@@ -117,7 +117,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-meter2feet(?: |$)(.*)")
+@listener(outgoing=True, pattern="^-meter2feet(?: |$)(.*)")
 @diagnostics
 async def meter2feet(context):
     """ Converts meter to feet. """
@@ -132,7 +132,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-feet2meter(?: |$)(.*)")
+@listener(outgoing=True, pattern="^-feet2meter(?: |$)(.*)")
 @diagnostics
 async def feet2meter(context):
     """ Converts feet to meter. """
@@ -147,7 +147,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-source$")
+@listener(outgoing=True, pattern="^-source$")
 @diagnostics
 async def source(context):
     """ Prints the git repository URL. """
@@ -160,7 +160,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-site$")
+@listener(outgoing=True, pattern="^-site$")
 @diagnostics
 async def site(context):
     """ Outputs the site URL. """
@@ -173,11 +173,11 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-contextcrusher$")
+@listener(outgoing=True, command="contextcrusher")
 @diagnostics
 async def contextcrusher(context):
     """ Crushes a message and outputs the context as a string. """
-    await context.edit(str(await context.get_reply_message()))
+    await context.edit(f"{str(context.pattern_match.group(2))}")
 
 
 command_help.update({

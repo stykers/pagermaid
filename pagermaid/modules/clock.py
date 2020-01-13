@@ -5,14 +5,14 @@ from dotenv import load_dotenv
 from datetime import datetime
 from pytz import country_names
 from pagermaid import command_help
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import get_timezone
 
 load_dotenv("config.env")
 region = environ.get("APPLICATION_REGION", "United States")
 
 
-@register(outgoing=True, pattern="^-time(?: |$)(.*)")
+@listener(outgoing=True, command="time")
 @diagnostics
 async def time(context):
     """ For querying time. """

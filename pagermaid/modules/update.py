@@ -4,12 +4,12 @@ from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 from pagermaid import command_help, log, log_chatid
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import changelog_gen, branch_check, execute
 
 
 @diagnostics
-@register(outgoing=True, pattern="^-update(?: |$)(.*)")
+@listener(outgoing=True, pattern="^-update(?: |$)(.*)")
 async def upstream(context):
     await context.edit("`Checking remote origin for updates . . .`")
     parameter = context.pattern_match.group(1)

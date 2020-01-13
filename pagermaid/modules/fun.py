@@ -5,11 +5,11 @@ from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
 from pagermaid import command_help, bot
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 
 
-@register(pattern='-animate(?: |$)(.*)')
+@listener(command="animate")
 @diagnostics
 async def animate(context):
     """ Command for animated texts. """
@@ -42,7 +42,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-mock(?: |$)(.*)")
+@listener(outgoing=True, command="mock")
 @diagnostics
 async def mock(context):
     """ Mock people with weird caps. """
@@ -75,7 +75,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-widen(?: |$)(.*)")
+@listener(outgoing=True, command="widen")
 @diagnostics
 async def widen(context):
     """ Make texts weirdly wide. """
@@ -108,7 +108,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-fox(?: |$)(.*)")
+@listener(outgoing=True, command="fox")
 @diagnostics
 async def fox(context):
     """ Make a fox scratch your message. """
@@ -143,7 +143,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-owo(?: |$)([\s\S]*)")
+@listener(outgoing=True, command="owo")
 @diagnostics
 async def owo(context):
     """ Makes messages become owo. """
@@ -156,7 +156,7 @@ async def owo(context):
         if reply_msg.sender.is_self:
             try:
                 result = owoifier(reply_msg.text)
-            except:
+            except BaseException:
                 await context.delete()
                 return
             await reply_msg.edit(result)
@@ -164,7 +164,7 @@ async def owo(context):
         else:
             try:
                 result = owoifier(reply_msg.text)
-            except:
+            except BaseException:
                 await context.delete()
                 return
             await context.edit(result)
@@ -180,7 +180,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-ship(?: |$)(.*)")
+@listener(outgoing=True, command="ship")
 @diagnostics
 async def ship(context):
     """ Ship randomly generated members. """
@@ -233,20 +233,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-slepkat(?: |$)(.*)")
-@diagnostics
-async def slepkat(context):
-    """ Sleepykat simulator. """
-    await random_gen(context, "Zz")
-
-
-command_help.update({
-    "slepkat": "Parameter: -slepkat <integer>\
-    \nUsage: Sleepykat simulator."
-})
-
-
-@register(outgoing=True, pattern="^-aaa(?: |$)(.*)")
+@listener(outgoing=True, command="aaa")
 @diagnostics
 async def aaa(context):
     """ Generates screams. """
@@ -259,7 +246,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-asciiart(?: |$)(.*)")
+@listener(outgoing=True, command="asciiart")
 @diagnostics
 async def asciiart(context):
     """ Generates ASCII art for provided strings. """
@@ -276,7 +263,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-tuxsay(?: |$)(.*)")
+@listener(outgoing=True, command="tuxsay")
 @diagnostics
 async def tuxsay(context):
     """ Generates ASCII art for Tux saying stuff. """
@@ -292,31 +279,9 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^T_T$")
-async def cri(context):
-    """ T^T """
-    okay = "T_T"
-    for _ in range(10):
-        okay = okay[:-1] + "_T"
-        await context.edit(okay)
-    await context.edit("T_T")
-
-
-command_help.update({
-    "cri": "Parameter: T_T\
-     \nUsage: Weirdly edits cri messages."
-})
-
-
-@register(outgoing=True, pattern="^OwO$")
+@listener(outgoing=True, pattern="^OwO$")
 async def wink(context):
     """ OwO """
     await context.edit("OwU")
     await sleep(.3)
     await context.edit("OwO")
-
-
-command_help.update({
-    "cri": "Parameter: T_T\
-     \nUsage: Weirdly edits cri messages."
-})

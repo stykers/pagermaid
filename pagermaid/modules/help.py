@@ -1,10 +1,10 @@
 """ The help module. """
 
 from pagermaid import command_help
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 
 
-@register(outgoing=True, pattern="^-help(?: |$)(.*)")
+@listener(outgoing=True, command="help")
 @diagnostics
 async def help(context):
     """ The help command,"""

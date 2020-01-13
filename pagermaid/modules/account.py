@@ -9,11 +9,11 @@ from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRe
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
 from pagermaid import command_help, bot
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import generate_strings, fetch_user
 
 
-@register(outgoing=True, pattern="^-username (.*)")
+@listener(outgoing=True, command="username")
 @diagnostics
 async def username(context):
     """ Reconfigure your username. """
@@ -35,7 +35,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-name")
+@listener(outgoing=True, command="name")
 @diagnostics
 async def name(context):
     """ Updates your display name. """
@@ -63,7 +63,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-pfp$")
+@listener(outgoing=True, command="pfp")
 @diagnostics
 async def pfp(context):
     """ Sets your profile picture. """
@@ -98,7 +98,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-bio (.*)")
+@listener(outgoing=True, command="bio")
 @diagnostics
 async def bio(context):
     """ Sets your bio. """
@@ -117,7 +117,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-rm_pfp")
+@listener(outgoing=True, command="rm_pfp")
 @diagnostics
 async def rm_pfp(context):
     """ Removes your profile picture. """
@@ -153,7 +153,7 @@ command_help.update({
 })
 
 
-@register(pattern="-profile(?: |$)(.*)", outgoing=True)
+@listener(outgoing=True, command="profile")
 @diagnostics
 async def profile(context):
     """ Queries profile of a user. """

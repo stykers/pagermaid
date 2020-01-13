@@ -3,11 +3,11 @@
 from asyncio import sleep
 from telethon.errors import rpcbaseerrors
 from pagermaid import log, log_chatid, command_help
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import send_prune_notify as send_notify
 
 
-@register(outgoing=True, pattern="^-prune$")
+@listener(outgoing=True, pattern="^-prune$")
 @diagnostics
 async def prune(context):
     """ Purge every single message after the message you replied to. """
@@ -45,7 +45,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-selfprune")
+@listener(outgoing=True, pattern="^-selfprune")
 @diagnostics
 async def selfprune(context):
     """ Prune self message. """
@@ -78,7 +78,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-delete$")
+@listener(outgoing=True, pattern="^-delete$")
 @diagnostics
 async def delete(context):
     """ Deletes the replied message. """
@@ -106,7 +106,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-edit")
+@listener(outgoing=True, pattern="^-edit")
 @diagnostics
 async def edit(context):
     """ Edits your last message. """
@@ -131,7 +131,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-timed")
+@listener(outgoing=True, pattern="^-timed")
 @diagnostics
 async def timed(context):
     """ A timed message that deletes itself. """

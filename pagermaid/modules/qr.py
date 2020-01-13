@@ -4,7 +4,7 @@ from os import remove
 from pyqrcode import create
 from PIL import Image
 from pagermaid import command_help, log, log_chatid
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 
 try:
     from pyzbar.pyzbar import decode
@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 
-@register(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
+@listener(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
 @diagnostics
 async def genqr(context):
     """ Generate QR codes. """
@@ -76,7 +76,7 @@ command_help.update({
 })
 
 
-@register(pattern=r"^-parseqr$", outgoing=True)
+@listener(pattern=r"^-parseqr$", outgoing=True)
 @diagnostics
 async def parseqr(context):
     """ Parse QR code into plaintext. """

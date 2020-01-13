@@ -7,7 +7,7 @@ from gtts import gTTS
 from re import compile as regex_compile
 from pagermaid.utils import fetch_youtube_audio
 from pagermaid import command_help, log, log_chatid
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import clear_emojis, attach_log, GoogleSearch
 
 load_dotenv("config.env")
@@ -15,7 +15,7 @@ lang = environ.get("APPLICATION_LANGUAGE", "en")
 result_length = environ.get("RESULT_LENGTH", 5)
 
 
-@register(outgoing=True, pattern=r"^-translate(?: |$)([\s\S]*)")
+@listener(outgoing=True, command="translate")
 @diagnostics
 async def translate(context):
     """ PagerMaid universal translator. """
@@ -64,7 +64,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-tts(?: |$)([\s\S]*)")
+@listener(outgoing=True, command="tts")
 @diagnostics
 async def tts(context):
     """ Send TTS stuff as voice message. """
@@ -114,7 +114,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-google(?: |$)([\s\S]*)")
+@listener(outgoing=True, command="google")
 @diagnostics
 async def google(context):
     """ Searches Google for a string. """
@@ -147,7 +147,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern=r"^-fetchaudio(?: |$)([\s\S]*)")
+@listener(outgoing=True, command="fetchaudio")
 @diagnostics
 async def fetchaudio(context):
     """ Fetches audio from provided URL. """

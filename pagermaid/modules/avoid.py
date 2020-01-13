@@ -1,10 +1,10 @@
 """ PagerMaid module for different ways to avoid users. """
 
 from pagermaid import redis, redis_check, command_help, log, log_chatid
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 
 
-@register(outgoing=True, pattern="^^-ghost(?: |$)(.*)")
+@listener(outgoing=True, command="ghost")
 @diagnostics
 async def ghost(context):
     """ Toggles ghosting of a user. """
@@ -40,7 +40,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^^-deny(?: |$)(.*)")
+@listener(outgoing=True, command="deny")
 @diagnostics
 async def deny(context):
     """ Toggles denying of a user. """
@@ -76,7 +76,7 @@ command_help.update({
 })
 
 
-@register(incoming=True, disable_edited=True)
+@listener(incoming=True, ignore_edited=True)
 async def set_read_acknowledgement(context):
     """ Event handler to infinitely read ghosted messages. """
     if not redis_check():
@@ -85,7 +85,7 @@ async def set_read_acknowledgement(context):
         await context.client.send_read_acknowledge(context.chat_id)
 
 
-@register(incoming=True, disable_edited=True)
+@listener(incoming=True, ignore_edited=True)
 async def message_removal(context):
     """ Event handler to infinitely delete denied messages. """
     if not redis_check():

@@ -9,14 +9,14 @@ from shutil import which
 from telethon import version as telethon_version
 from sys import platform
 from pagermaid import command_help, redis_check
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import unit_convert, execute, make_top_cloud
 
 hostname = uname().node
 kernel = uname().release
 
 
-@register(outgoing=True, pattern="^-sysinfo$")
+@listener(outgoing=True, pattern="^-sysinfo$")
 @diagnostics
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
@@ -33,7 +33,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-fortune$")
+@listener(outgoing=True, pattern="^-fortune$")
 @diagnostics
 async def fortune(context):
     """ Reads a fortune cookie. """
@@ -50,7 +50,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-tty$")
+@listener(outgoing=True, pattern="^-tty$")
 @diagnostics
 async def tty(context):
     """ Screenshots a TTY and prints it. """
@@ -93,7 +93,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-version$")
+@listener(outgoing=True, pattern="^-version$")
 @diagnostics
 async def version(context):
     """ Command to query the version of PagerMaid. """
@@ -121,7 +121,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-status$")
+@listener(outgoing=True, pattern="^-status$")
 @diagnostics
 async def status(context):
     if not redis_check():
@@ -147,7 +147,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-speedtest$")
+@listener(outgoing=True, pattern="^-speedtest$")
 @diagnostics
 async def speedtest(context):
     """ Tests internet speed using speedtest. """
@@ -179,7 +179,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-connection$")
+@listener(outgoing=True, pattern="^-connection$")
 @diagnostics
 async def connection(context):
     """ Shows connection info. """
@@ -197,7 +197,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-ping$")
+@listener(outgoing=True, pattern="^-ping$")
 @diagnostics
 async def ping(context):
     """ Calculates the latency of the bot host. """
@@ -214,7 +214,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-topcloud(?: |$)(.*)")
+@listener(outgoing=True, pattern="^-topcloud(?: |$)(.*)")
 @diagnostics
 async def topcloud(context):
     """ Generates a word cloud of resource-hungry processes. """

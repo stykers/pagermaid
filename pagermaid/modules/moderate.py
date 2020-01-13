@@ -4,10 +4,10 @@ from telethon.errors import PhotoCropSizeSmallError, ImageProcessFailedError, Ch
 from telethon.tl.types import MessageMediaPhoto, ChannelParticipantsAdmins
 from telethon.tl.functions.channels import EditPhotoRequest
 from pagermaid import command_help, log, log_chatid, bot, redis_check
-from pagermaid.events import register, diagnostics
+from pagermaid.listener import listener, diagnostics
 
 
-@register(outgoing=True, pattern="^-group_image$")
+@listener(outgoing=True, pattern="^-group_image$")
 @diagnostics
 async def group_image(context):
     """ Sets image of a group. """
@@ -47,7 +47,7 @@ command_help.update({
 })
 
 
-@register(outgoing=True, pattern="^-admins$")
+@listener(outgoing=True, pattern="^-admins$")
 @diagnostics
 async def admins(context):
     """ Lists admins of the group chat. """
