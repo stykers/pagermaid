@@ -1,14 +1,19 @@
 """ PagerMaid event listener. """
 
 from telethon import events
+from dotenv import load_dotenv
 from traceback import format_exc
 from time import gmtime, strftime
-from os import remove
+from os import remove, environ
 from sys import exc_info
 from telethon.events import StopPropagation
 from asyncio import create_subprocess_shell as async_run
 from asyncio.subprocess import PIPE
 from pagermaid import bot
+
+
+load_dotenv("config.env")
+error_report = environ.get("ERROR_REPORT", "True")
 
 
 def listener(**args):
@@ -45,6 +50,9 @@ def diagnostics(function):
         except StopPropagation:
             pass
         except BaseException:
+            await context.edit("An error occurred while executing this command.")
+            if not error_report:
+                return
             time_string = strftime("%H:%M %d/%m/%Y", gmtime())
             command = "git rev-list --all --count"
             rev = await async_run(

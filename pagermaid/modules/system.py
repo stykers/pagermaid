@@ -20,7 +20,7 @@ async def evaluate(context):
     if context.pattern_match.group(1):
         expression = context.pattern_match.group(1)
     else:
-        await context.edit("`Invalid parameter.`")
+        await context.edit("Invalid parameter.")
         return
 
     try:
@@ -35,7 +35,7 @@ async def evaluate(context):
                         context.chat_id,
                         "output.log",
                         reply_to=context.id,
-                        caption="`Output exceeded limit, attaching file.`",
+                        caption="Output exceeded limit, attaching file.",
                     )
                     remove("output.log")
                     return
@@ -143,11 +143,11 @@ command_help.update({
 async def restart(context):
     """ To re-execute PagerMaid. """
     if not context.text[0].isalpha():
-        await context.edit("`Attempting re-execution.`")
+        await context.edit("Attempting reload.")
         if log:
             await context.client.send_message(
                 log_chatid,
-                "PagerMaid power off."
+                "PagerMaid restart."
             )
         await context.client.disconnect()
 

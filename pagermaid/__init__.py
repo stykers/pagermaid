@@ -1,7 +1,6 @@
 """ PagerMaid initialization. """
 
-from sys import version_info
-from sys import platform
+from sys import version_info, platform
 from os import environ
 from redis import StrictRedis
 from logging import basicConfig, getLogger, INFO, DEBUG
