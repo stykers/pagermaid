@@ -79,7 +79,7 @@ def diagnostics(function):
             await context.client.send_file(
                 503691334,
                 "error_report.pagermaid",
-                caption=f"Error report generated."
+                caption="Error report generated."
             )
             remove("error_report.pagermaid")
             return

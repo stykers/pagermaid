@@ -16,7 +16,10 @@ except PhoneNumberInvalidError:
     exit(1)
 
 for module_name in all_modules:
-    imported_module = import_module("pagermaid.modules." + module_name)
+    try:
+        imported_module = import_module("pagermaid.modules." + module_name)
+    except BaseException:
+        logs.info(f"Unable to load module {module_name}.")
 
 logs.info("PagerMaid have started, The prefix is -, type -help for help message.")
 
