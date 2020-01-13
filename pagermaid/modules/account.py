@@ -1,7 +1,6 @@
 """ This module contains utils to configure your account. """
 
-from os import makedirs, remove
-from os.path import isdir
+from os import remove
 from telethon.errors import ImageProcessFailedError, PhotoCropSizeSmallError
 from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedError, AboutTooLongError, \
     FirstNameInvalidError, UsernameInvalidError
