@@ -9,7 +9,7 @@ from pagermaid.utils import changelog_gen, branch_check, execute
 
 
 @diagnostics
-@listener(outgoing=True, pattern="^-update(?: |$)(.*)")
+@listener(outgoing=True, command="update")
 async def upstream(context):
     await context.edit("`Checking remote origin for updates . . .`")
     parameter = context.pattern_match.group(1)

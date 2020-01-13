@@ -9,7 +9,7 @@ from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import url_tracer, attach_log, execute
 
 
-@listener(outgoing=True, pattern="^-evaluate(?: |$)(.*)")
+@listener(outgoing=True, command="evaluate")
 @diagnostics
 async def evaluate(context):
     """ Evaluate a python expression. """
@@ -62,7 +62,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-sh(?: |$)(.*)")
+@listener(outgoing=True, command="sh")
 @diagnostics
 async def sh(context):
     """ For calling a binary from the shell. """
@@ -123,7 +123,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-upgrade_modules(?: |$)(.*)")
+@listener(outgoing=True, command="upgrade_modules")
 @diagnostics
 async def upgrade_modules(context):
     """ Upgrade pip modules. """
@@ -139,7 +139,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-restart$")
+@listener(outgoing=True, command="restart")
 async def restart(context):
     """ To re-execute PagerMaid. """
     if not context.text[0].isalpha():
@@ -158,7 +158,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-trace(?: |$)(.*)")
+@listener(outgoing=True, command="trace")
 @diagnostics
 async def trace(context):
     """ Trace URL redirects. """
@@ -205,7 +205,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-contact(?: |$)(.*)")
+@listener(outgoing=True, command="contact")
 @diagnostics
 async def contact(context):
     """ To contact the creator of PagerMaid. """
@@ -227,7 +227,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-exception$")
+@listener(outgoing=True, command="exception")
 @diagnostics
 async def exception(context):
     """ Generates exception for debugging purposes. """

@@ -16,14 +16,11 @@ hostname = uname().node
 kernel = uname().release
 
 
-@listener(outgoing=True, pattern="^-sysinfo$")
+@listener(outgoing=True, command="sysinfo")
 @diagnostics
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     result = await execute("neofetch --config none --stdout")
-    if result == "/bin/sh: neofetch: command not found":
-        await context.edit("`Neofetch does not exist on this system.`")
-        return
     await context.edit("`" + result + "`")
 
 
@@ -33,7 +30,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-fortune$")
+@listener(outgoing=True, command="fortune")
 @diagnostics
 async def fortune(context):
     """ Reads a fortune cookie. """
@@ -50,7 +47,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-tty$")
+@listener(outgoing=True, command="tty")
 @diagnostics
 async def tty(context):
     """ Screenshots a TTY and prints it. """
@@ -93,7 +90,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-version$")
+@listener(outgoing=True, command="version")
 @diagnostics
 async def version(context):
     """ Command to query the version of PagerMaid. """
@@ -121,7 +118,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-status$")
+@listener(outgoing=True, command="status")
 @diagnostics
 async def status(context):
     if not redis_check():
@@ -147,7 +144,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-speedtest$")
+@listener(outgoing=True, command="speedtest")
 @diagnostics
 async def speedtest(context):
     """ Tests internet speed using speedtest. """
@@ -179,7 +176,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-connection$")
+@listener(outgoing=True, command="connection")
 @diagnostics
 async def connection(context):
     """ Shows connection info. """
@@ -197,7 +194,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-ping$")
+@listener(outgoing=True, command="ping")
 @diagnostics
 async def ping(context):
     """ Calculates the latency of the bot host. """
@@ -214,7 +211,7 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, pattern="^-topcloud(?: |$)(.*)")
+@listener(outgoing=True, command="topcloud")
 @diagnostics
 async def topcloud(context):
     """ Generates a word cloud of resource-hungry processes. """

@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 
-@listener(pattern=r"-genqr(?: |$)([\s\S]*)", outgoing=True)
+@listener(outgoing=True, command="genqr")
 @diagnostics
 async def genqr(context):
     """ Generate QR codes. """
@@ -76,7 +76,7 @@ command_help.update({
 })
 
 
-@listener(pattern=r"^-parseqr$", outgoing=True)
+@listener(outgoing=True, command="parseqr")
 @diagnostics
 async def parseqr(context):
     """ Parse QR code into plaintext. """

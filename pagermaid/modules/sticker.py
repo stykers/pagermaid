@@ -8,7 +8,7 @@ from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import add_sticker, resize_image, upload_sticker
 
 
-@listener(outgoing=True, pattern="^-sticker")
+@listener(outgoing=True, command="sticker")
 @diagnostics
 async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
