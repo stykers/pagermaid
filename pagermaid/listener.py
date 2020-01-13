@@ -37,7 +37,6 @@ def listener(**args):
         if not ignore_edited:
             bot.add_event_handler(func, events.MessageEdited(**args))
         bot.add_event_handler(func, events.NewMessage(**args))
-
         return func
 
     return decorator
@@ -50,7 +49,10 @@ def diagnostics(function):
         except StopPropagation:
             pass
         except BaseException:
-            await context.edit("An error occurred while executing this command.")
+            try:
+                await context.edit("An error occurred while executing this command.")
+            except BaseException:
+                pass
             if not error_report:
                 return
             time_string = strftime("%H:%M %d/%m/%Y", gmtime())
