@@ -164,7 +164,7 @@ command_help.update({
 @diagnostics
 async def site(context):
     """ Outputs the site URL. """
-    await context.edit("https://pagermaid.stykers.moe/")
+    await context.edit("https://katonkeyboard.moe/pagermaid.html")
 
 
 command_help.update({
