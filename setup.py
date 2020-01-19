@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pagermaid",
-    version="2020.1",
+    version="2020.1.post1",
     author="Stykers",
     author_email="stykers@stykers.moe",
     description="A telegram utility daemon.",
