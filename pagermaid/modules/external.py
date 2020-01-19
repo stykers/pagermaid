@@ -1,18 +1,13 @@
 """ PagerMaid features that uses external HTTP APIs other than Telegram. """
 
 from googletrans import Translator, LANGUAGES
-from os import remove, environ
-from dotenv import load_dotenv
+from os import remove
 from gtts import gTTS
 from re import compile as regex_compile
 from pagermaid.utils import fetch_youtube_audio
 from pagermaid import command_help, log, log_chatid
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener, diagnostics, config
 from pagermaid.utils import clear_emojis, attach_log, GoogleSearch
-
-load_dotenv("config.env")
-lang = environ.get("APPLICATION_LANGUAGE", "en")
-result_length = environ.get("RESULT_LENGTH", 5)
 
 
 @listener(outgoing=True, command="translate")
@@ -22,6 +17,7 @@ async def translate(context):
     translator = Translator()
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
+    lang = config['lang']
     if message:
         pass
     elif text:
@@ -70,6 +66,7 @@ async def tts(context):
     """ Send TTS stuff as voice message. """
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
+    lang = config['lang']
     if message:
         pass
     elif text:
@@ -124,7 +121,7 @@ async def google(context):
     results = ""
     count = 0
     for result in search_results.results:
-        if count == result_length:
+        if count == int(config['result_length']):
             break
         count += 1
         title = result.title

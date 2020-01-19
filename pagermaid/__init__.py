@@ -1,18 +1,15 @@
 """ PagerMaid initialization. """
 
 from sys import version_info, platform
-from os import environ
+from yaml import load, FullLoader
 from redis import StrictRedis
 from logging import basicConfig, getLogger, INFO, DEBUG
-from distutils.util import strtobool as sb
-from dotenv import load_dotenv
+from distutils.util import strtobool
 from telethon import TelegramClient
 
+config = load(open(r"config.yml"), Loader=FullLoader)
 
-load_dotenv("config.env")
-
-
-debug = sb(environ.get("DEBUG", "False"))
+debug = strtobool(config['debug'])
 if debug:
     basicConfig(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -36,11 +33,12 @@ else:
     )
     exit(1)
 
-log_chatid = int(environ.get("LOG_CHATID", "0"))
+log_chatid = int(config['log_chatid'])
+log = strtobool(config['log'])
 
-log = sb(environ.get(
-    "LOG", "False"
-))
+if not log_chatid:
+    log_chatid = 0
+    log = False
 
 if version_info[0] < 3 or version_info[1] < 6:
     logs.error(
@@ -48,9 +46,9 @@ if version_info[0] < 3 or version_info[1] < 6:
     )
     exit(1)
 
-api_key = environ.get("API_KEY", None)
-api_hash = environ.get("API_HASH", None)
-if not api_key or api_hash:
+api_key = config['api_key']
+api_hash = config['api_hash']
+if api_key is None or api_hash is None:
     logs.info(
         "Please place a valid configuration file in the working directory."
     )
@@ -76,7 +74,5 @@ wide_map = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
 wide_map[0x20] = 0x3000
 count_pm = {}
 lastmsg = {}
-enable_suicide = True
 command_help = {}
-afkreason = "work"
 database_test = []

@@ -1,15 +1,10 @@
 """ This module handles world clock related utility. """
 
-from os import environ
-from dotenv import load_dotenv
 from datetime import datetime
 from pytz import country_names
-from pagermaid import command_help
+from pagermaid import command_help, config
 from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import get_timezone
-
-load_dotenv("config.env")
-region = environ.get("APPLICATION_REGION", "United States")
 
 
 @listener(outgoing=True, command="time")
@@ -20,9 +15,9 @@ async def time(context):
     time_form = "%I:%M %p"
     date_form = "%A %d/%m/%y"
     if not country:
-        time_zone = await get_timezone(region)
+        time_zone = await get_timezone(config['application_region'])
         await context.edit(
-            f"**Time in {region}**\n"
+            f"**Time in {config['application_region']}**\n"
             f"`{datetime.now(time_zone).strftime(date_form)} "
             f"{datetime.now(time_zone).strftime(time_form)}`"
         )

@@ -6,8 +6,6 @@ from requests import head
 from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from wordcloud import WordCloud
 from urllib import request, parse
-from dotenv import load_dotenv
-from os import environ
 from PIL import Image
 from math import floor, ceil
 from bs4 import BeautifulSoup
@@ -25,9 +23,7 @@ from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
 from youtube_dl import YoutubeDL
-
-
-load_dotenv("config.env")
+from pagermaid import config
 
 
 async def upload_result_image(context, result, target_file_path, reply_id):
@@ -141,10 +137,10 @@ async def make_top_cloud(context):
     except BaseException:
         pass
     if not width or not height:
-        width = int(environ.get("WIDTH", "1920"))
-        height = int(environ.get("HEIGHT", "1080"))
-    background = environ.get("BACKGROUND", "#101010")
-    margin = int(environ.get("MARGIN", "20"))
+        width = int(config['width'])
+        height = int(config['height'])
+    background = config['background']
+    margin = int(config['margin'])
 
     cloud = WordCloud(
         background_color=background,
