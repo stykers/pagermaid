@@ -36,11 +36,6 @@ else:
     )
     exit(1)
 
-if environ.get("DISPLAY"):
-    logs.info(
-        "Running with a display server, starting GUI."
-    )
-
 log_chatid = int(environ.get("LOG_CHATID", "0"))
 
 log = sb(environ.get(
@@ -55,6 +50,12 @@ if version_info[0] < 3 or version_info[1] < 6:
 
 api_key = environ.get("API_KEY", None)
 api_hash = environ.get("API_HASH", None)
+if not api_key or api_hash:
+    logs.info(
+        "Please place a valid configuration file in the working directory."
+    )
+    exit(1)
+
 bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
 
 redis = StrictRedis(host='localhost', port=6379, db=14)
@@ -64,7 +65,7 @@ def redis_check():
     try:
         redis.ping()
         return True
-    except:
+    except BaseException:
         return False
 
 
