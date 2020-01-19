@@ -1,7 +1,6 @@
 """ Packaging of PagerMaid. """
 
 from setuptools import setup, find_packages
-from pip._internal.req import parse_requirements
 with open("README.md", "r") as fh:
     long_description = fh.read()
 with open("requirements.txt", "r") as fp:
