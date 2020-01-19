@@ -33,8 +33,8 @@ RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
 RUN useradd pagermaid -r -m -d /pagermaid
 RUN usermod -aG wheel,users pagermaid
 USER pagermaid
-RUN mkdir /pagermaid/work
-RUN git clone -b master https://git.stykers.moe/scm/~stykers/pagermaid.git /pagermaid/instance
+RUN mkdir /pagermaid/workdir
+RUN git clone -b master https://git.stykers.moe/scm/~stykers/pagermaid.git /pagermaid/workdir
 WORKDIR /pagermaid/workdir
 COPY ./pagermaid.session ./config.yml /pagermaid/workdir/
 RUN sudo chown pagermaid:pagermaid /pagermaid/workdir/config.yml
