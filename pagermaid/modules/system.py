@@ -123,22 +123,6 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, command="upgrade_modules")
-@diagnostics
-async def upgrade_modules(context):
-    """ Upgrade pip modules. """
-    await context.edit("`Installing updates . . .`")
-    result = await execute("pip install -r requirements.txt --upgrade")
-    await attach_log(context, result)
-    await context.edit("`Finished updating, restart if PagerMaid is misbehaving.`")
-
-
-command_help.update({
-    "upgrade_modules": "Parameter: -upgrade_modules\
-    \nUsage: Upgrades all modules if you are using a virtualenv."
-})
-
-
 @listener(outgoing=True, command="restart")
 async def restart(context):
     """ To re-execute PagerMaid. """

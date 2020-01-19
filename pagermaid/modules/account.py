@@ -68,13 +68,14 @@ async def pfp(context):
     """ Sets your profile picture. """
     reply = await context.get_reply_message()
     photo = None
+    await context.edit("Setting profile picture . . .")
     if reply.media:
         if isinstance(reply.media, MessageMediaPhoto):
             photo = await bot.download_media(message=reply.photo)
         elif "image" in reply.media.document.mime_type.split('/'):
             photo = await bot.download_file(reply.media.document)
         else:
-            await context.edit("`Unable to parse attachment as image.`")
+            await context.edit("Unable to parse attachment as image.")
 
     if photo:
         try:
@@ -82,13 +83,13 @@ async def pfp(context):
                 await bot.upload_file(photo)
             ))
             remove(photo)
-            await context.edit("`Profile picture has been updated.`")
+            await context.edit("Profile picture has been updated.")
         except PhotoCropSizeSmallError:
-            await context.edit("`The image dimensions are smaller than minimum requirement.`")
+            await context.edit("The image dimensions are smaller than minimum requirement.")
         except ImageProcessFailedError:
-            await context.edit("`An error occurred while the server is interpreting the command.`")
+            await context.edit("An error occurred while the server is interpreting the command.")
         except PhotoExtInvalidError:
-            await context.edit("`Unable to parse attachment as image.`")
+            await context.edit("Unable to parse attachment as image.")
 
 
 command_help.update({
@@ -116,23 +117,23 @@ command_help.update({
 })
 
 
-@listener(outgoing=True, command="rm_pfp")
+@listener(outgoing=True, command="rmpfp")
 @diagnostics
-async def rm_pfp(context):
+async def rmpfp(context):
     """ Removes your profile picture. """
     group = context.text[8:]
     if group == 'all':
-        lim = 0
+        limit = 0
     elif group.isdigit():
-        lim = int(group)
+        limit = int(group)
     else:
-        lim = 1
+        limit = 1
 
     pfp_list = await bot(GetUserPhotosRequest(
         user_id=context.from_id,
         offset=0,
         max_id=0,
-        limit=lim))
+        limit=limit))
     input_photos = []
     for sep in pfp_list.photos:
         input_photos.append(
@@ -147,7 +148,7 @@ async def rm_pfp(context):
 
 
 command_help.update({
-    "rm_pfp": "Parameter: -rm_pfp <amount>\
+    "rmpfp": "Parameter: -rmpfp <amount>\
     \nUsage: Deletes part or all of your profile picture history."
 })
 
@@ -159,7 +160,7 @@ async def profile(context):
     if context.fwd_from:
         return
 
-    await context.edit("`Generating user profile summary . . .`")
+    await context.edit("Generating user profile summary . . .")
     replied_user = await fetch_user(context)
     caption = await generate_strings(replied_user)
     reply_to = context.message.reply_to_msg_id

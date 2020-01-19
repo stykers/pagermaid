@@ -35,7 +35,7 @@ Copy the file config.gen.env to config.env, and open it with
  your favorite text editor. Edit the config file until you are
  satisfied with the settings.
 
-## Installation
+## Installation from source
 Copy the PagerMaid work dir to /var/lib, and enter
  /var/lib/pagermaid, then source the venv again if needed,
  and install all dependencies from requirements.txt
