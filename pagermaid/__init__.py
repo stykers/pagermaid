@@ -7,7 +7,13 @@ from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool
 from telethon import TelegramClient
 
-config = load(open(r"config.yml"), Loader=FullLoader)
+logs = getLogger(__name__)
+config = None
+try:
+    config = load(open(r"config.yml"), Loader=FullLoader)
+except FileNotFoundError:
+    logs.info("Configuration file does not exist in working directory.")
+    exit(1)
 
 debug = strtobool(config['debug'])
 if debug:
@@ -20,7 +26,6 @@ else:
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         level=INFO
     )
-logs = getLogger(__name__)
 
 if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7"\
         or platform == "freebsd8" or platform == "freebsdN" or platform == "openbsd6":
