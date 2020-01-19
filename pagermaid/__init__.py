@@ -36,6 +36,11 @@ else:
     )
     exit(1)
 
+if environ.get("DISPLAY"):
+    logs.info(
+        "Running with a display server, starting GUI."
+    )
+
 log_chatid = int(environ.get("LOG_CHATID", "0"))
 
 log = sb(environ.get(
@@ -44,7 +49,7 @@ log = sb(environ.get(
 
 if version_info[0] < 3 or version_info[1] < 6:
     logs.error(
-        "Please upgrade your python interpreter to at least 3.6."
+        "Please upgrade your python interpreter to at least version 3.6."
     )
     exit(1)
 
