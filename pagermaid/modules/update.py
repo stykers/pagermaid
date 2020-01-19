@@ -18,13 +18,14 @@ async def upstream(context):
     try:
         repo = Repo()
     except NoSuchPathError as exception:
-        await context.edit(f"Exception occurred: \n`Directory {exception} does not exist on the filesystem.`")
+        await context.edit(f"Directory {exception} does not exist on the filesystem.")
         return
-    except InvalidGitRepositoryError as exception:
-        await context.edit(f"Exception occurred: \n`Directory {exception} is not a git repository.`")
+    except InvalidGitRepositoryError:
+        await context.edit(f"This PagerMaid instance is not a source install,"
+                           f" please upgrade via your native package manager.")
         return
     except GitCommandError as exception:
-        await context.edit(f'Exception occurred: \n`Unknown error: {exception}`')
+        await context.edit(f'Error from git: {exception}')
         return
 
     active_branch = repo.active_branch.name
