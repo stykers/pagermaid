@@ -11,7 +11,7 @@ from pagermaid.utils import changelog_gen, branch_check, execute
 @diagnostics
 @listener(outgoing=True, command="update")
 async def upstream(context):
-    await context.edit("`Checking remote origin for updates . . .`")
+    await context.edit("Checking remote origin for updates . . .")
     parameter = context.pattern_match.group(1)
     repo_url = 'https://git.stykers.moe/scm/~stykers/pagermaid.git'
 
@@ -25,7 +25,7 @@ async def upstream(context):
                            f" please upgrade via your native package manager.")
         return
     except GitCommandError as exception:
-        await context.edit(f'Error from git: {exception}')
+        await context.edit(f'Error from git: `{exception}`')
         return
 
     active_branch = repo.active_branch.name
@@ -75,7 +75,7 @@ async def upstream(context):
                 log_chatid, "PagerMaid have been updated."
             )
         await context.edit(
-            '`Update successful, PagerMaid is restarting.`'
+            'Update successful, PagerMaid is restarting.'
         )
         await context.client.disconnect()
     except GitCommandError:
@@ -85,7 +85,7 @@ async def upstream(context):
                 log_chatid, "PagerMaid failed to update."
             )
         await context.edit(
-            '`Updated with errors, PagerMaid is restarting.`'
+            'Updated with errors, PagerMaid is restarting.'
         )
         await context.client.disconnect()
 
