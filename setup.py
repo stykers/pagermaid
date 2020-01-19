@@ -1,23 +1,27 @@
 """ Packaging of PagerMaid. """
 
-import setuptools
+from setuptools import setup, find_packages
+from pip._internal.req import parse_requirements
 with open("README.md", "r") as fh:
     long_description = fh.read()
+with open("requirements.txt", "r") as fp:
+    install_requires = fp.read()
 
-setuptools.setup(
+setup(
     name="pagermaid",
-    version="2020.1.post1",
+    version="2020.1.post2",
     author="Stykers",
     author_email="stykers@stykers.moe",
     description="A telegram utility daemon.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://katonkeyboard.moe/pagermaid.html",
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: Unix"
     ],
-    python_requires=">=3.6"
+    python_requires=">=3.6",
+    install_requires=install_requires
 )
