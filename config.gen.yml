@@ -19,7 +19,7 @@ error_report: "True"
 application_language: "en"
 application_region: "United States"
 
-# Logging settings, default settings logs directly into Kat, strongly adviced to change
+# Logging settings, default settings logs directly into Kat, strongly advised to change
 log: "False"
 log_chatid: "503691334"
 
