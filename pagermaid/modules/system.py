@@ -127,11 +127,11 @@ command_help.update({
 async def restart(context):
     """ To re-execute PagerMaid. """
     if not context.text[0].isalpha():
-        await context.edit("Attempting reload.")
+        await context.edit("Attempting system restart.")
         if log:
             await context.client.send_message(
                 log_chatid,
-                "PagerMaid restart."
+                "PagerMaid restarted."
             )
         await context.client.disconnect()
 

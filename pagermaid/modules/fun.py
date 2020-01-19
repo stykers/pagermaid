@@ -285,3 +285,37 @@ async def wink(context):
     await context.edit("OwU")
     await sleep(.3)
     await context.edit("OwO")
+
+
+command_help.update({
+    "wink": "Parameter: OwO\
+     \nUsage: Send OwO in chat."
+})
+
+
+@listener(outgoing=True, command="coin")
+async def coin(context):
+    await context.edit("Throwing coin . . .")
+    await sleep(.5)
+    outcomes = ['A'] * 5 + ['B'] * 5 + ['C'] * 1
+    result = choice(outcomes)
+    count = 0
+    while count <= 3:
+        await context.edit("`.` . .")
+        await sleep(.3)
+        await context.edit(". `.` .")
+        await sleep(.3)
+        await context.edit(". . `.`")
+        await sleep(.3)
+        count += 1
+    if result == "C":
+        await context.edit("WAAAHHH I LOST THE COIN")
+    elif result == "B":
+        await context.edit("Tails!")
+    elif result == "A":
+        await context.edit("Heads!")
+
+command_help.update({
+    "coin": "Parameter: -coin\
+     \nUsage: Throws a coin."
+})
