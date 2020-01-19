@@ -9,4 +9,4 @@ pagermaid/__pycache__/*
 pagermaid/modules/__pycache__/*
 build/
 dist/
-pagermaid_Stykers.egg-info/
+pagermaid.egg-info/
