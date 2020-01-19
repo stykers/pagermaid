@@ -1,6 +1,7 @@
 venv/
 .idea/
 config.env
+config.yml
 pagermaid.session
 pagermaid.session-journal
 *.rewrite.py
