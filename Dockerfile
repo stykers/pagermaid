@@ -33,12 +33,12 @@ RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
 RUN useradd pagermaid -r -m -d /pagermaid
 RUN usermod -aG wheel,users pagermaid
 USER pagermaid
-RUN mkdir /pagermaid/instance
+RUN mkdir /pagermaid/work
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/pagermaid.git /pagermaid/instance
-WORKDIR /pagermaid/instance
-COPY ./pagermaid.session* ./config.env /pagermaid/instance/
-RUN sudo chown pagermaid:pagermaid /pagermaid/instance/config.env
-RUN sudo chown -f pagermaid:pagermaid /pagermaid/instance/pagermaid.session; exit 0
+WORKDIR /pagermaid/workdir
+COPY ./pagermaid.session ./config.yml /pagermaid/workdir/
+RUN sudo chown pagermaid:pagermaid /pagermaid/workdir/config.yml
+RUN sudo chown -f pagermaid:pagermaid /pagermaid/workdir/pagermaid.session; exit 0
 RUN python3 -m virtualenv venv
 RUN source venv/bin/activate; pip3 install -r requirements.txt
 CMD ["sh","utils/entrypoint.sh"]

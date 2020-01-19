@@ -50,7 +50,7 @@ async def upstream(context):
     if parameter != "true":
         changelog_str = f'**Update found for branch {active_branch}.\n\nChangelog:**\n`{changelog}`'
         if len(changelog_str) > 4096:
-            await context.edit("`Changelog is too long, attaching file.`")
+            await context.edit("Changelog is too long, attaching file.")
             file = open("output.log", "w+")
             file.write(changelog_str)
             file.close()

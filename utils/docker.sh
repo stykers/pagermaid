@@ -56,12 +56,12 @@ download_repo() {
 }
 
 configure() {
-  config_file=config.env
+  config_file=config.yml
   echo "Generating config file . . ."
-  cp config.gen.env config.env
+  cp config.gen.yml config.yml
   printf "Please enter application API Key: "
   read -r api_key <&1
-  sed -i "s/ID_HERE/$api_key/" $config_file
+  sed -i "s/KEY_HERE/$api_key/" $config_file
   printf "Please enter application API Hash: "
   read -r api_hash <&1
   sed -i "s/HASH_HERE/$api_hash/" $config_file
@@ -83,7 +83,7 @@ configure() {
 		    else
 		      sed -i "s/503691334/$log_chatid/" $config_file
 		    fi
-		    sed -i "s/LOG=False/LOG=True/" $config_file
+		    sed -i "s/log: False/log: True/" $config_file
 		    ;;
       [nN][oO]|[nN])
 		    echo "Moving on . . ."
