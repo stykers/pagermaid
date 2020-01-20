@@ -6,13 +6,6 @@ from PIL import Image
 from pagermaid import command_help, log, log_chatid
 from pagermaid.listener import listener, diagnostics
 
-try:
-    from pyzbar.pyzbar import decode
-except ImportError:
-    zBarFailure = True
-    decode = None
-    pass
-
 
 @listener(outgoing=True, command="genqr")
 @diagnostics
@@ -82,7 +75,15 @@ async def parseqr(context):
     """ Parse QR code into plaintext. """
     if context.fwd_from:
         return
-    if zBarFailure:
+    zbar_failure = False
+    try:
+        from pyzbar.pyzbar import decode
+    except ImportError:
+        zbar_failure = True
+        decode = None
+        pass
+
+    if zbar_failure:
         await context.edit("`ZBar is not installed!`")
         return
     target_file_path = await context.client.download_media(
