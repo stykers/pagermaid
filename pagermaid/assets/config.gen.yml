@@ -1,0 +1,33 @@
+# ===================================================================
+# __________                                _____         .__    .___
+# \______   \_____     ____   ___________  /     \ _____  |__| __| _/
+# |     ___/\__  \   / ___\_/ __ \_  __ \/  \ /  \\__  \ |  |/ __ |
+# |    |     / __ \_/ /_/  >  ___/|  | \/    Y    \/ __ \|  / /_/ |
+# |____|    (____  /\___  / \___  >__|  \____|__  (____  /__\____ |
+#                \//_____/      \/              \/     \/        \/
+# ===================================================================
+
+# API Credentials of your telegram application created at https://my.telegram.org/apps
+api_key: "KEY_HERE"
+api_hash: "HASH_HERE"
+
+# Either debug logging is enabled or not
+debug: "False"
+error_report: "True"
+
+# Locale settings
+application_language: "en"
+application_region: "United States"
+
+# Logging settings, default settings logs directly into Kat, strongly advised to change
+log: "False"
+log_chatid: "503691334"
+
+# Google search preferences
+result_length: "5"
+
+# TopCloud image output preferences
+width: "1920"
+height: "1080"
+background: "#101010"
+margin: "20"
