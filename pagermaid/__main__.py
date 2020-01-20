@@ -1,12 +1,19 @@
 """ PagerMaid launch sequence. """
 
+from sys import path
+from glob import glob
+from os import getcwd
 from importlib import import_module
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 from pagermaid import logs, bot
 from pagermaid.modules import module_list
+
 invalid_phone = '\nInvalid phone number entered.' \
                 '\nPlease make sure you specified' \
                 '\nyour country code in the string.'
+
+path.insert(1, getcwd())
+
 try:
     bot.start()
 except PhoneNumberInvalidError:

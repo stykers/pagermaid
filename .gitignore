@@ -4,7 +4,7 @@ config.env
 config.yml
 pagermaid.session
 pagermaid.session-journal
-*.rewrite.py
+plugins/*.py
 __pycache__/*
 pagermaid/__pycache__/*
 pagermaid/modules/__pycache__/*
