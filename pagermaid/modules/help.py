@@ -14,7 +14,7 @@ async def help(context):
         if args in help_messages:
             await context.edit(str(help_messages[args]))
         else:
-            await context.edit("`Invalid argument, please check module list.`")
+            await context.edit("Invalid argument.")
     else:
         result = "**Commands loaded from current modules: \n**"
         for i in sorted(help_messages, reverse=False):
