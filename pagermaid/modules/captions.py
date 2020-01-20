@@ -5,12 +5,11 @@ from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
 from pagermaid import command_help, log, log_chatid, path
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import execute, obtain_source_file, upload_result_image
 
 
 @listener(outgoing=True, command="convert")
-@diagnostics
 async def convert(context):
     """ Converts image to png. """
     try:
@@ -50,7 +49,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="caption")
-@diagnostics
 async def caption(context):
     """ Generates images with captions. """
     if context.pattern_match.group(1):
@@ -90,7 +88,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="ocr")
-@diagnostics
 async def ocr(context):
     """ Extracts texts from images. """
     if context.fwd_from:
@@ -137,7 +134,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="highlight")
-@diagnostics
 async def highlight(context):
     """ Generates syntax highlighted images. """
     if context.fwd_from:

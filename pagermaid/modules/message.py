@@ -4,12 +4,11 @@ from telethon.tl.functions.messages import DeleteChatUserRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
 from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
 from pagermaid import command_help, bot, log, log_chatid
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import random_gen
 
 
 @listener(outgoing=True, command="userid")
-@diagnostics
 async def userid(context):
     """ Queries the userid of a user. """
     message = await context.get_reply_message()
@@ -45,7 +44,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="chatid")
-@diagnostics
 async def chatid(context):
     """ Queries the chatid of the chat you are in. """
     await context.edit("ChatID: `" + str(context.chat_id) + "`")
@@ -58,7 +56,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="log")
-@diagnostics
 async def log(context):
     """ Forwards a message into log group """
     if log:
@@ -84,7 +81,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="leave")
-@diagnostics
 async def leave(context):
     """ It leaves you from the group. """
     await context.edit("Wasted my time, bye.")
@@ -105,7 +101,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="rng")
-@diagnostics
 async def rng(context):
     """ Automates keyboard spamming. """
     await random_gen(context, "A-Za-z0-9")
@@ -118,7 +113,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="meter2feet")
-@diagnostics
 async def meter2feet(context):
     """ Converts meter to feet. """
     meter = float(context.pattern_match.group(1))
@@ -133,7 +127,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="feet2meter")
-@diagnostics
 async def feet2meter(context):
     """ Converts feet to meter. """
     feet = float(context.pattern_match.group(1))
@@ -148,7 +141,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="source")
-@diagnostics
 async def source(context):
     """ Prints the git repository URL. """
     await context.edit("https://git.stykers.moe/scm/~stykers/pagermaid.git")
@@ -161,7 +153,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="site")
-@diagnostics
 async def site(context):
     """ Outputs the site URL. """
     await context.edit("https://katonkeyboard.moe/pagermaid.html")

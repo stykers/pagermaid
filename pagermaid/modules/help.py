@@ -1,11 +1,10 @@
 """ The help module. """
 
 from pagermaid import command_help
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 
 
 @listener(outgoing=True, command="help")
-@diagnostics
 async def help(context):
     """ The help command,"""
     args = context.pattern_match.group(1)

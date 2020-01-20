@@ -72,6 +72,4 @@ def redis_check():
         return False
 
 
-wide_map = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
-wide_map[0x20] = 0x3000
 command_help = {}

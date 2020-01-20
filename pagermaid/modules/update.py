@@ -4,11 +4,10 @@ from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 from pagermaid import command_help, log, log_chatid
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import changelog_gen, branch_check, execute
 
 
-@diagnostics
 @listener(outgoing=True, command="update")
 async def upstream(context):
     await context.edit("Checking remote origin for updates . . .")
@@ -36,7 +35,7 @@ async def upstream(context):
 
     try:
         repo.create_remote('upstream', repo_url)
-    except:
+    except BaseException:
         pass
 
     upstream_remote = repo.remote('upstream')

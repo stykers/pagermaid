@@ -5,14 +5,13 @@ from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
 from pagermaid import command_help, bot, path
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 
 
-@listener(command="animate")
-@diagnostics
+@listener(outgoing=True, command="animate")
 async def animate(context):
-    """ Command for animated texts. """
+    """ Command for animated messages. """
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
     if message:
@@ -20,7 +19,7 @@ async def animate(context):
     elif text:
         message = text.text
     else:
-        await context.edit("`Invalid argument.`")
+        await context.edit("Invalid argument.")
         return
     latency = 0.03
     cursor = "█"
@@ -43,7 +42,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="mock")
-@diagnostics
 async def mock(context):
     """ Mock people with weird caps. """
     reply = await context.get_reply_message()
@@ -53,7 +51,7 @@ async def mock(context):
     elif reply:
         message = reply.text
     else:
-        await context.edit("`Invalid arguments.`")
+        await context.edit("Invalid arguments.")
         return
 
     reply_text = mocker(message)
@@ -62,7 +60,7 @@ async def mock(context):
             try:
                 await reply.edit(reply_text)
             except MessageNotModifiedError:
-                await context.edit("`This message is already mocked in the same way.`")
+                await context.edit("This message is already mocked in the same way.")
                 return
             await context.delete()
     else:
@@ -76,7 +74,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="widen")
-@diagnostics
 async def widen(context):
     """ Make texts weirdly wide. """
     reply = await context.get_reply_message()
@@ -86,16 +83,17 @@ async def widen(context):
     elif reply:
         message = reply.text
     else:
-        await context.edit("`Invalid argument.`")
+        await context.edit("Invalid argument.")
         return
-
-    reply_text = str(message).translate(dict((i, i + 0xFEE0) for i in range(0x21, 0x7F)))
+    wide_map = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
+    wide_map[0x20] = 0x3000
+    reply_text = str(message).translate(wide_map)
     if reply:
         if reply.sender.is_self:
             try:
                 await reply.edit(reply_text)
             except MessageNotModifiedError:
-                await context.edit("`This message is already widened.`")
+                await context.edit("This message is already widened.")
                 return
             await context.delete()
     else:
@@ -109,7 +107,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="fox")
-@diagnostics
 async def fox(context):
     """ Make a fox scratch your message. """
     reply = await context.get_reply_message()
@@ -144,7 +141,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="owo")
-@diagnostics
 async def owo(context):
     """ Makes messages become owo. """
     if context.pattern_match.group(1):
@@ -181,7 +177,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="ship")
-@diagnostics
 async def ship(context):
     """ Ship randomly generated members. """
     await context.edit("`Generating couple . . .`")
@@ -234,7 +229,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="aaa")
-@diagnostics
 async def aaa(context):
     """ Generates screams. """
     await random_gen(context, "Aa")
@@ -247,7 +241,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="asciiart")
-@diagnostics
 async def asciiart(context):
     """ Generates ASCII art for provided strings. """
     if not context.pattern_match.group(1):
@@ -264,7 +257,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="tuxsay")
-@diagnostics
 async def tuxsay(context):
     """ Generates ASCII art for Tux saying stuff. """
     if not context.pattern_match.group(1):

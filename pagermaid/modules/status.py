@@ -9,7 +9,7 @@ from shutil import which
 from telethon import version as telethon_version
 from sys import platform
 from pagermaid import command_help, redis_check
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import unit_convert, execute, make_top_cloud
 
 hostname = uname().node
@@ -17,7 +17,6 @@ kernel = uname().release
 
 
 @listener(outgoing=True, command="sysinfo")
-@diagnostics
 async def sysinfo(context):
     """ Fetches system info using neofetch. """
     result = await execute("neofetch --config none --stdout")
@@ -31,7 +30,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="fortune")
-@diagnostics
 async def fortune(context):
     """ Reads a fortune cookie. """
     result = await execute("fortune")
@@ -48,7 +46,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="tty")
-@diagnostics
 async def tty(context):
     """ Screenshots a TTY and prints it. """
     await context.edit("`Taking screenshot of framebuffer . . .`")
@@ -91,7 +88,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="version")
-@diagnostics
 async def version(context):
     """ Command to query the version of PagerMaid. """
     if which("git") is not None:
@@ -119,7 +115,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="status")
-@diagnostics
 async def status(context):
     if not redis_check():
         db = "Redis is malfunctioning."
@@ -145,7 +140,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="speedtest")
-@diagnostics
 async def speedtest(context):
     """ Tests internet speed using speedtest. """
     result = None
@@ -177,7 +171,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="connection")
-@diagnostics
 async def connection(context):
     """ Shows connection info. """
     datacenter = await context.client(functions.help.GetNearestDcRequest())
@@ -195,7 +188,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="ping")
-@diagnostics
 async def ping(context):
     """ Calculates the latency of the bot host. """
     start = datetime.now()
@@ -212,7 +204,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="topcloud")
-@diagnostics
 async def topcloud(context):
     """ Generates a word cloud of resource-hungry processes. """
     if context.fwd_from:

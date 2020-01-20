@@ -4,12 +4,11 @@ from urllib import request
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
 from pagermaid import bot, command_help
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import add_sticker, resize_image, upload_sticker
 
 
 @listener(outgoing=True, command="sticker")
-@diagnostics
 async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
     user = await bot.get_me()

@@ -2,13 +2,13 @@
 
 from os import remove
 from pyqrcode import create
+from pyzbar.pyzbar import decode
 from PIL import Image
 from pagermaid import command_help, log, log_chatid
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 
 
 @listener(outgoing=True, command="genqr")
-@diagnostics
 async def genqr(context):
     """ Generate QR codes. """
     downloaded_file_name = None
@@ -70,21 +70,9 @@ command_help.update({
 
 
 @listener(outgoing=True, command="parseqr")
-@diagnostics
 async def parseqr(context):
     """ Parse QR code into plaintext. """
     if context.fwd_from:
-        return
-    zbar_failure = False
-    try:
-        from pyzbar.pyzbar import decode
-    except ImportError:
-        zbar_failure = True
-        decode = None
-        pass
-
-    if zbar_failure:
-        await context.edit("`ZBar is not installed!`")
         return
     target_file_path = await context.client.download_media(
         await context.get_reply_message()

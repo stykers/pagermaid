@@ -1,11 +1,10 @@
 """ PagerMaid module for different ways to avoid users. """
 
 from pagermaid import redis, redis_check, command_help, log, log_chatid
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 
 
 @listener(outgoing=True, command="ghost")
-@diagnostics
 async def ghost(context):
     """ Toggles ghosting of a user. """
     if not redis_check():
@@ -41,7 +40,6 @@ command_help.update({
 
 
 @listener(outgoing=True, command="deny")
-@diagnostics
 async def deny(context):
     """ Toggles denying of a user. """
     if not redis_check():

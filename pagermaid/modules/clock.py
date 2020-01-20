@@ -3,12 +3,11 @@
 from datetime import datetime
 from pytz import country_names
 from pagermaid import command_help, config
-from pagermaid.listener import listener, diagnostics
+from pagermaid.listener import listener
 from pagermaid.utils import get_timezone
 
 
 @listener(outgoing=True, command="time")
-@diagnostics
 async def time(context):
     """ For querying time. """
     country = context.pattern_match.group(1).title()
