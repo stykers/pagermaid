@@ -1,3 +1,4 @@
+distutils2-py3
 beautifulsoup4
 pyzbar
 pillow

@@ -4,18 +4,16 @@ from platform import node
 from getpass import getuser
 from os import remove
 from os import geteuid
-from pagermaid import command_help, log, log_chatid
+from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import url_tracer, attach_log, execute
 
 
-@listener(outgoing=True, command="evaluate")
+@listener(outgoing=True, command="evaluate",
+          description="Evaluate an expression in the python interpreter.",
+          parameters="<expression>")
 async def evaluate(context):
     """ Evaluate a python expression. """
-    if context.is_channel and not context.is_group:
-        await context.edit("`Evaluation is disabled in channels.`")
-        return
-
     if context.pattern_match.group(1):
         expression = context.pattern_match.group(1)
     else:
@@ -49,21 +47,14 @@ async def evaluate(context):
             f"`{err}`"
         )
 
-    if log:
-        await context.client.send_message(
-            log_chatid, f"Evaluated `{expression}` in the python interpreter."
-        )
+    await log(f"Evaluated `{expression}` in the python interpreter.")
 
 
-command_help.update({
-    "evaluate": "Parameter: -evaluate <expression>>\
-    \nUsage: Evaluate an expression in the python interpreter."
-})
-
-
-@listener(outgoing=True, command="sh")
+@listener(outgoing=True, command="sh",
+          description="Use the command-line from Telegram.",
+          parameters="<command>")
 async def sh(context):
-    """ For calling a binary from the shell. """
+    """ Use the command-line from Telegram. """
     user = getuser()
     command = context.pattern_match.group(1)
     uid = geteuid()
@@ -108,39 +99,22 @@ async def sh(context):
             )
     else:
         return
-    if log:
-        await context.client.send_message(
-            log_chatid,
-            "Command `" + command + "` executed.",
-        )
+    await log(f"Command `{command}` executed in the shell.")
 
 
-command_help.update({
-    "sh": "Parameter: -sh <command>\
-    \nUsage: Executes a shell command."
-})
-
-
-@listener(outgoing=True, command="restart", diagnostics=False)
+@listener(outgoing=True, command="restart", diagnostics=False,
+          description="Triggers system restart of PagerMaid.")
 async def restart(context):
     """ To re-execute PagerMaid. """
     if not context.text[0].isalpha():
         await context.edit("Attempting system restart.")
-        if log:
-            await context.client.send_message(
-                log_chatid,
-                "PagerMaid restarted."
-            )
+        await log("PagerMaid restarted.")
         await context.client.disconnect()
 
 
-command_help.update({
-    "restart": "Parameter: -restart\
-    \nUsage: Restarts PagerMaid."
-})
-
-
-@listener(outgoing=True, command="trace")
+@listener(outgoing=True, command="trace",
+          description="Trace redirects of a URL.",
+          parameters="<url>")
 async def trace(context):
     """ Trace URL redirects. """
     url = context.pattern_match.group(1)
@@ -152,7 +126,7 @@ async def trace(context):
             pass
         else:
             url = "https://" + url
-        await context.edit("`Tracing redirects . . .`")
+        await context.edit("Tracing redirects . . .")
         result = str("")
         for url in url_tracer(url):
             count = 0
@@ -165,30 +139,27 @@ async def trace(context):
                 break
         if result:
             if len(result) > 4096:
-                await context.edit("`Output exceeded limit, attaching file.`")
+                await context.edit("Output exceeded limit, attaching file.")
                 await attach_log(context, result)
                 return
             await context.edit(
                 "Redirects:\n"
                 f"{result}"
             )
+            await log(f"Traced redirects of {context.pattern_match.group(1)}.")
         else:
             await context.edit(
-                "`Something wrong happened while making HTTP requests.`"
+                "Something wrong happened while making HTTP requests."
             )
     else:
-        await context.edit("`Invalid argument.`")
+        await context.edit("Invalid argument.")
 
 
-command_help.update({
-    "trace": "Parameter: -trace <url>\
-    \nUsage: Traces redirect of a URL."
-})
-
-
-@listener(outgoing=True, command="contact")
+@listener(outgoing=True, command="contact",
+          description="Sends a message to Kat.",
+          parameters="<message>")
 async def contact(context):
-    """ To contact the creator of PagerMaid. """
+    """ Sends a message to Kat. """
     if not context.text[0].isalpha():
         await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
                            parse_mode="markdown")
@@ -199,21 +170,3 @@ async def contact(context):
             503691334,
             message
         )
-
-
-command_help.update({
-    "contact": "Parameter: -contact <message>\
-    \nUsage: Contact the maintainer."
-})
-
-
-@listener(outgoing=True, command="exception")
-async def exception(context):
-    """ Generates exception for debugging purposes. """
-    raise ValueError('This is an exception generated by the system.')
-
-
-command_help.update({
-    "exception": "Parameter: -exception\
-    \nUsage: Generates an exception for debugging."
-})

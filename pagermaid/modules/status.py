@@ -8,28 +8,21 @@ from platform import python_version, uname
 from shutil import which
 from telethon import version as telethon_version
 from sys import platform
-from pagermaid import command_help, redis_check
+from pagermaid import log
 from pagermaid.listener import listener
-from pagermaid.utils import unit_convert, execute, make_top_cloud
-
-hostname = uname().node
-kernel = uname().release
+from pagermaid.utils import unit_convert, execute, make_top_cloud, redis_check
 
 
-@listener(outgoing=True, command="sysinfo")
+@listener(outgoing=True, command="sysinfo",
+          description="Retrieve system information via neofetch.")
 async def sysinfo(context):
-    """ Fetches system info using neofetch. """
+    """ Retrieve system information via neofetch. """
     result = await execute("neofetch --config none --stdout")
     await context.edit("`" + result + "`")
 
 
-command_help.update({
-    "sysinfo": "Parameter: -sysinfo\
-    \nUsage: Retrieve system information via neofetch."
-})
-
-
-@listener(outgoing=True, command="fortune")
+@listener(outgoing=True, command="fortune",
+          description="Reads a fortune cookie message.")
 async def fortune(context):
     """ Reads a fortune cookie. """
     result = await execute("fortune")
@@ -39,16 +32,11 @@ async def fortune(context):
     await context.edit(result)
 
 
-command_help.update({
-    "fortune": "Parameter: -fortune\
-    \nUsage: Reads a fortune cookie message."
-})
-
-
-@listener(outgoing=True, command="tty")
+@listener(outgoing=True, command="fbcon",
+          description="Takes screenshot of currently binded framebuffer console.")
 async def tty(context):
     """ Screenshots a TTY and prints it. """
-    await context.edit("`Taking screenshot of framebuffer . . .`")
+    await context.edit("Taking screenshot of framebuffer console . . .")
     message_id_to_reply = context.message.reply_to_msg_id
     if not message_id_to_reply:
         message_id_to_reply = None
@@ -74,57 +62,28 @@ async def tty(context):
             force_document=False,
             reply_to=message_id_to_reply
         )
+        await log("Screenshot of binded framebuffer console taken.")
     except ValueError:
-        await context.edit("`File is not generated due to unexpected error.`")
+        await context.edit("File is not generated due to unexpected error.")
         return
     await context.delete()
     remove("image.png")
 
 
-command_help.update({
-    "tty": "Parameter: -tty\
-    \nUsage: Takes screenshot of a TTY."
-})
-
-
-@listener(outgoing=True, command="version")
-async def version(context):
-    """ Command to query the version of PagerMaid. """
-    if which("git") is not None:
-        version_result = await execute("git describe --all --long")
-        revision_result = await execute("git rev-list --all --count")
-
-        await context.edit(
-            "`PagerMaid Version: "
-            f"{version_result}"
-            "` \n"
-            "`Git Revision: "
-            f"{revision_result}"
-            "`"
-        )
-    else:
-        await context.edit(
-            "Git is malfunctioning."
-        )
-
-
-command_help.update({
-    "version": "Parameter: -version\
-    \nUsage: Outputs the version and git revision."
-})
-
-
-@listener(outgoing=True, command="status")
+@listener(outgoing=True, command="status",
+          description="Output the status of PagerMaid.")
 async def status(context):
-    if not redis_check():
-        db = "Redis is malfunctioning."
+    hostname = uname().node
+    kernel = uname().release
+    if redis_check():
+        database = "Connected to Redis."
     else:
-        db = "Connected to Redis."
+        database = "Redis is malfunctioning."
     await context.edit(
         "`"
         "PagerMaid is online. \n\n"
         f"Hostname: {hostname} \n"
-        f"Database Status: {db} \n"
+        f"Database Status: {database} \n"
         f"Host Platform: {platform} \n"
         f"Kernel Version: {kernel} \n"
         f"Python Version: {python_version()} \n"
@@ -133,17 +92,11 @@ async def status(context):
     )
 
 
-command_help.update({
-    "status": "Parameter: -status\
-    \nUsage: Output the status of PagerMaid"
-})
-
-
-@listener(outgoing=True, command="speedtest")
+@listener(outgoing=True, command="speedtest",
+          description="Execute the speedtest script and outputs your internet speed.")
 async def speedtest(context):
     """ Tests internet speed using speedtest. """
-    result = None
-    await context.edit("`Executing test scripts . . .`")
+    await context.edit("Executing test scripts . . .")
     test = Speedtest()
 
     test.get_best_server()
@@ -164,15 +117,10 @@ async def speedtest(context):
                        f"`{result['client']['isp']}`")
 
 
-command_help.update({
-    "speedtest": "Parameter: -speedtest\
-    \nUsage: Execute the speedtest script and outputs your internet speed."
-})
-
-
-@listener(outgoing=True, command="connection")
+@listener(outgoing=True, command="connection",
+          description="Displays connection information between PagerMaid and Telegram.")
 async def connection(context):
-    """ Shows connection info. """
+    """ Displays connection information between PagerMaid and Telegram. """
     datacenter = await context.client(functions.help.GetNearestDcRequest())
     await context.edit(
         f"Region `{datacenter.country}` \n"
@@ -181,15 +129,10 @@ async def connection(context):
     )
 
 
-command_help.update({
-    "connection": "Parameter: -connection\
-    \nUsage: Shows your connection info."
-})
-
-
-@listener(outgoing=True, command="ping")
+@listener(outgoing=True, command="ping",
+          description="Calculates latency between PagerMaid and Telegram.")
 async def ping(context):
-    """ Calculates the latency of the bot host. """
+    """ Calculates latency between PagerMaid and Telegram. """
     start = datetime.now()
     await context.edit("`Pong!`")
     end = datetime.now()
@@ -197,13 +140,8 @@ async def ping(context):
     await context.edit("`Pong!|%sms`" % duration)
 
 
-command_help.update({
-    "ping": "Parameter: -ping\
-    \nUsage: Outputs your latency to telegram."
-})
-
-
-@listener(outgoing=True, command="topcloud")
+@listener(outgoing=True, command="topcloud",
+          description="Generates a word cloud of resource-hungry processes.")
 async def topcloud(context):
     """ Generates a word cloud of resource-hungry processes. """
     if context.fwd_from:
@@ -218,9 +156,4 @@ async def topcloud(context):
     )
     remove("cloud.png")
     await context.delete()
-
-
-command_help.update({
-    "topcloud": "Parameter: -topcloud <image>\
-    \nUsage: Generates a word cloud of resource-hungry processes."
-})
+    await log("Generated process word cloud.")

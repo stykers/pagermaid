@@ -15,6 +15,6 @@ def __list_modules():
     return result
 
 
-all_modules = sorted(__list_modules())
-logs.info("Loading modules: %s", str(all_modules))
-__all__ = all_modules + ["all_modules"]
+module_list = sorted(__list_modules())
+logs.info("Loading modules: %s", str(module_list))
+__all__ = module_list + ["all_modules"]

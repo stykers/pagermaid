@@ -4,11 +4,13 @@ from os import remove
 from pyqrcode import create
 from pyzbar.pyzbar import decode
 from PIL import Image
-from pagermaid import command_help, log, log_chatid
+from pagermaid import log
 from pagermaid.listener import listener
 
 
-@listener(outgoing=True, command="genqr")
+@listener(outgoing=True, command="genqr",
+          description="Generates a QR Code sticker from a specific string.",
+          parameters="<string>")
 async def genqr(context):
     """ Generate QR codes. """
     downloaded_file_name = None
@@ -56,20 +58,15 @@ async def genqr(context):
     )
     remove("qr.webp")
     await context.delete()
-    if log:
-        await context.client.send_message(
-            log_chatid, "Generated QR code for `" + message + "`."
-        )
+    if len(message) <= 4096:
+        await log(f"Generated QR Code for `{message}`.")
+    else:
+        await log("Generated QR Code for message.")
     await context.delete()
 
 
-command_help.update({
-    "genqr": "Parameter: -genqr <text>\
-    \nUsage: Generates a QR code sticker."
-})
-
-
-@listener(outgoing=True, command="parseqr")
+@listener(outgoing=True, command="parseqr",
+          description="Parse attachment of replied message as a QR Code and output results.")
 async def parseqr(context):
     """ Parse QR code into plaintext. """
     if context.fwd_from:
@@ -91,18 +88,7 @@ async def parseqr(context):
         await context.edit("`Invalid argument.`")
         return
     if success:
-        if log:
-            await context.client.send_message(
-                log_chatid, "Parsed QR code with content `" + message + "`."
-            )
-    else:
-        if log:
-            await context.client.send_message(
-                log_chatid, "Attempted to parse non-encoded image as QR code."
-            )
-
-
-command_help.update({
-    "parseqr": "Parameter: -parseqr\
-    \nUsage: Parse the attached QR code into plaintext."
-})
+        if len(message) <= 4096:
+            await log(f"Parsed QR Code with content `{message}`.")
+        else:
+            await log("Parsed QR Code with content message.")

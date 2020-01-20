@@ -4,14 +4,16 @@ from asyncio import sleep
 from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
-from pagermaid import command_help, bot, path
+from pagermaid import bot, path
 from pagermaid.listener import listener
 from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 
 
-@listener(outgoing=True, command="animate")
+@listener(outgoing=True, command="animate",
+          description="Makes a typing animation via edits to the message.",
+          parameters="<message>")
 async def animate(context):
-    """ Command for animated messages. """
+    """ Animate a message. """
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
     if message:
@@ -35,15 +37,11 @@ async def animate(context):
         await sleep(latency)
 
 
-command_help.update({
-    "animate": "Parameter: -animate <text>\
-    \nUsage: Animated text via edit."
-})
-
-
-@listener(outgoing=True, command="mock")
+@listener(outgoing=True, command="mock",
+          description="Mock people by weirdly capitalizing their messages.",
+          parameters="<message>")
 async def mock(context):
-    """ Mock people with weird caps. """
+    """ Mock people with weird capitalization. """
     reply = await context.get_reply_message()
     message = context.pattern_match.group(1)
     if message:
@@ -67,15 +65,11 @@ async def mock(context):
         await context.edit(reply_text)
 
 
-command_help.update({
-    "mock": "Parameter: -mock <text>\
-    \nUsage: Mock a string via weird caps."
-})
-
-
-@listener(outgoing=True, command="widen")
+@listener(outgoing=True, command="widen",
+          description="Widens every character in a string.",
+          parameters="<string>")
 async def widen(context):
-    """ Make texts weirdly wide. """
+    """ Widens every character in a string. """
     reply = await context.get_reply_message()
     message = context.pattern_match.group(1)
     if message:
@@ -100,15 +94,11 @@ async def widen(context):
         await context.edit(reply_text)
 
 
-command_help.update({
-    "widen": "Parameter: -widen <text>\
-    \nUsage: Widen every char in a string in a weird way."
-})
-
-
-@listener(outgoing=True, command="fox")
+@listener(outgoing=True, command="fox",
+          description="Makes a fox scratch your message.",
+          parameters="<message>")
 async def fox(context):
-    """ Make a fox scratch your message. """
+    """ Makes a fox scratch your message. """
     reply = await context.get_reply_message()
     message = context.pattern_match.group(1)
     if message:
@@ -134,15 +124,11 @@ async def fox(context):
             await context.edit(reply_text)
 
 
-command_help.update({
-    "fox": "Parameter: -fox <text>\
-    \nUsage: Make a fox corrupt your text."
-})
-
-
-@listener(outgoing=True, command="owo")
+@listener(outgoing=True, command="owo",
+          description="Converts normal messages to OwO.",
+          parameters="<message>")
 async def owo(context):
-    """ Makes messages become owo. """
+    """ Makes messages become OwO. """
     if context.pattern_match.group(1):
         text = context.pattern_match.group(1)
         await context.edit(owoifier(text))
@@ -170,16 +156,12 @@ async def owo(context):
         return
 
 
-command_help.update({
-    "owo": "Parameter: -owo <text>\
-    \nUsage: Converts messages to OwO."
-})
-
-
-@listener(outgoing=True, command="ship")
+@listener(outgoing=True, command="ship",
+          description="Generates random couple, supports specifying the target as well.",
+          parameters="<username> <username>")
 async def ship(context):
     """ Ship randomly generated members. """
-    await context.edit("`Generating couple . . .`")
+    await context.edit("Generating couple . . .")
     users = []
     async for user in context.client.iter_participants(context.chat_id):
         users.append(user)
@@ -222,27 +204,19 @@ async def ship(context):
                        + f"[{target_2.first_name}](tg://user?id={target_2.id})" + " = " + "❤️")
 
 
-command_help.update({
-    "ship": "Parameter: -ship <user> <user>\
-    \nUsage: Ships random person, supports defining person to ship."
-})
-
-
-@listener(outgoing=True, command="aaa")
+@listener(outgoing=True, command="aaa",
+          description="Saves a few presses of the A and shift key.",
+          parameters="<integer>")
 async def aaa(context):
-    """ Generates screams. """
+    """ Saves a few presses of the A and shift key. """
     await random_gen(context, "Aa")
 
 
-command_help.update({
-    "aaa": "Parameter: -aaa <integer>\
-    \nUsage: Generates screams."
-})
-
-
-@listener(outgoing=True, command="asciiart")
+@listener(outgoing=True, command="asciiart",
+          description="Generates ASCII art for specified string.",
+          parameters="<string>")
 async def asciiart(context):
-    """ Generates ASCII art for provided strings. """
+    """ Generates ASCII art for specified string. """
     if not context.pattern_match.group(1):
         await context.edit("`Invalid arguments.`")
         return
@@ -250,42 +224,19 @@ async def asciiart(context):
     await context.edit(f"`{output}`")
 
 
-command_help.update({
-    "asciiart": "Parameter: -asciiart <text>\
-     \nUsage: Generates ASCII art for target text."
-})
-
-
-@listener(outgoing=True, command="tuxsay")
+@listener(outgoing=True, command="tuxsay",
+          description="Generates ASCII art of Tux saying a specific message.",
+          parameters="<message>")
 async def tuxsay(context):
-    """ Generates ASCII art for Tux saying stuff. """
+    """ Generates ASCII art of Tux saying stuff for specified string. """
     if not context.pattern_match.group(1):
         await context.edit("`Invalid arguments.`")
         return
     await context.edit(f"```{cow.Tux().milk(context.pattern_match.group(1))} \n ```")
 
 
-command_help.update({
-    "asciiart": "Parameter: -asciiart <text>\
-     \nUsage: Generates ASCII art for target text."
-})
-
-
-@listener(outgoing=True, pattern="^OwO$")
-async def wink(context):
-    """ OwO """
-    await context.edit("OwU")
-    await sleep(.3)
-    await context.edit("OwO")
-
-
-command_help.update({
-    "wink": "Parameter: OwO\
-     \nUsage: Send OwO in chat."
-})
-
-
-@listener(outgoing=True, command="coin")
+@listener(outgoing=True, command="coin",
+          description="Throws a coin.")
 async def coin(context):
     await context.edit("Throwing coin . . .")
     await sleep(.5)
@@ -307,7 +258,10 @@ async def coin(context):
     elif result == "A":
         await context.edit("Heads!")
 
-command_help.update({
-    "coin": "Parameter: -coin\
-     \nUsage: Throws a coin."
-})
+
+@listener(outgoing=True, pattern="^OwO$")
+async def wink(context):
+    """ OwO """
+    await context.edit("OwU")
+    await sleep(.3)
+    await context.edit("OwO")

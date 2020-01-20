@@ -4,12 +4,13 @@ from os import remove, path
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
-from pagermaid import command_help, log, log_chatid, path
+from pagermaid import log, path
 from pagermaid.listener import listener
 from pagermaid.utils import execute, obtain_source_file, upload_result_image
 
 
-@listener(outgoing=True, command="convert")
+@listener(outgoing=True, command="convert",
+          description="Converts attachment of replied message to png.")
 async def convert(context):
     """ Converts image to png. """
     try:
@@ -42,13 +43,9 @@ async def convert(context):
     remove("result.png")
 
 
-command_help.update({
-    "convert": "Parameter: -convert <image>\
-    \nUsage: Converts any image to png."
-})
-
-
-@listener(outgoing=True, command="caption")
+@listener(outgoing=True, command="caption",
+          description="Adds two lines of captions to attached image of replied message, separated by a comma.",
+          parameters="<string>,<string> <image>")
 async def caption(context):
     """ Generates images with captions. """
     if context.pattern_match.group(1):
@@ -75,19 +72,11 @@ async def caption(context):
         message = string_1 + "` and `" + string_2
     else:
         message = string_1
-    if log:
-        await context.client.send_message(
-            log_chatid, "Caption `" + message + "` added to an image."
-        )
+    await log(f"Caption `{message}` added to an image.")
 
 
-command_help.update({
-    "caption": "Parameter: -caption <text>,<text> <image>\
-    \nUsage: Adds two lines of captions to an image."
-})
-
-
-@listener(outgoing=True, command="ocr")
+@listener(outgoing=True, command="ocr",
+          description="Extract text from attached image of replied message.")
 async def ocr(context):
     """ Extracts texts from images. """
     if context.fwd_from:
@@ -121,19 +110,11 @@ async def ocr(context):
     remove(target_file_path)
     if not success:
         return
-    if log:
-        await context.client.send_message(
-            log_chatid, "Performed OCR on an image."
-        )
 
 
-command_help.update({
-    "ocr": "Parameter: -ocr <image>\
-    \nUsage: Extracts texts from images."
-})
-
-
-@listener(outgoing=True, command="highlight")
+@listener(outgoing=True, command="highlight",
+          description="Generates syntax highlighted images.",
+          parameters="<string>")
 async def highlight(context):
     """ Generates syntax highlighted images. """
     if context.fwd_from:
@@ -160,9 +141,3 @@ async def highlight(context):
         reply_to=reply_id
     )
     await context.delete()
-
-
-command_help.update({
-    "highlight": "Parameter: -highlight <image>\
-    \nUsage: Generates syntax highlighted images."
-})

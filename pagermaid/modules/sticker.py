@@ -3,12 +3,14 @@
 from urllib import request
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
-from pagermaid import bot, command_help
+from pagermaid import bot
 from pagermaid.listener import listener
 from pagermaid.utils import add_sticker, resize_image, upload_sticker
 
 
-@listener(outgoing=True, command="sticker")
+@listener(outgoing=True, command="sticker",
+          description="Collects image/sticker as sticker, specify emoji to set custom emoji.",
+          parameters="<emoji>")
 async def sticker(context):
     """ Fetches images/stickers and add them to your pack. """
     user = await bot.get_me()
@@ -118,9 +120,3 @@ A pack can't have more than 120 stickers at the moment.":
         await context.edit(
             f"Sticker has been added to [this](t.me/addstickers/{pack_name}) pack.",
             parse_mode='md')
-
-
-command_help.update({
-    "sticker": "Parameter: -sticker <emoji>\
-    \nUsage: Collects image/sticker as sticker, specify emoji to set custom emoji."
-})

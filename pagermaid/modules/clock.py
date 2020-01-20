@@ -2,12 +2,14 @@
 
 from datetime import datetime
 from pytz import country_names
-from pagermaid import command_help, config
+from pagermaid import config
 from pagermaid.listener import listener
 from pagermaid.utils import get_timezone
 
 
-@listener(outgoing=True, command="time")
+@listener(outgoing=True, command="time",
+          description="Displays time of specific region, defaults to configured value if parameter is empty.",
+          parameters="<region>")
 async def time(context):
     """ For querying time. """
     country = context.pattern_match.group(1).title()
@@ -35,9 +37,3 @@ async def time(context):
     await context.edit(f"**Time in {country_name}**\n"
                        f"`{datetime.now(time_zone).strftime(date_form)} "
                        f"{datetime.now(time_zone).strftime(time_form)}`")
-
-
-command_help.update({
-    "time": "Parameter: -time <region>\
-    \nUsage: Displays time of specific region, reads from config file if parameter is empty."
-})

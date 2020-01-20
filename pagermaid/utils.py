@@ -23,7 +23,7 @@ from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
 from youtube_dl import YoutubeDL
-from pagermaid import config, path
+from pagermaid import config, path, redis
 
 
 async def upload_result_image(context, result, target_file_path, reply_id):
@@ -555,6 +555,14 @@ def format_sed(data):
         return None
     except IndexError:
         pass
+
+
+def redis_check():
+    try:
+        redis.ping()
+        return True
+    except BaseException:
+        return False
 
 
 def clear_emojis(target):

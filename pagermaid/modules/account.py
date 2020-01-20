@@ -7,60 +7,58 @@ from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedE
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto
-from pagermaid import command_help, bot
+from pagermaid import bot, log
 from pagermaid.listener import listener
 from pagermaid.utils import generate_strings, fetch_user
 
 
-@listener(outgoing=True, command="username")
+@listener(outgoing=True, command="username",
+          description="sets the username.",
+          parameters="<username>")
 async def username(context):
     """ Reconfigure your username. """
     result = context.pattern_match.group(1)
     try:
         await bot(UpdateUsernameRequest(result))
     except UsernameOccupiedError:
-        await context.edit("`Username is taken.`")
+        await context.edit("Username is taken.")
         return
     except UsernameInvalidError:
-        await context.edit("`Invalid username.`")
+        await context.edit("Invalid username.")
         return
-    await context.edit("`Username have been updated.`")
+    await context.edit("Username have been updated.")
+    await log(f"Username has been set to {result}.")
 
 
-command_help.update({
-    "username": "Parameter: -username <text>\
-    \nUsage: Sets the username."
-})
-
-
-@listener(outgoing=True, command="name")
+@listener(outgoing=True, command="name",
+          description="Alters the display name.",
+          parameters="<first name> <last name>")
 async def name(context):
     """ Updates your display name. """
-    new = context.text[6:]
-    if " " not in new:
-        first = new
-        last = ""
+    new_name = context.pattern_match.group(1)
+    if " " not in new_name:
+        first_name = new_name
+        last_name = " "
     else:
-        split = new.split(" ", 1)
-        first = split[0]
-        last = split[1]
+        split = new_name.split(" ", 1)
+        first_name = split[0]
+        last_name = split[1]
     try:
         await bot(UpdateProfileRequest(
-            first_name=first,
-            last_name=last))
+            first_name=first_name,
+            last_name=last_name))
     except FirstNameInvalidError:
         await context.edit("`Invalid first name.`")
         return
     await context.edit("`Display name is successfully altered.`")
+    if last_name != " ":
+        await log(f"Changed display name to `{first_name} {last_name}`.")
+    else:
+        await log(f"Changed display name to `{new_name}`.")
 
 
-command_help.update({
-    "name": "Parameter: -name <text> <text>\
-    \nUsage: Alters the display name."
-})
-
-
-@listener(outgoing=True, command="pfp")
+@listener(outgoing=True, command="pfp",
+          description="Set attachment of message replied to as profile picture.")
 async def pfp(context):
     """ Sets your profile picture. """
     reply = await context.get_reply_message()
@@ -89,13 +87,9 @@ async def pfp(context):
             await context.edit("Unable to parse attachment as image.")
 
 
-command_help.update({
-    "pfp": "Usage: -pfp\
-    \nUsage: Sets profile picture to image replied to."
-})
-
-
-@listener(outgoing=True, command="bio")
+@listener(outgoing=True, command="bio",
+          description="Sets the biography to the string in the parameter.",
+          parameters="<string>")
 async def bio(context):
     """ Sets your bio. """
     result = context.pattern_match.group(1)
@@ -107,13 +101,9 @@ async def bio(context):
     await context.edit("`Bio has been altered successfully.`")
 
 
-command_help.update({
-    "bio": "-bio <text>\
-    \nUsage: Sets the bio string."
-})
-
-
-@listener(outgoing=True, command="rmpfp")
+@listener(outgoing=True, command="rmpfp",
+          description="Deletes defined amount of profile pictures.",
+          parameters="<integer>")
 async def rmpfp(context):
     """ Removes your profile picture. """
     group = context.text[8:]
@@ -142,13 +132,9 @@ async def rmpfp(context):
     await context.edit(f"`Removed {len(input_photos)} profile picture(s).`")
 
 
-command_help.update({
-    "rmpfp": "Parameter: -rmpfp <amount>\
-    \nUsage: Deletes part or all of your profile picture history."
-})
-
-
-@listener(outgoing=True, command="profile")
+@listener(outgoing=True, command="profile",
+          description="Shows user profile in a large message.",
+          parameters="<username>")
 async def profile(context):
     """ Queries profile of a user. """
     if context.fwd_from:
@@ -185,9 +171,3 @@ async def profile(context):
         await context.edit(caption)
 
     remove(photo)
-
-
-command_help.update({
-    "profile": "Parameter: -profile <user>\
-    \nUsage: Shows user profile in a large message."
-})

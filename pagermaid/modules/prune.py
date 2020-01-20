@@ -1,13 +1,14 @@
 """ Module to automate message deletion. """
 
 from asyncio import sleep
-from telethon.errors import rpcbaseerrors
-from pagermaid import log, log_chatid, command_help
+from telethon.errors.rpcbaseerrors import BadRequestError
+from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import send_prune_notify as send_notify
 
 
-@listener(outgoing=True, command="prune")
+@listener(outgoing=True, command="prune",
+          description="Deletes everything starting from the message you replied to.")
 async def prune(context):
     """ Purge every single message after the message you replied to. """
     try:
@@ -26,25 +27,16 @@ async def prune(context):
         if msgs:
             await context.client.delete_messages(chat, msgs)
         notification = await send_notify(context, count)
-
-        if log:
-            await context.client.send_message(
-                log_chatid, "Deleted " +
-                            str(count) + " messages."
-            )
+        await log(f"Deleted {str(count)} messages.")
         await sleep(0.5)
         await notification.delete()
     except TypeError:
         await context.edit("`Please reply to a message.`")
 
 
-command_help.update({
-    "prune": "Parameter: -prune\
-    \nUsage: Deletes everything starting from the message you replied to."
-})
-
-
-@listener(outgoing=True, command="selfprune")
+@listener(outgoing=True, command="selfprune",
+          description="Deletes specific amount of messages you sent.",
+          parameters="<integer>")
 async def selfprune(context):
     """ Prune self message. """
     try:
@@ -59,75 +51,30 @@ async def selfprune(context):
             await message.delete()
 
         notification = await send_notify(context, count)
-        if log:
-            await context.client.send_message(
-                log_chatid, "Deleted " +
-                            str(count) + " messages."
-            )
+        await log(f"Deleted {str(count)} messages.")
         await sleep(0.5)
         await notification.delete()
     except ValueError:
         await context.edit("`Invalid parameter.`")
 
 
-command_help.update({
-    "selfprune": "Parameter: -selfprune <integer>\
-    \nUsage: Deletes your own messages."
-})
-
-
-@listener(outgoing=True, command="delete")
+@listener(outgoing=True, command="delete",
+          description="Deletes the message you replied to.")
 async def delete(context):
     """ Deletes the replied message. """
-    msg_src = await context.get_reply_message()
+    target = await context.get_reply_message()
     if context.reply_to_msg_id:
         try:
-            await msg_src.delete()
+            await target.delete()
             await context.delete()
-            if log:
-                await context.client.send_message(
-                    log_chatid,
-                    "Deleted a message."
-                )
-        except rpcbaseerrors.BadRequestError:
-            if log:
-                await context.client.send_message(
-                    log_chatid,
-                    "Lacks message deletion permission."
-                )
+            await log("Deleted a message.")
+        except BadRequestError:
+            await context.edit("Lacking permission to delete this message.")
 
 
-command_help.update({
-    "delete": "Parameter: -delete\
-    \nUsage: Deletes the message you reply to."
-})
-
-
-@listener(outgoing=True, command="edit")
-async def edit(context):
-    """ Edits your last message. """
-    message = context.text
-    chat = await context.get_input_chat()
-    self_id = await context.client.get_peer_id('me')
-    string = str(message[6:])
-    i = 1
-    async for message in context.client.iter_messages(chat, self_id):
-        if i == 2:
-            await message.edit(string)
-            await context.delete()
-            break
-        i = i + 1
-    if log:
-        await context.client.send_message(log_chatid, "Message edited.")
-
-
-command_help.update({
-    "edit": "Parameter: -edit <string>\
-    \nUsage: Edits your last message."
-})
-
-
-@listener(outgoing=True, command="timed")
+@listener(outgoing=True, command="timed",
+          description="Creates a timed message that is deleted after the amount of time specified.",
+          parameters="<time> <message>")
 async def timed(context):
     """ A timed message that deletes itself. """
     try:
@@ -138,13 +85,6 @@ async def timed(context):
         source_msg = await context.client.send_message(context.chat_id, text)
         await sleep(counter)
         await source_msg.delete()
-        if log:
-            await context.client.send_message(log_chatid, "Created timed message.")
+        await log("Created timed message.")
     except ValueError:
-        await context.edit("`Invalid parameter.`")
-
-
-command_help.update({
-    "timed": "Parameter: -timed <integer> <string>\
-    \nUsage: Generate messages that deletes itself."
-})
+        await context.edit("Invalid parameter.")

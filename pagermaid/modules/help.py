@@ -1,27 +1,23 @@
 """ The help module. """
 
-from pagermaid import command_help
+from pagermaid import help_messages
 from pagermaid.listener import listener
 
 
-@listener(outgoing=True, command="help")
+@listener(outgoing=True, command="help",
+          description="Shows a list of commands or help string of a single command.",
+          parameters="<command>")
 async def help(context):
     """ The help command,"""
     args = context.pattern_match.group(1)
     if args:
-        if args in command_help:
-            await context.edit(str(command_help[args]))
+        if args in help_messages:
+            await context.edit(str(help_messages[args]))
         else:
             await context.edit("`Invalid argument, please check module list.`")
     else:
         result = "**Commands loaded from current modules: \n**"
-        for i in sorted(command_help, reverse=False):
+        for i in sorted(help_messages, reverse=False):
             result += "`" + str(i)
             result += "`, "
         await context.edit(result[:-2] + "\n**Do \"-help <command>\" to view help for a specific command.**")
-
-
-command_help.update({
-    "help": "Parameter: -help <command>\
-    \nUsage: Shows a list of commands or help string of a single command."
-})

@@ -5,12 +5,14 @@ from os import remove
 from gtts import gTTS
 from re import compile as regex_compile
 from pagermaid.utils import fetch_youtube_audio
-from pagermaid import command_help, log, log_chatid
+from pagermaid import log
 from pagermaid.listener import listener, config
 from pagermaid.utils import clear_emojis, attach_log, GoogleSearch
 
 
-@listener(outgoing=True, command="translate")
+@listener(outgoing=True, command="translate",
+          description="Translate the target message into specified language via Google Translate.",
+          parameters="<language>")
 async def translate(context):
     """ PagerMaid universal translator. """
     translator = Translator()
@@ -22,14 +24,14 @@ async def translate(context):
     elif text:
         message = text.text
     else:
-        await context.edit("`Invalid parameter.`")
+        await context.edit("Invalid parameter.")
         return
 
     try:
-        await context.edit("`Generating translation . . .`")
+        await context.edit("Generating translation . . .")
         result = translator.translate(clear_emojis(message), dest=lang)
     except ValueError:
-        await context.edit("`Language not found, please correct the error in the config file.`")
+        await context.edit("Language not found, please correct the error in the config file.")
         return
 
     source_lang = LANGUAGES[f'{result.src.lower()}']
@@ -37,29 +39,19 @@ async def translate(context):
     result = f"**Translated** from {source_lang.title()}:\n{result.text}"
 
     if len(result) > 4096:
-        await context.edit("`Output exceeded limit, attaching file.`")
+        await context.edit("Output exceeded limit, attaching file.")
         await attach_log(context, result)
         return
     await context.edit(result)
-    if log:
-        result = f"Translated `{message}` from {source_lang} to {trans_lang}."
-        if len(result) > 4096:
-            await context.edit("`Output exceeded limit, attaching file.`")
-            await attach_log(context, result)
-            return
-        await context.client.send_message(
-            log_chatid,
-            result,
-        )
+    if len(result) <= 4096:
+        await log(f"Translated `{message}` from {source_lang} to {trans_lang}.")
+    else:
+        await log(f"Translated message from {source_lang} to {trans_lang}.")
 
 
-command_help.update({
-    "translate": "Parameter: -translate <text>\
-    \nUsage: Translate the target message into English."
-})
-
-
-@listener(outgoing=True, command="tts")
+@listener(outgoing=True, command="tts",
+          description="Generates a voice message based on a string via Google Text to Speech.",
+          parameters="<string>")
 async def tts(context):
     """ Send TTS stuff as voice message. """
     text = await context.get_reply_message()
@@ -70,46 +62,42 @@ async def tts(context):
     elif text:
         message = text.text
     else:
-        await context.edit("`Invalid argument.`")
+        await context.edit("Invalid argument.")
         return
 
     try:
-        await context.edit("`Generating vocals . . .`")
+        await context.edit("Generating vocals . . .")
         gTTS(message, lang)
     except AssertionError:
-        await context.edit("`Invalid argument.`")
+        await context.edit("Invalid argument.")
         return
     except ValueError:
-        await context.edit('`Language not found, please correct the error in the config file.`')
+        await context.edit('Language not found, please correct the error in the config file.')
         return
     except RuntimeError:
-        await context.edit('`Error loading array of languages.`')
+        await context.edit('Error loading array of languages.')
         return
-    gtts = gTTS(message, lang)
-    gtts.save("vocals.mp3")
+    google_tts = gTTS(message, lang)
+    google_tts.save("vocals.mp3")
     with open("vocals.mp3", "rb") as audio:
         line_list = list(audio)
         line_count = len(line_list)
     if line_count == 1:
-        gtts = gTTS(message, lang)
-        gtts.save("vocals.mp3")
+        google_tts = gTTS(message, lang)
+        google_tts.save("vocals.mp3")
     with open("vocals.mp3", "r"):
         await context.client.send_file(context.chat_id, "vocals.mp3", voice_note=True)
         remove("vocals.mp3")
-        if log:
-            await context.client.send_message(
-                log_chatid, "Generated tts for `" + message + "`."
-            )
+        if len(message) <= 4096:
+            await log(f"Generated text to speech audio for `{message}`.")
+        else:
+            await log("Generated text to speech audio for message.")
         await context.delete()
 
 
-command_help.update({
-    "tts": "Parameter: -tts <text>\
-    \nUsage: Generates a voice message."
-})
-
-
-@listener(outgoing=True, command="google")
+@listener(outgoing=True, command="google",
+          description="Searches Google for a specific query.",
+          parameters="<query>")
 async def google(context):
     """ Searches Google for a string. """
     query = context.pattern_match.group(1)
@@ -128,20 +116,12 @@ async def google(context):
     await context.edit(f"**Google** |`{query}`| 🎙 🔍 \n"
                        f"{results}",
                        link_preview=False)
-    if log:
-        await context.client.send_message(
-            log_chatid,
-            "Queried `" + query + "` on Google Search.",
-        )
+    await log(f"Queried {query} on the Google search engine.")
 
 
-command_help.update({
-    "google": "Parameter: -google <text>\
-    \nUsage: Searches Google for a string."
-})
-
-
-@listener(outgoing=True, command="fetchaudio")
+@listener(outgoing=True, command="fetchaudio",
+          description="Fetches audio file from multiple platforms.",
+          parameters="<url>")
 async def fetchaudio(context):
     """ Fetches audio from provided URL. """
     url = context.pattern_match.group(1)
@@ -156,13 +136,4 @@ async def fetchaudio(context):
     youtube_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\.com)?/.+")
     if youtube_pattern.match(url):
         await fetch_youtube_audio(context, url, reply_id)
-        if log:
-            await context.client.send_message(
-                log_chatid, "Fetched audio from `" + url + "`."
-            )
-
-
-command_help.update({
-    "fetchaudio": "Parameter: -fetchaudio <url>\
-    \nUsage: Fetches audio from multiple platforms."
-})
+        await log(f"Fetched audio from {url}.")

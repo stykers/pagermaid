@@ -1,6 +1,6 @@
 """ Pagermaid module to edit the configuration file. """
 
-from pagermaid import config, command_help, log, log_chatid
+from pagermaid import config, log
 from pagermaid.listener import listener
 
 

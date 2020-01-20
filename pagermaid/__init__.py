@@ -2,24 +2,25 @@
 
 from sys import version_info, platform
 from yaml import load, FullLoader
+from shutil import copyfile
 from redis import StrictRedis
 from logging import basicConfig, getLogger, INFO, DEBUG
-from distutils.util import strtobool
+from distutils2.util import strtobool
 from telethon import TelegramClient
 
-logs = getLogger(__name__)
+path = __path__[0]
 config = None
 try:
     config = load(open(r"config.yml"), Loader=FullLoader)
 except FileNotFoundError:
-    logs.info("Configuration file does not exist in working directory.")
+    print("Configuration file does not exist, generating new configuration file.")
+    copyfile(f"{path}/assets/config.gen.yml", "config.yml")
     exit(1)
 
-debug = strtobool(config['debug'])
-if debug:
+if strtobool(config['debug']):
     basicConfig(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=DEBUG,
+        level=DEBUG
     )
 else:
     basicConfig(
@@ -27,7 +28,9 @@ else:
         level=INFO
     )
 
-if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7"\
+logs = getLogger(__name__)
+
+if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7" \
         or platform == "freebsd8" or platform == "freebsdN" or platform == "openbsd6":
     logs.info(
         "Detected platform as " + platform + ", proceeding to early load process of PagerMaid."
@@ -37,13 +40,6 @@ else:
         "Your platform " + platform + " is not supported, please start PagerMaid on Linux or *BSD."
     )
     exit(1)
-
-log_chatid = int(config['log_chatid'])
-log = strtobool(config['log'])
-
-if not log_chatid:
-    log_chatid = 0
-    log = False
 
 if version_info[0] < 3 or version_info[1] < 6:
     logs.error(
@@ -60,16 +56,16 @@ if api_key is None or api_hash is None:
     exit(1)
 
 bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
-path = __path__[0]
 redis = StrictRedis(host='localhost', port=6379, db=14)
 
 
-def redis_check():
-    try:
-        redis.ping()
-        return True
-    except BaseException:
-        return False
+async def log(message):
+    if not strtobool(config['log']):
+        return
+    await bot.send_message(
+        int(config['log_chatid']),
+        message
+    )
 
 
-command_help = {}
+help_messages = {}

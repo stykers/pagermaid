@@ -3,12 +3,14 @@
 from os import remove
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
-from pagermaid import command_help, log, log_chatid
+from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import changelog_gen, branch_check, execute
 
 
-@listener(outgoing=True, command="update")
+@listener(outgoing=True, command="update",
+          description="Checks for updates from remote origin, and install them to PagerMaid.",
+          parameters="<boolean>")
 async def upstream(context):
     await context.edit("Checking remote origin for updates . . .")
     parameter = context.pattern_match.group(1)
@@ -69,27 +71,15 @@ async def upstream(context):
         upstream_remote.pull(active_branch)
         await execute("pip install -r requirements.txt --upgrade")
         await execute("pip install -r requirements.txt")
-        if log:
-            await context.client.send_message(
-                log_chatid, "PagerMaid have been updated."
-            )
+        await log("PagerMaid have been updated.")
         await context.edit(
             'Update successful, PagerMaid is restarting.'
         )
         await context.client.disconnect()
     except GitCommandError:
         upstream_remote.git.reset('--hard')
-        if log:
-            await context.client.send_message(
-                log_chatid, "PagerMaid failed to update."
-            )
+        await log("PagerMaid failed to update.")
         await context.edit(
             'Updated with errors, PagerMaid is restarting.'
         )
         await context.client.disconnect()
-
-
-command_help.update({
-    "update": "Parameter: -update <boolean>\
-    \nUsage: Checks for updates from remote origin, and apply updates to PagerMaid."
-})
