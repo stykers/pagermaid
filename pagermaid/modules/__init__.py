@@ -13,7 +13,7 @@ def __list_modules():
         makedirs(f"{getcwd()}/plugins")
     result = [
         basename(file)[:-3]
-        for file in module_paths and plugin_paths
+        for file in module_paths or plugin_paths
         if isfile(file) and file.endswith(".py") and not file.endswith("__init__.py")
     ]
     return result

@@ -1,7 +1,6 @@
 """ PagerMaid launch sequence. """
 
 from sys import path
-from glob import glob
 from os import getcwd
 from importlib import import_module
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
@@ -12,7 +11,7 @@ invalid_phone = '\nInvalid phone number entered.' \
                 '\nPlease make sure you specified' \
                 '\nyour country code in the string.'
 
-path.insert(1, getcwd())
+path.insert(1, f"{getcwd()}/plugins")
 
 try:
     bot.start()
