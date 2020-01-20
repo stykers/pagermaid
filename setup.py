@@ -9,7 +9,7 @@ with open("requirements.txt", "r") as fp:
 
 setup(
     name="pagermaid",
-    version="2020.1.post11",
+    version="2020.1.post13",
     author="Stykers",
     author_email="stykers@stykers.moe",
     description="A telegram utility daemon.",
@@ -23,5 +23,6 @@ setup(
         "Operating System :: Unix"
     ],
     python_requires=">=3.6",
-    install_requires=install_requires
+    install_requires=install_requires,
+    include_package_data=True
 )

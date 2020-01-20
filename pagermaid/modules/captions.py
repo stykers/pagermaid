@@ -1,10 +1,10 @@
 """ PagerMaid module for adding captions to image. """
 
-from os import remove
+from os import remove, path
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
-from pagermaid import command_help, log, log_chatid
+from pagermaid import command_help, log, log_chatid, path
 from pagermaid.listener import listener, diagnostics
 from pagermaid.utils import execute, obtain_source_file, upload_result_image
 
@@ -17,11 +17,11 @@ async def convert(context):
         reply_id, target_file_path = await obtain_source_file(context)
     except ValueError:
         return
-    result = await execute("./utils/caption.sh \"" + target_file_path +
+    result = await execute(f"{path}/assets/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str("") +
                            "\" " + "\"" + str("") + "\"")
     if not result:
-        await context.edit("`Something wrong happened, please report this problem.`")
+        await context.edit("Something wrong happened, please report this problem.")
         try:
             remove("result.png")
             remove(target_file_path)
@@ -35,7 +35,7 @@ async def convert(context):
             reply_to=reply_id
         )
     except ValueError:
-        await context.edit("`An error occurred during the conversion.`")
+        await context.edit("An error occurred during the conversion.")
         remove(target_file_path)
         return
     await context.delete()
@@ -66,17 +66,20 @@ async def caption(context):
         reply_id, target_file_path = await obtain_source_file(context)
     except ValueError:
         return
-    result = await execute("./utils/caption.sh \"" + target_file_path +
-                           "\" result.png" + " \"" + str(string_1) +
-                           "\" " + "\"" + str(string_2) + "\"")
+    result = await execute(f"{path}/assets/caption.sh \"{target_file_path}\" "
+                           f"{path}/assets/Impact-Regular.ttf "
+                           f"\"{str(string_1)}\" \"{str(string_2)}\"")
     try:
         await upload_result_image(context, result, target_file_path, reply_id)
     except ValueError:
         return
-    message = string_1 + "` and `" + string_2
+    if string_2 != " ":
+        message = string_1 + "` and `" + string_2
+    else:
+        message = string_1
     if log:
         await context.client.send_message(
-            log_chatid, "Captions `" + message + "` added to an image."
+            log_chatid, "Caption `" + message + "` added to an image."
         )
 
 

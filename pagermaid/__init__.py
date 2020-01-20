@@ -60,7 +60,7 @@ if api_key is None or api_hash is None:
     exit(1)
 
 bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
-
+path = __path__[0]
 redis = StrictRedis(host='localhost', port=6379, db=14)
 
 
@@ -72,12 +72,6 @@ def redis_check():
         return False
 
 
-# a bunch of vars possibly used in other classes
-count_msg = 0
-users = {}
 wide_map = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
 wide_map[0x20] = 0x3000
-count_pm = {}
-lastmsg = {}
 command_help = {}
-database_test = []
