@@ -9,7 +9,7 @@ with open("requirements.txt", "r") as fp:
 
 setup(
     name="pagermaid",
-    version="2020.1.post22",
+    version="2020.1.post23",
     author="Stykers",
     author_email="stykers@stykers.moe",
     description="A telegram utility daemon.",
@@ -17,6 +17,11 @@ setup(
     long_description_content_type="text/markdown",
     url="https://katonkeyboard.moe/pagermaid.html",
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'pagermaid=pagermaid'
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",

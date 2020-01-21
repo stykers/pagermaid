@@ -4,31 +4,31 @@ from sys import version_info, platform
 from yaml import load, FullLoader
 from shutil import copyfile
 from redis import StrictRedis
-from logging import basicConfig, getLogger, INFO, DEBUG
+from logging import getLogger, INFO, DEBUG, StreamHandler
 from distutils2.util import strtobool
+from coloredlogs import ColoredFormatter
 from telethon import TelegramClient
 
 path = __path__[0]
+logging_format = "%(levelname)s [%(asctime)s] [%(name)s] %(message)s"
 config = None
+logs = getLogger(__name__)
+logging_handler = StreamHandler()
+logging_handler.setFormatter(ColoredFormatter(logging_format))
+logs.addHandler(logging_handler)
+logs.setLevel(INFO)
+
 try:
     config = load(open(r"config.yml"), Loader=FullLoader)
 except FileNotFoundError:
-    print("Configuration file does not exist, generating new configuration file.")
+    logs.fatal("Configuration file does not exist, generating new configuration file.")
     copyfile(f"{path}/assets/config.gen.yml", "config.yml")
     exit(1)
 
 if strtobool(config['debug']):
-    basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=DEBUG
-    )
+    logs.setLevel(DEBUG)
 else:
-    basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=INFO
-    )
-
-logs = getLogger(__name__)
+    logs.setLevel(INFO)
 
 if platform == "linux" or platform == "linux2" or platform == "darwin" or platform == "freebsd7" \
         or platform == "freebsd8" or platform == "freebsdN" or platform == "openbsd6":

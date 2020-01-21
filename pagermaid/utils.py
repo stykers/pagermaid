@@ -64,7 +64,7 @@ async def obtain_source_file(context):
     else:
         target_file_path = await context.download_media()
     if target_file_path is None:
-        await context.edit("`There are no attachment in target.`")
+        await context.edit("There are no attachment in target.")
         raise ValueError
     return reply_id, target_file_path
 
