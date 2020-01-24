@@ -1,6 +1,6 @@
 """ PagerMaid initialization. """
 
-from sys import version_info, platform, path
+from sys import version_info, platform
 from yaml import load, FullLoader
 from shutil import copyfile
 from redis import StrictRedis
@@ -23,7 +23,7 @@ try:
     config = load(open(r"config.yml"), Loader=FullLoader)
 except FileNotFoundError:
     logs.fatal("Configuration file does not exist, generating new configuration file.")
-    copyfile(f"{path}/assets/config.gen.yml", "config.yml")
+    copyfile(f"{working_dir}/assets/config.gen.yml", "config.yml")
     exit(1)
 
 if strtobool(config['debug']):

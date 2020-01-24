@@ -1,10 +1,10 @@
 """ PagerMaid module for adding captions to image. """
 
-from os import remove, path
+from os import remove
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
-from pagermaid import log, path
+from pagermaid import log, working_dir
 from pagermaid.listener import listener
 from pagermaid.utils import execute, obtain_source_file, upload_result_image
 
@@ -17,7 +17,7 @@ async def convert(context):
         reply_id, target_file_path = await obtain_source_file(context)
     except ValueError:
         return
-    result = await execute(f"{path}/assets/caption.sh \"" + target_file_path +
+    result = await execute(f"{working_dir}/assets/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str("") +
                            "\" " + "\"" + str("") + "\"")
     if not result:
@@ -61,8 +61,8 @@ async def caption(context):
         reply_id, target_file_path = await obtain_source_file(context)
     except ValueError:
         return
-    result = await execute(f"{path}/assets/caption.sh \"{target_file_path}\" "
-                           f"{path}/assets/Impact-Regular.ttf "
+    result = await execute(f"{working_dir}/assets/caption.sh \"{target_file_path}\" "
+                           f"{working_dir}/assets/Impact-Regular.ttf "
                            f"\"{str(string_1)}\" \"{str(string_2)}\"")
     try:
         await upload_result_image(context, result, target_file_path, reply_id)

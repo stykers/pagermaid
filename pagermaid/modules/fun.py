@@ -4,7 +4,7 @@ from asyncio import sleep
 from random import choice
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
-from pagermaid import bot, path
+from pagermaid import bot, working_dir
 from pagermaid.listener import listener
 from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 
@@ -220,7 +220,7 @@ async def asciiart(context):
     if not context.pattern_match.group(1):
         await context.edit("`Invalid arguments.`")
         return
-    output = await execute(f"figlet -f {path}/assets/graffiti.flf '{context.pattern_match.group(1)}'")
+    output = await execute(f"figlet -f {working_dir}/assets/graffiti.flf '{context.pattern_match.group(1)}'")
     await context.edit(f"`{output}`")
 
 

@@ -23,7 +23,7 @@ from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
 from youtube_dl import YoutubeDL
-from pagermaid import config, path, redis
+from pagermaid import config, redis, working_dir
 
 
 async def upload_result_image(context, result, target_file_path, reply_id):
@@ -394,7 +394,7 @@ def stutter(text):
 
 def weebify(text):
     """Replace words and phrases"""
-    with open(f"{path}/assets/replacements.json") as fp:
+    with open(f"{working_dir}/assets/replacements.json") as fp:
         replacements = load_json(fp)
 
     for expression in replacements:
