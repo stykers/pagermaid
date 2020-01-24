@@ -18,7 +18,7 @@ async def translate(context):
     translator = Translator()
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
-    lang = config['lang']
+    lang = config['application_language']
     if message:
         pass
     elif text:
@@ -56,7 +56,7 @@ async def tts(context):
     """ Send TTS stuff as voice message. """
     text = await context.get_reply_message()
     message = context.pattern_match.group(1)
-    lang = config['lang']
+    lang = config['application_language']
     if message:
         pass
     elif text:
