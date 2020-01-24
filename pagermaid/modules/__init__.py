@@ -28,8 +28,21 @@ def __list_plugins():
     return result
 
 
+module_list_string = ""
+plugin_list_string = ""
+
+for module in sorted(__list_modules()):
+    module_list_string += f"{module}, "
+
+module_list_string = module_list_string[:-2]
+
+for plugin in sorted(__list_plugins()):
+    plugin_list_string += f"{plugin}, "
+
+plugin_list_string = plugin_list_string[:-2]
+
 module_list = sorted(__list_modules())
 plugin_list = sorted(__list_plugins())
-logs.info("Loading modules: %s", str(module_list))
-logs.info("Loading plugins: %s", str(plugin_list))
-__all__ = module_list + ["module_list"]
+logs.info("Loading modules: %s", module_list_string)
+logs.info("Loading plugins: %s", plugin_list_string)
+__all__ = __list_modules() + ["module_list"] + __list_plugins() + ["plugin_list"]

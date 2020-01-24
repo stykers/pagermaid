@@ -25,7 +25,7 @@ def listener(**args):
             if parameters is None:
                 parameters = ""
             help_messages.update({
-                f"{command}": f"**Parameter:** `-{command} {parameters}`\
+                f"{command}": f"**Usage:** `-{command} {parameters}`\
                 \n{description}"
             })
     if pattern is not None and not pattern.startswith('(?i)'):

@@ -24,5 +24,6 @@ for plugin_name in plugin_list:
         import_module("plugins." + plugin_name)
     except BaseException:
         logs.info(f"Error loading plugin {plugin_name}.")
+        plugin_list.remove(plugin_name)
 logs.info("PagerMaid have started, The prefix is -, type -help for help message.")
 bot.run_until_disconnected()
