@@ -1,6 +1,6 @@
 """ PagerMaid initialization. """
 
-from sys import version_info, platform
+from sys import version_info, platform, path
 from yaml import load, FullLoader
 from shutil import copyfile
 from redis import StrictRedis
@@ -9,9 +9,10 @@ from distutils2.util import strtobool
 from coloredlogs import ColoredFormatter
 from telethon import TelegramClient
 
-path = __path__[0]
+working_dir = __path__[0]
 logging_format = "%(levelname)s [%(asctime)s] [%(name)s] %(message)s"
 config = None
+help_messages = {}
 logs = getLogger(__name__)
 logging_handler = StreamHandler()
 logging_handler.setFormatter(ColoredFormatter(logging_format))
@@ -66,6 +67,3 @@ async def log(message):
         int(config['log_chatid']),
         message
     )
-
-
-help_messages = {}
