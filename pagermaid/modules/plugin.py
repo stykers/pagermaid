@@ -2,7 +2,7 @@
 
 from os import getcwd, remove, rename, chdir, path
 from os.path import exists
-from shutil import copyfile, copy
+from shutil import copyfile, copy, move
 from glob import glob
 from pagermaid import log
 from pagermaid.listener import listener
@@ -31,8 +31,14 @@ async def plugin(context):
                 except FileNotFoundError:
                     pass
                 return
-            copy(file_path, plugin_directory)
-            remove(file_path)
+            if exists(f"{plugin_directory}{file_path}"):
+                remove(f"{plugin_directory}{file_path}")
+                move(file_path, plugin_directory)
+            elif exists(f"{plugin_directory}{file_path}.disabled"):
+                remove(f"{plugin_directory}{file_path}.disabled")
+                move(file_path, f"{plugin_directory}{file_path}.disabled")
+            else:
+                move(file_path, plugin_directory)
             await context.edit(f"Plugin {path.basename(file_path)[:-3]} has been installed, PagerMaid is restarting.")
             await log(f"Installed plugin {path.basename(file_path)[:-3]}.")
             await context.client.disconnect()
