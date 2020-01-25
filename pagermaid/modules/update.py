@@ -5,7 +5,7 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 from pagermaid import log
 from pagermaid.listener import listener
-from pagermaid.utils import changelog_gen, branch_check, execute
+from pagermaid.utils import execute
 
 
 @listener(outgoing=True, command="update",
@@ -83,3 +83,19 @@ async def upstream(context):
             'Updated with errors, PagerMaid is restarting.'
         )
         await context.client.disconnect()
+
+
+async def changelog_gen(repo, diff):
+    result = ''
+    d_form = "%d/%m/%y"
+    for c in repo.iter_commits(diff):
+        result += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
+    return result
+
+
+async def branch_check(branch):
+    official = ['master', 'staging']
+    for k in official:
+        if k == branch:
+            return 1
+    return

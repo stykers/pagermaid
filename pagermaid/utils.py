@@ -90,22 +90,6 @@ async def random_gen(context, selection):
         await context.edit("`Kat didn't bring /usr/bin/head.`")
 
 
-async def changelog_gen(repo, diff):
-    result = ''
-    d_form = "%d/%m/%y"
-    for c in repo.iter_commits(diff):
-        result += f'•[{c.committed_datetime.strftime(d_form)}]: {c.summary} <{c.author}>\n'
-    return result
-
-
-async def branch_check(branch):
-    official = ['master', 'staging']
-    for k in official:
-        if k == branch:
-            return 1
-    return
-
-
 async def send_prune_notify(context, count):
     return await context.client.send_message(
         context.chat_id,
