@@ -5,6 +5,7 @@ config.yml
 pagermaid.session
 pagermaid.session-journal
 plugins/*.py
+plugins/*.py.disabled
 plugins/__pycache__/
 __pycache__/*
 pagermaid/__pycache__/*
