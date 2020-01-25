@@ -135,5 +135,6 @@ async def fetchaudio(context):
         return
     youtube_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\.com)?/.+")
     if youtube_pattern.match(url):
-        await fetch_youtube_audio(context, url, reply_id)
+        if not await fetch_youtube_audio(url, context.chat_id, reply_id):
+            await context.edit("The soundtrack failed to download.")
         await log(f"Fetched audio from {url}.")

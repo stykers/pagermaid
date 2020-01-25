@@ -37,10 +37,10 @@ async def upload_attachment(file_path, chat_id, reply_id, caption=None):
     return True
 
 
-async def fetch_youtube_audio(context, url, reply_id):
+async def fetch_youtube_audio(url, chat_id, reply_id):
     youtube_dl_options = {
         'format': 'bestaudio/best',
-        'outtmpl': "output.%(ext)s",
+        'outtmpl': "audio.%(ext)s",
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -48,17 +48,15 @@ async def fetch_youtube_audio(context, url, reply_id):
         }],
     }
     YoutubeDL(youtube_dl_options).download([url])
-    try:
-        await context.client.send_file(
-            context.chat_id,
-            "output.mp3",
-            reply_to=reply_id
-        )
-    except ValueError:
-        await context.edit("`An error occurred during the download.`")
-        return
-    await context.delete()
-    remove("output.mp3")
+    if not exists("audio.mp3"):
+        return False
+    await bot.send_file(
+         chat_id,
+         "audio.mp3",
+         reply_to=reply_id
+    )
+    remove("audio.mp3")
+    return True
 
 
 async def execute(command, pass_error=True):

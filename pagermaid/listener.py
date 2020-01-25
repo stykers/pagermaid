@@ -4,7 +4,6 @@ from telethon import events
 from distutils2.util import strtobool
 from traceback import format_exc
 from time import gmtime, strftime
-from os import remove
 from sys import exc_info
 from telethon.events import StopPropagation
 from pagermaid import bot, config, help_messages

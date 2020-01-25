@@ -25,7 +25,7 @@ redis:
 application_language: "en"
 application_region: "United States"
 
-# Logging settings, default settings logs directly into Kat, strongly advised to change
+# In-Chat logging settings, default settings logs directly into Kat, strongly advised to change
 log: "False"
 log_chatid: "503691334"
 
