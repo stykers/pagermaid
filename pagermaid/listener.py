@@ -8,7 +8,7 @@ from os import remove
 from sys import exc_info
 from telethon.events import StopPropagation
 from pagermaid import bot, config, help_messages
-from pagermaid.utils import execute
+from pagermaid.utils import execute, attach_log
 
 
 def listener(**args):
@@ -68,18 +68,7 @@ def listener(**args):
                                                                   f"# Error: \"{str(exc_info()[1])}\". \n" \
                                                                   f"# Revision: " \
                                                                   f"{await execute('git rev-list --all --count')}."
-                report_file = open("error_report.pagermaid", "w+")
-                report_file.write(report)
-                report_file.close()
-
-                await context.client.send_file(
-                    503691334,
-                    "error_report.pagermaid",
-                    caption="Error report generated."
-                )
-
-                remove("error_report.pagermaid")
-
+                await attach_log(report, 503691334, "error_report.pagermaid", None, "Error report generated.")
         if not ignore_edited:
             bot.add_event_handler(handler, events.MessageEdited(**args))
         bot.add_event_handler(handler, events.NewMessage(**args))

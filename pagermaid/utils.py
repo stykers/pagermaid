@@ -13,10 +13,8 @@ from time import sleep
 from threading import Thread
 from json import load as load_json
 from re import sub, search, IGNORECASE
-from pytz import country_names
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
-from pytz import timezone, country_timezones
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from collections import deque
@@ -90,42 +88,18 @@ async def random_gen(context, selection):
         await context.edit("`Kat didn't bring /usr/bin/head.`")
 
 
-async def attach_log(context, result):
-    """ Method to attach logs for messages that are too long. """
-    file = open("output.log", "w+")
-    file.write(result)
+async def attach_log(plaintext, chat_id, file_name, reply_id=None, caption=None):
+    """ Attach plaintext as logs. """
+    file = open(file_name, "w+")
+    file.write(plaintext)
     file.close()
-    await context.client.send_file(
-        context.chat_id,
-        "output.log",
-        reply_to=context.id,
+    await bot.send_file(
+        chat_id,
+        file_name,
+        reply_to=reply_id,
+        caption=caption
     )
-    remove("output.log")
-
-
-async def get_timezone(target):
-    """ Returns timezone of the parameter in command. """
-    if "(Uk)" in target:
-        target = target.replace("Uk", "UK")
-    if "(Us)" in target:
-        target = target.replace("Us", "US")
-    if " Of " in target:
-        target = target.replace(" Of ", " of ")
-    if "(Western)" in target:
-        target = target.replace("(Western)", "(western)")
-    if "Minor Outlying Islands" in target:
-        target = target.replace("Minor Outlying Islands", "minor outlying islands")
-    if "Nl" in target:
-        target = target.replace("Nl", "NL")
-
-    for country_code in country_names:
-        if target == country_names[country_code]:
-            return timezone(country_timezones[country_code][0])
-    try:
-        if country_names[target]:
-            return timezone(country_timezones[target][0])
-    except KeyError:
-        return
+    remove(file_name)
 
 
 async def fetch_user(target):

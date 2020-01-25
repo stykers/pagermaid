@@ -82,7 +82,7 @@ async def sh(context):
 
     if result:
         if len(result) > 4096:
-            await attach_log(context, result)
+            await attach_log(result, context.chat_id, "output.log", context.id)
             return
 
         if uid == 0:
@@ -140,7 +140,7 @@ async def trace(context):
         if result:
             if len(result) > 4096:
                 await context.edit("Output exceeded limit, attaching file.")
-                await attach_log(context, result)
+                await attach_log(result, context.chat_id, "output.log", context.id)
                 return
             await context.edit(
                 "Redirects:\n"

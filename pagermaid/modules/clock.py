@@ -1,10 +1,9 @@
 """ This module handles world clock related utility. """
 
 from datetime import datetime
-from pytz import country_names
+from pytz import country_names, country_timezones, timezone
 from pagermaid import config
 from pagermaid.listener import listener
-from pagermaid.utils import get_timezone
 
 
 @listener(outgoing=True, command="time",
@@ -37,3 +36,28 @@ async def time(context):
     await context.edit(f"**Time in {country_name}**\n"
                        f"`{datetime.now(time_zone).strftime(date_form)} "
                        f"{datetime.now(time_zone).strftime(time_form)}`")
+
+
+async def get_timezone(target):
+    """ Returns timezone of the parameter in command. """
+    if "(Uk)" in target:
+        target = target.replace("Uk", "UK")
+    if "(Us)" in target:
+        target = target.replace("Us", "US")
+    if " Of " in target:
+        target = target.replace(" Of ", " of ")
+    if "(Western)" in target:
+        target = target.replace("(Western)", "(western)")
+    if "Minor Outlying Islands" in target:
+        target = target.replace("Minor Outlying Islands", "minor outlying islands")
+    if "Nl" in target:
+        target = target.replace("Nl", "NL")
+
+    for country_code in country_names:
+        if target == country_names[country_code]:
+            return timezone(country_timezones[country_code][0])
+    try:
+        if country_names[target]:
+            return timezone(country_timezones[target][0])
+    except KeyError:
+        return

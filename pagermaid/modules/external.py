@@ -40,7 +40,7 @@ async def translate(context):
 
     if len(result) > 4096:
         await context.edit("Output exceeded limit, attaching file.")
-        await attach_log(context, result)
+        await attach_log(result, context.chat_id, "translation.txt", context.id)
         return
     await context.edit(result)
     if len(result) <= 4096:
