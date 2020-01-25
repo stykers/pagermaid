@@ -12,7 +12,7 @@ from re import sub
 from pathlib import Path
 from pagermaid import log, config, redis_status
 from pagermaid.listener import listener
-from pagermaid.utils import unit_convert, execute
+from pagermaid.utils import execute
 
 
 @listener(outgoing=True, command="sysinfo",
@@ -99,7 +99,6 @@ async def speedtest(context):
     """ Tests internet speed using speedtest. """
     await context.edit("Executing test scripts . . .")
     test = Speedtest()
-
     test.get_best_server()
     test.download()
     test.upload()
@@ -212,3 +211,19 @@ async def topcloud(context):
     remove("cloud.png")
     await context.delete()
     await log("Generated process word cloud.")
+
+
+def unit_convert(byte):
+    """ Converts byte into readable formats. """
+    power = 2 ** 10
+    zero = 0
+    units = {
+        0: '',
+        1: 'Kb/s',
+        2: 'Mb/s',
+        3: 'Gb/s',
+        4: 'Tb/s'}
+    while byte > power:
+        byte /= power
+        zero += 1
+    return f"{round(byte, 2)} {units[zero]}"

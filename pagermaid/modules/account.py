@@ -6,10 +6,10 @@ from telethon.errors.rpcerrorlist import PhotoExtInvalidError, UsernameOccupiedE
     FirstNameInvalidError, UsernameInvalidError
 from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRequest
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
-from telethon.tl.types import InputPhoto, MessageMediaPhoto
+from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.types import InputPhoto, MessageMediaPhoto, MessageEntityMentionName
 from pagermaid import bot, log
 from pagermaid.listener import listener
-from pagermaid.utils import generate_strings, fetch_user
 
 
 @listener(outgoing=True, command="username",
@@ -141,18 +141,54 @@ async def profile(context):
         return
 
     await context.edit("Generating user profile summary . . .")
-    replied_user = await fetch_user(context)
-    caption = await generate_strings(replied_user)
+    if context.reply_to_msg_id:
+        target_user = await context.client(GetFullUserRequest(await context.get_reply_message().from_id))
+    else:
+        user = context.pattern_match.group(1)
+        if user.isnumeric():
+            user = int(user)
+        if not user:
+            self_user = await context.client.get_me()
+            user = self_user.id
+        if context.message.entities is not None:
+            user_entity = context.message.entities[0]
+            if isinstance(user_entity, MessageEntityMentionName):
+                user_id = user_entity.user_id
+                target_user = await context.client(GetFullUserRequest(user_id))
+                return target_user
+        try:
+            user_object = await context.client.get_entity(user)
+            target_user = await context.client(GetFullUserRequest(user_object.id))
+        except (TypeError, ValueError) as err:
+            await context.edit(str(err))
+            return None
+    user_type = "Bot" if target_user.user.bot else "User"
+    username_system = target_user.user.username if target_user.user.username is not None else (
+        "This user have not yet defined their username.")
+    first_name = target_user.user.first_name.replace("\u2060", "")
+    last_name = target_user.user.last_name.replace("\u2060", "") if target_user.user.last_name is not None else (
+        "This user did not define a last name."
+    )
+    biography = target_user.about if target_user.about is not None else "This user did not define a biography string."
+    caption = f"**Profile:** \n" \
+              f"Username: @{username_system} \n" \
+              f"UserID: {target_user.user.id} \n" \
+              f"First Name: {first_name} \n" \
+              f"Last Name: {last_name} \n" \
+              f"Biography: {biography} \n" \
+              f"Common Groups: {target_user.common_chats_count} \n" \
+              f"Verified: {target_user.user.verified} \n" \
+              f"Restricted: {target_user.user.restricted} \n" \
+              f"Type: {user_type} \n" \
+              f"Permanent Link: [{first_name}](tg://user?id={target_user.user.id})"
     reply_to = context.message.reply_to_msg_id
     photo = await context.client.download_profile_photo(
-        replied_user.user.id,
-        "./" + str(replied_user.user.id) + ".jpg",
+        target_user.user.id,
+        "./" + str(target_user.user.id) + ".jpg",
         download_big=True
     )
-
     if not reply_to:
         reply_to = None
-
     try:
         await context.client.send_file(
             context.chat_id,
@@ -162,12 +198,10 @@ async def profile(context):
             force_document=False,
             reply_to=reply_to
         )
-
         if not photo.startswith("http"):
             remove(photo)
         await context.delete()
         return
     except TypeError:
         await context.edit(caption)
-
     remove(photo)

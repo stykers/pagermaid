@@ -2,11 +2,12 @@
 
 from platform import node
 from getpass import getuser
-from os import remove
-from os import geteuid
+from os import remove, geteuid
+from requests import head
+from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from pagermaid import log
 from pagermaid.listener import listener
-from pagermaid.utils import url_tracer, attach_log, execute
+from pagermaid.utils import attach_log, execute
 
 
 @listener(outgoing=True, command="evaluate",
@@ -170,3 +171,21 @@ async def contact(context):
             503691334,
             message
         )
+
+
+def url_tracer(url):
+    """ Method to trace URL redirects. """
+    while True:
+        yield url
+        try:
+            response = head(url)
+        except MissingSchema:
+            break
+        except InvalidURL:
+            break
+        except ConnectionError:
+            break
+        if 300 < response.status_code < 400:
+            url = response.headers['location']
+        else:
+            break

@@ -3,21 +3,11 @@
 from os import remove
 from os.path import exists
 from emoji import get_emoji_regexp
-from requests import head
-from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
-from urllib import request, parse
-from math import ceil
-from bs4 import BeautifulSoup
 from random import random, randint, randrange, seed, choice
-from time import sleep
-from threading import Thread
 from json import load as load_json
-from re import sub, search, IGNORECASE
-from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageEntityMentionName
+from re import sub, IGNORECASE
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
-from collections import deque
 from youtube_dl import YoutubeDL
 from pagermaid import working_dir, bot
 
@@ -98,74 +88,6 @@ async def attach_log(plaintext, chat_id, file_name, reply_id=None, caption=None)
         caption=caption
     )
     remove(file_name)
-
-
-async def fetch_user(target):
-    """ Fetch information of the target user. """
-    if target.reply_to_msg_id:
-        previous_message = await target.get_reply_message()
-        replied_user = await target.client(GetFullUserRequest(previous_message.from_id))
-    else:
-        user = target.pattern_match.group(1)
-
-        if user.isnumeric():
-            user = int(user)
-
-        if not user:
-            self_user = await target.client.get_me()
-            user = self_user.id
-
-        if target.message.entities is not None:
-            probable_user_mention_entity = target.message.entities[0]
-
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                replied_user = await target.client(GetFullUserRequest(user_id))
-                return replied_user
-        try:
-            user_object = await target.client.get_entity(user)
-            replied_user = await target.client(GetFullUserRequest(user_object.id))
-        except (TypeError, ValueError) as err:
-            await target.edit(str(err))
-            return None
-
-    return replied_user
-
-
-async def generate_strings(replied_user):
-    """ Generates the needed strings for a user. """
-    user_id = replied_user.user.id
-    first_name = replied_user.user.first_name
-    last_name = replied_user.user.last_name
-    common_chat = replied_user.common_chats_count
-    user_name = replied_user.user.username
-    user_bio = replied_user.about
-    is_bot = replied_user.user.bot
-    restricted = replied_user.user.restricted
-    verified = replied_user.user.verified
-    first_name = first_name.replace("\u2060", "") if first_name else (
-        "This user does not have a first name.")
-    last_name = last_name.replace("\u2060", "") if last_name else (
-        "This user does not have a last name.")
-    user_name = "@{}".format(user_name) if user_name else (
-        "This user does not have a username.")
-    user_bio = "This user has no bio." if not user_bio else user_bio
-
-    caption = "**Profile:** \n"
-    caption += f"First Name: {first_name} \n"
-    caption += f"Last Name: {last_name} \n"
-    caption += f"Username: {user_name} \n"
-    caption += f"Bot: {is_bot} \n"
-    caption += f"Restricted: {restricted} \n"
-    caption += f"Verified: {verified} \n"
-    caption += f"ID: `{user_id}` \n"
-    caption += f"Bio: `{user_bio}` \n"
-    caption += f"Common Chats: {common_chat} \n"
-    caption += f"Permanent Link: "
-    caption += f"[{first_name} {last_name}](tg://user?id={user_id})" \
-        if last_name != "This user does not have a " \
-                        "last name." else f"[{first_name}](tg://user?id={user_id})"
-    return caption
 
 
 def owoifier(text):
@@ -272,118 +194,3 @@ def corrupt(text):
 def clear_emojis(target):
     """ Removes all Emojis from provided string """
     return get_emoji_regexp().sub(u'', target)
-
-
-def url_tracer(url):
-    """ Method to trace URL redirects. """
-    while True:
-        yield url
-        try:
-            response = head(url)
-        except MissingSchema:
-            break
-        except InvalidURL:
-            break
-        except ConnectionError:
-            break
-        if 300 < response.status_code < 400:
-            url = response.headers['location']
-        else:
-            break
-
-
-def unit_convert(byte):
-    """ Converts byte into readable formats. """
-    power = 2 ** 10
-    zero = 0
-    units = {
-        0: '',
-        1: 'Kb/s',
-        2: 'Mb/s',
-        3: 'Gb/s',
-        4: 'Tb/s'}
-    while byte > power:
-        byte /= power
-        zero += 1
-    return f"{round(byte, 2)} {units[zero]}"
-
-
-class GoogleSearch:
-    USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:69.0) Gecko/20100101 Firefox/69.0"
-    SEARCH_URL = "https://google.com/search"
-    RESULT_SELECTOR = "div.r > a"
-    TOTAL_SELECTOR = "#resultStats"
-    RESULTS_PER_PAGE = 10
-    DEFAULT_HEADERS = [
-        ('User-Agent', USER_AGENT),
-        ("Accept-Language", "en-US,en;q=0.5"),
-    ]
-
-    def search(self, query, num_results=10, prefetch_pages=True, prefetch_threads=10):
-        search_results = []
-        pages = int(ceil(num_results / float(GoogleSearch.RESULTS_PER_PAGE)))
-        fetcher_threads = deque([])
-        total = None
-        for i in range(pages):
-            start = i * GoogleSearch.RESULTS_PER_PAGE
-            opener = request.build_opener()
-            opener.addheaders = GoogleSearch.DEFAULT_HEADERS
-            response = opener.open(GoogleSearch.SEARCH_URL + "?q=" + parse.quote(query) + ("" if start == 0 else (
-                    "&start=" + str(start))))
-            soup = BeautifulSoup(response.read(), "lxml")
-            response.close()
-            if total is None:
-                total_text = soup.select(GoogleSearch.TOTAL_SELECTOR)[0].children.__next__()
-                total = int(sub("[', ]", "", search("(([0-9]+[', ])*[0-9]+)", total_text).group(1)))
-            results = self.parse_results(soup.select(GoogleSearch.RESULT_SELECTOR))
-            if len(search_results) + len(results) > num_results:
-                del results[num_results - len(search_results):]
-            search_results += results
-            if prefetch_pages:
-                for result in results:
-                    while True:
-                        running = 0
-                        for thread in fetcher_threads:
-                            if thread.is_alive():
-                                running += 1
-                        if running < prefetch_threads:
-                            break
-                        sleep(1)
-                    fetcher_thread = Thread(target=result.get_text)
-                    fetcher_thread.start()
-                    fetcher_threads.append(fetcher_thread)
-        for thread in fetcher_threads:
-            thread.join()
-        return SearchResponse(search_results, total)
-
-    @staticmethod
-    def parse_results(results):
-        search_results = []
-        for result in results:
-            url = result["href"]
-            title = result.find_all('h3')[0].text
-            text = result.parent.parent.find_all('div', {'class': 's'})[0].text
-            search_results.append(SearchResult(title, url, text))
-        return search_results
-
-
-class SearchResponse:
-    def __init__(self, results, total):
-        self.results = results
-        self.total = total
-
-
-class SearchResult:
-    def __init__(self, title, url, text):
-        self.title = title
-        self.url = url
-        self.text = text
-
-    def get_text(self):
-        return self.text
-
-    def __str__(self):
-        return str(self.__dict__)
-
-    def __repr__(self):
-        return self.__str__()
