@@ -2,7 +2,7 @@
 
 from os import getcwd, remove, rename, chdir, path
 from os.path import exists
-from shutil import move, copyfile
+from shutil import copyfile, copy
 from glob import glob
 from pagermaid import log
 from pagermaid.listener import listener
@@ -21,9 +21,7 @@ async def plugin(context):
         if len(parameters) == 1:
             await context.edit("Installing plugin . . .")
             if reply:
-                file_path = await context.client.download_media(
-                    reply
-                )
+                file_path = await context.client.download_media(reply)
             else:
                 file_path = await context.download_media()
             if file_path is None or not file_path.endswith('.py'):
@@ -33,7 +31,8 @@ async def plugin(context):
                 except FileNotFoundError:
                     pass
                 return
-            move(file_path, plugin_directory)
+            copy(file_path, plugin_directory)
+            remove(file_path)
             await context.edit(f"Plugin {path.basename(file_path)[:-3]} has been installed, PagerMaid is restarting.")
             await log(f"Installed plugin {path.basename(file_path)[:-3]}.")
             await context.client.disconnect()
