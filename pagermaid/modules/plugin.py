@@ -2,7 +2,7 @@
 
 from os import getcwd, remove, rename, chdir
 from os.path import exists
-from shutil import move
+from shutil import move, copyfile
 from glob import glob
 from pagermaid.listener import listener
 from pagermaid.modules import plugin_list as active_plugins
@@ -15,6 +15,7 @@ from pagermaid.modules import __list_plugins
 async def plugin(context):
     parameters = context.pattern_match.group(1).split(' ')
     reply = await context.get_reply_message()
+    plugin_directory = f"{getcwd()}/plugins/"
     if parameters[0] == "install":
         if len(parameters) == 1:
             await context.edit("Installing plugin . . .")
@@ -31,17 +32,17 @@ async def plugin(context):
                 except FileNotFoundError:
                     pass
                 return
-            move(file_path, f"{getcwd()}/plugins/")
+            move(file_path, plugin_directory)
             await context.edit("Plugin has been installed, PagerMaid is restarting.")
             await context.client.disconnect()
         else:
             await context.edit("Invalid arguments.")
     elif parameters[0] == "remove":
         if len(parameters) == 2:
-            if "/" in parameters[1] or not exists(f"{getcwd()}/plugins/{parameters[1]}.py"):
+            if "/" in parameters[1] or not exists(f"{plugin_directory}{parameters[1]}.py"):
                 await context.edit("The plugin specified does not exist.")
             else:
-                remove(f"{getcwd()}/plugins/{parameters[1]}.py")
+                remove(f"{plugin_directory}{parameters[1]}.py")
                 await context.edit(f"Removed plugin {parameters[1]}, PagerMaid is restarting.")
                 await context.client.disconnect()
         else:
@@ -84,8 +85,8 @@ async def plugin(context):
             await context.edit("Invalid arguments.")
     elif parameters[0] == "enable":
         if len(parameters) == 2:
-            if exists(f"{getcwd()}/plugins/{parameters[1]}.py.disabled"):
-                rename(f"{getcwd()}/plugins/{parameters[1]}.py.disabled", f"{getcwd()}/plugins/{parameters[1]}.py")
+            if exists(f"{plugin_directory}{parameters[1]}.py.disabled"):
+                rename(f"{plugin_directory}{parameters[1]}.py.disabled", f"{plugin_directory}{parameters[1]}.py")
                 await context.edit(f"Plugin {parameters[1]} have been enabled, PagerMaid is restarting.")
                 await context.client.disconnect()
             else:
@@ -94,10 +95,34 @@ async def plugin(context):
             await context.edit("Invalid arguments.")
     elif parameters[0] == "disable":
         if len(parameters) == 2:
-            if exists(f"{getcwd()}/plugins/{parameters[1]}.py") is True:
-                rename(f"{getcwd()}/plugins/{parameters[1]}.py", f"{getcwd()}/plugins/{parameters[1]}.py.disabled")
+            if exists(f"{plugin_directory}{parameters[1]}.py") is True:
+                rename(f"{plugin_directory}{parameters[1]}.py", f"{plugin_directory}{parameters[1]}.py.disabled")
                 await context.edit(f"Plugin {parameters[1]} have been disabled, PagerMaid is restarting.")
                 await context.client.disconnect()
+            else:
+                await context.edit("The plugin specified does not exist.")
+        else:
+            await context.edit("Invalid arguments.")
+    elif parameters[0] == "upload":
+        if len(parameters) == 2:
+            file_name = f"{parameters[1]}.py"
+            reply_id = None
+            if reply:
+                reply_id = reply.id
+            if exists(f"{plugin_directory}{file_name}"):
+                copyfile(f"{plugin_directory}{file_name}", file_name)
+            elif exists(f"{plugin_directory}{file_name}.disabled"):
+                copyfile(f"{plugin_directory}{file_name}.disabled", file_name)
+            if exists(file_name):
+                await context.edit("Uploading plugin . . .")
+                await context.client.send_file(
+                    context.chat_id,
+                    file_name,
+                    reply_to=reply_id,
+                    caption=f"PagerMaid {parameters[1]} plugin."
+                )
+                remove(file_name)
+                await context.delete()
             else:
                 await context.edit("The plugin specified does not exist.")
         else:
