@@ -19,7 +19,7 @@ from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from collections import deque
 from youtube_dl import YoutubeDL
-from pagermaid import redis, working_dir, bot
+from pagermaid import working_dir, bot
 
 
 async def upload_attachment(file_path, chat_id, reply_id, caption=None):
@@ -170,62 +170,38 @@ async def generate_strings(replied_user):
     return caption
 
 
-def last_replace(s, old, new):
-    """ Helper util for owoifier. """
-    li = s.rsplit(old, 1)
-    return new.join(li)
-
-
-def stutter(text):
-    """Add a stutter"""
+def owoifier(text):
+    """ Converts your text to OwO """
+    smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω´・)', '(´・ω・`)']
+    with open(f"{working_dir}/assets/replacements.json") as fp:
+        replacements = load_json(fp)
+    for expression in replacements:
+        replacement = replacements[expression]
+        text = sub(expression, replacement, text, flags=IGNORECASE)
     words = text.split()
     first_letter = words[0][0]
-
     letter_stutter = f"{first_letter}-{first_letter.lower()}-{first_letter.lower()}"
-
     if len(words[0]) > 1:
         words[0] = letter_stutter + words[0][1:]
     else:
         words[0] = letter_stutter
-
-    return " ".join(words)
-
-
-def weebify(text):
-    """Replace words and phrases"""
-    with open(f"{working_dir}/assets/replacements.json") as fp:
-        replacements = load_json(fp)
-
-    for expression in replacements:
-        replacement = replacements[expression]
-        text = sub(expression, replacement, text, flags=IGNORECASE)
-
-    return text
-
-
-def owoifier(text):
-    """ Converts your text to OwO """
-    smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω´・)', '(´・ω・`)']
-
-    text = weebify(text)
-    text = stutter(text)
+    text = " ".join(words)
     text = text.replace('L', 'W').replace('l', 'w')
     text = text.replace('R', 'W').replace('r', 'w')
-    text = last_replace(text, '!', '! {}'.format(choice(smileys)))
-    text = last_replace(text, '?', '? owo')
-    text = last_replace(text, '.', '. {}'.format(choice(smileys)))
-    text = text + " desu"
-
+    text = '! {}'.format(choice(smileys)).join(text.rsplit('!', 1))
+    text = '? OwO'.join(text.rsplit('?', 1))
+    text = '. {}'.format(choice(smileys)).join(text.rsplit('.', 1))
+    text = f"{text} desu"
     for v in ['a', 'o', 'u', 'A', 'O', 'U']:
         if 'n{}'.format(v) in text:
             text = text.replace('n{}'.format(v), 'ny{}'.format(v))
         if 'N{}'.format(v) in text:
             text = text.replace('N{}'.format(v), 'N{}{}'.format('Y' if v.isupper() else 'y', v))
-
     return text
 
 
 def mocker(text, diversity_bias=0.5, random_seed=None):
+    """ Randomizes case in a string. """
     if diversity_bias < 0 or diversity_bias > 1:
         raise ValueError('diversity_bias must be between the inclusive range [0,1]')
     seed(random_seed)
@@ -275,17 +251,17 @@ def corrupt(text):
             rand_int = randint(0, 2)
             if rand_int == 0:
                 if num_u > 0:
-                    a = combine_with_diacritic(a, du)
+                    a = a.strip() + du[randrange(0, len(du))].strip()
                     num_accents += 1
                     num_u -= 1
             elif rand_int == 1:
                 if num_d > 0:
-                    a = combine_with_diacritic(a, dd)
+                    a = a.strip() + dd[randrange(0, len(dd))].strip()
                     num_d -= 1
                     num_accents += 1
             else:
                 if num_m > 0:
-                    a = combine_with_diacritic(a, dm)
+                    a = a.strip() + dm[randrange(0, len(dm))].strip()
                     num_m -= 1
                     num_accents += 1
 
@@ -293,75 +269,6 @@ def corrupt(text):
 
     new_word = ''.join(new_letters)
     return new_word
-
-
-def combine_with_diacritic(letter, diacritic_list):
-    """ The fox. """
-    return letter.strip() + diacritic_list[randrange(0, len(diacritic_list))].strip()
-
-
-def strb(redis_string):
-    """ Process strings for redis. """
-    return str(redis_string)[2:-1]
-
-
-def format_sed(data):
-    """ Separate sed arguments. """
-    try:
-        if (
-                len(data) >= 1 and
-                data[1] in ("/", ":", "|", "_") and
-                data.count(data[1]) >= 2
-        ):
-            target = data[1]
-            start = counter = 2
-            while counter < len(data):
-                if data[counter] == "\\":
-                    counter += 1
-
-                elif data[counter] == target:
-                    replace = data[start:counter]
-                    counter += 1
-                    start = counter
-                    break
-
-                counter += 1
-
-            else:
-                return None
-
-            while counter < len(data):
-                if (
-                        data[counter] == "\\" and
-                        counter + 1 < len(data) and
-                        data[counter + 1] == target
-                ):
-                    data = data[:counter] + data[counter + 1:]
-
-                elif data[counter] == target:
-                    replace_with = data[start:counter]
-                    counter += 1
-                    break
-
-                counter += 1
-            else:
-                return replace, data[start:], ""
-
-            flags = ""
-            if counter < len(data):
-                flags = data[counter:]
-            return replace, replace_with, flags.lower()
-        return None
-    except IndexError:
-        pass
-
-
-def redis_check():
-    try:
-        redis.ping()
-        return True
-    except BaseException:
-        return False
 
 
 def clear_emojis(target):

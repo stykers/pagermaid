@@ -50,6 +50,18 @@ if version_info[0] < 3 or version_info[1] < 6:
 
 api_key = config['api_key']
 api_hash = config['api_hash']
+try:
+    redis_host = config['redis']['host']
+except KeyError:
+    redis_host = 'localhost'
+try:
+    redis_port = config['redis']['port']
+except KeyError:
+    redis_port = 6379
+try:
+    redis_db = config['redis']['db']
+except KeyError:
+    redis_db = 14
 if api_key is None or api_hash is None:
     logs.info(
         "Please place a valid configuration file in the working directory."
@@ -57,7 +69,15 @@ if api_key is None or api_hash is None:
     exit(1)
 
 bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
-redis = StrictRedis(host='localhost', port=6379, db=14)
+redis = StrictRedis(host=redis_host, port=redis_port, db=redis_db)
+
+
+def redis_check():
+    try:
+        redis.ping()
+        return True
+    except BaseException:
+        return False
 
 
 async def log(message):

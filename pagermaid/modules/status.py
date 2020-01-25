@@ -10,9 +10,9 @@ from telethon import version as telethon_version
 from sys import platform
 from re import sub
 from pathlib import Path
-from pagermaid import log, config
+from pagermaid import log, config, redis_check
 from pagermaid.listener import listener
-from pagermaid.utils import unit_convert, execute, redis_check
+from pagermaid.utils import unit_convert, execute
 
 
 @listener(outgoing=True, command="sysinfo",

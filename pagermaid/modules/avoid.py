@@ -1,8 +1,7 @@
 """ PagerMaid module for different ways to avoid users. """
 
-from pagermaid import redis, log
+from pagermaid import redis, log, redis_check
 from pagermaid.listener import listener
-from pagermaid.utils import redis_check
 
 
 @listener(outgoing=True, command="ghost",

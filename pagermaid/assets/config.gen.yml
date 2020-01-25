@@ -15,6 +15,12 @@ api_hash: "HASH_HERE"
 debug: "False"
 error_report: "True"
 
+# Redis connection information
+redis:
+  host: "localhost"
+  port: "6379"
+  db: "14"
+
 # Locale settings
 application_language: "en"
 application_region: "United States"
