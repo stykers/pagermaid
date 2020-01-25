@@ -39,12 +39,18 @@ async def plugin(context):
             await context.edit("Invalid arguments.")
     elif parameters[0] == "remove":
         if len(parameters) == 2:
-            if "/" in parameters[1] or not exists(f"{plugin_directory}{parameters[1]}.py"):
-                await context.edit("The plugin specified does not exist.")
-            else:
+            if exists(f"{plugin_directory}{parameters[1]}.py"):
                 remove(f"{plugin_directory}{parameters[1]}.py")
                 await context.edit(f"Removed plugin {parameters[1]}, PagerMaid is restarting.")
                 await context.client.disconnect()
+            elif exists(f"{plugin_directory}{parameters[1]}.py.disabled"):
+                remove(f"{plugin_directory}{parameters[1]}.py.disabled")
+                await context.edit(f"Removed plugin {parameters[1]}, PagerMaid is restarting.")
+                await context.client.disconnect()
+            elif "/" in parameters[1]:
+                await context.edit("Invalid arguments.")
+            else:
+                await context.edit("The plugin specified does not exist.")
         else:
             await context.edit("Invalid arguments.")
     elif parameters[0] == "status":
