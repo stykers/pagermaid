@@ -7,8 +7,7 @@ from glob import glob
 from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import upload_attachment
-from pagermaid.modules import plugin_list as active_plugins
-from pagermaid.modules import __list_plugins
+from pagermaid.modules import plugin_list as active_plugins, __list_plugins
 
 
 @listener(outgoing=True, command="plugin", diagnostics=False,

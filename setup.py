@@ -9,10 +9,10 @@ with open("requirements.txt", "r") as fp:
 
 setup(
     name="pagermaid",
-    version="2020.1.post37",
+    version="2020.1.post39",
     author="Stykers",
     author_email="stykers@stykers.moe",
-    description="A telegram utility daemon.",
+    description="A telegram utility daemon and plugin framework.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://katonkeyboard.moe/pagermaid.html",
