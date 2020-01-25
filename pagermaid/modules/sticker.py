@@ -3,9 +3,10 @@
 from urllib import request
 from io import BytesIO
 from telethon.tl.types import DocumentAttributeFilename, MessageMediaPhoto
+from PIL import Image
+from math import floor
 from pagermaid import bot
 from pagermaid.listener import listener
-from pagermaid.utils import add_sticker, resize_image, upload_sticker
 
 
 @listener(outgoing=True, command="sticker",
@@ -97,13 +98,13 @@ A pack can't have more than 120 stickers at the moment.":
                     await conversation.send_message(pack_name)
                     chat_response = await conversation.get_response()
                     if chat_response.text == "Invalid pack selected.":
-                        await add_sticker(conversation, command, pack_title, pack_name, bot, animated, message,
+                        await add_sticker(conversation, command, pack_title, pack_name, animated, message,
                                           context, file, emoji)
                         await context.edit(
                             f"Sticker has been added to [this](t.me/addstickers/{pack_name}) alternative pack.",
                             parse_mode='md')
                         return
-                await upload_sticker(animated, bot, message, context, file, conversation)
+                await upload_sticker(animated, message, context, file, conversation)
                 await conversation.get_response()
                 await conversation.send_message(emoji)
                 await bot.send_read_acknowledge(conversation.chat_id)
@@ -114,9 +115,70 @@ A pack can't have more than 120 stickers at the moment.":
         else:
             await context.edit("Pack does not exist, creating . . .")
             async with bot.conversation('Stickers') as conversation:
-                await add_sticker(conversation, command, pack_title, pack_name, bot, animated, message,
+                await add_sticker(conversation, command, pack_title, pack_name, animated, message,
                                   context, file, emoji)
 
         await context.edit(
             f"Sticker has been added to [this](t.me/addstickers/{pack_name}) pack.",
             parse_mode='md')
+
+
+async def add_sticker(conversation, command, pack_title, pack_name, animated, message, context, file, emoji):
+    await conversation.send_message(command)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.send_message(pack_title)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await upload_sticker(animated, message, context, file, conversation)
+    await conversation.get_response()
+    await conversation.send_message(emoji)
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await conversation.send_message("/publish")
+    if animated:
+        await conversation.get_response()
+        await conversation.send_message(f"<{pack_title}>")
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.send_message("/skip")
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await conversation.send_message(pack_name)
+    await bot.send_read_acknowledge(conversation.chat_id)
+    await conversation.get_response()
+    await bot.send_read_acknowledge(conversation.chat_id)
+
+
+async def upload_sticker(animated, message, context, file, conversation):
+    if animated:
+        await bot.forward_messages(
+            'Stickers', [message.id], context.chat_id)
+    else:
+        file.seek(0)
+        await context.edit("Uploading image . . .")
+        await conversation.send_file(file, force_document=True)
+
+
+async def resize_image(photo):
+    image = Image.open(photo)
+    maxsize = (512, 512)
+    if (image.width and image.height) < 512:
+        size1 = image.width
+        size2 = image.height
+        if image.width > image.height:
+            scale = 512 / size1
+            size1new = 512
+            size2new = size2 * scale
+        else:
+            scale = 512 / size2
+            size1new = size1 * scale
+            size2new = 512
+        size1new = floor(size1new)
+        size2new = floor(size2new)
+        size_new = (size1new, size2new)
+        image = image.resize(size_new)
+    else:
+        image.thumbnail(maxsize)
+
+    return image

@@ -6,8 +6,7 @@ from emoji import get_emoji_regexp
 from requests import head
 from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from urllib import request, parse
-from PIL import Image
-from math import floor, ceil
+from math import ceil
 from bs4 import BeautifulSoup
 from random import random, randint, randrange, seed, choice
 from time import sleep
@@ -62,43 +61,6 @@ async def fetch_youtube_audio(context, url, reply_id):
         return
     await context.delete()
     remove("output.mp3")
-
-
-async def upload_sticker(animated, bot, message, context, file, conversation):
-    if animated:
-        await bot.forward_messages(
-            'Stickers', [message.id], context.chat_id)
-    else:
-        file.seek(0)
-        await context.edit("Uploading image . . .")
-        await conversation.send_file(file, force_document=True)
-
-
-async def add_sticker(conversation, command, pack_title, pack_name, bot, animated, message, context, file, emoji):
-    await conversation.send_message(command)
-    await conversation.get_response()
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await conversation.send_message(pack_title)
-    await conversation.get_response()
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await upload_sticker(animated, bot, message, context, file, conversation)
-    await conversation.get_response()
-    await conversation.send_message(emoji)
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await conversation.get_response()
-    await conversation.send_message("/publish")
-    if animated:
-        await conversation.get_response()
-        await conversation.send_message(f"<{pack_title}>")
-    await conversation.get_response()
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await conversation.send_message("/skip")
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await conversation.get_response()
-    await conversation.send_message(pack_name)
-    await bot.send_read_acknowledge(conversation.chat_id)
-    await conversation.get_response()
-    await bot.send_read_acknowledge(conversation.chat_id)
 
 
 async def execute(command, pass_error=True):
@@ -189,31 +151,6 @@ async def get_timezone(target):
             return timezone(country_timezones[target][0])
     except KeyError:
         return
-
-
-async def resize_image(photo):
-    """ Photo resize to match sticker standards. """
-    image = Image.open(photo)
-    maxsize = (512, 512)
-    if (image.width and image.height) < 512:
-        size1 = image.width
-        size2 = image.height
-        if image.width > image.height:
-            scale = 512 / size1
-            size1new = 512
-            size2new = size2 * scale
-        else:
-            scale = 512 / size2
-            size1new = size1 * scale
-            size2new = 512
-        size1new = floor(size1new)
-        size2new = floor(size2new)
-        sizenew = (size1new, size2new)
-        image = image.resize(sizenew)
-    else:
-        image.thumbnail(maxsize)
-
-    return image
 
 
 async def fetch_user(target):
