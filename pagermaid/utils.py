@@ -1,6 +1,7 @@
 """ Libraries for python modules. """
 
 from os import remove, popen
+from os.path import exists
 from emoji import get_emoji_regexp
 from requests import head
 from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
@@ -23,50 +24,21 @@ from asyncio.subprocess import PIPE
 from pathlib import Path
 from collections import deque
 from youtube_dl import YoutubeDL
-from pagermaid import config, redis, working_dir
+from pagermaid import config, redis, working_dir, bot
 
 
-async def upload_result_image(context, result, target_file_path, reply_id):
-    if not result:
-        await context.edit("`Something wrong happened, please report this problem.`")
-        try:
-            remove("result.png")
-            remove(target_file_path)
-        except FileNotFoundError:
-            pass
-        raise ValueError
+async def upload_attachment(file_path, chat_id, reply_id):
+    if not exists(file_path):
+        return False
     try:
-        await context.client.send_file(
-            context.chat_id,
-            "result.png",
+        await bot.send_file(
+            chat_id,
+            file_path,
             reply_to=reply_id
         )
-    except ValueError:
-        await context.edit("`An error occurred during the conversion.`")
-        remove(target_file_path)
-        raise ValueError
-    await context.delete()
-    remove(target_file_path)
-    remove("result.png")
-
-
-async def obtain_source_file(context):
-    if context.fwd_from:
-        return
-    reply = await context.get_reply_message()
-    reply_id = None
-    await context.edit("Rendering image, please wait . . .")
-    if reply:
-        reply_id = reply.id
-        target_file_path = await context.client.download_media(
-            await context.get_reply_message()
-        )
-    else:
-        target_file_path = await context.download_media()
-    if target_file_path is None:
-        await context.edit("There are no attachment in target.")
-        raise ValueError
-    return reply_id, target_file_path
+    except BaseException as exception:
+        raise exception
+    return True
 
 
 async def fetch_youtube_audio(context, url, reply_id):

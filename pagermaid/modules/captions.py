@@ -6,35 +6,31 @@ from pygments.formatters import img
 from pygments.lexers import guess_lexer
 from pagermaid import log, working_dir
 from pagermaid.listener import listener
-from pagermaid.utils import execute, obtain_source_file, upload_result_image
+from pagermaid.utils import execute, upload_attachment
 
 
 @listener(outgoing=True, command="convert",
           description="Converts attachment of replied message to png.")
 async def convert(context):
     """ Converts image to png. """
-    try:
-        reply_id, target_file_path = await obtain_source_file(context)
-    except ValueError:
-        return
+    reply = await context.get_reply_message()
+    await context.edit("Converting . . .")
+    target_file_path = await context.download_media()
+    reply_id = None
+    if reply:
+        reply_id = reply.id
+        target_file_path = await context.client.download_media(
+            await context.get_reply_message()
+        )
+    if target_file_path is None:
+        await context.edit("There are no attachments in target message.")
     result = await execute(f"{working_dir}/assets/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str("") +
                            "\" " + "\"" + str("") + "\"")
     if not result:
-        await context.edit("Something wrong happened, please report this problem.")
-        try:
-            remove("result.png")
-            remove(target_file_path)
-        except FileNotFoundError:
-            pass
+        await handle_failure(context, target_file_path)
         return
-    try:
-        await context.client.send_file(
-            context.chat_id,
-            "result.png",
-            reply_to=reply_id
-        )
-    except ValueError:
+    if not await upload_attachment("result.png", context.chat_id, reply_id):
         await context.edit("An error occurred during the conversion.")
         remove(target_file_path)
         return
@@ -48,6 +44,17 @@ async def convert(context):
           parameters="<string>,<string> <image>")
 async def caption(context):
     """ Generates images with captions. """
+    await context.edit("Rendering image . . .")
+    reply = await context.get_reply_message()
+    target_file_path = await context.download_media()
+    reply_id = None
+    if reply:
+        reply_id = reply.id
+        target_file_path = await context.client.download_media(
+            await context.get_reply_message()
+        )
+    if target_file_path is None:
+        await context.edit("There are no attachments in target message.")
     if context.pattern_match.group(1):
         if ',' in context.pattern_match.group(1):
             string_1, string_2 = context.pattern_match.group(1).split(',', 1)
@@ -57,21 +64,23 @@ async def caption(context):
     else:
         await context.edit("Invalid syntax.")
         return
-    try:
-        reply_id, target_file_path = await obtain_source_file(context)
-    except ValueError:
-        return
     result = await execute(f"{working_dir}/assets/caption.sh \"{target_file_path}\" "
                            f"{working_dir}/assets/Impact-Regular.ttf "
                            f"\"{str(string_1)}\" \"{str(string_2)}\"")
-    try:
-        await upload_result_image(context, result, target_file_path, reply_id)
-    except ValueError:
+    if not result:
+        await handle_failure(context, target_file_path)
         return
+    if not await upload_attachment("result.png", context.chat_id, reply_id):
+        await context.edit("An error occurred during the conversion.")
+        remove(target_file_path)
+        return
+    await context.delete()
     if string_2 != " ":
         message = string_1 + "` and `" + string_2
     else:
         message = string_1
+    remove(target_file_path)
+    remove("result.png")
     await log(f"Caption `{message}` added to an image.")
 
 
@@ -141,3 +150,12 @@ async def highlight(context):
         reply_to=reply_id
     )
     await context.delete()
+
+
+async def handle_failure(context, target_file_path):
+    await context.edit("Something wrong happened, please report this problem.")
+    try:
+        remove("result.png")
+        remove(target_file_path)
+    except FileNotFoundError:
+        pass
