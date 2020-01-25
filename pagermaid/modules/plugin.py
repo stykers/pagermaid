@@ -45,8 +45,7 @@ async def plugin(context):
                 await context.client.disconnect()
             elif exists(f"{plugin_directory}{parameters[1]}.py.disabled"):
                 remove(f"{plugin_directory}{parameters[1]}.py.disabled")
-                await context.edit(f"Removed plugin {parameters[1]}, PagerMaid is restarting.")
-                await context.client.disconnect()
+                await context.edit(f"Removed plugin {parameters[1]}.")
             elif "/" in parameters[1]:
                 await context.edit("Invalid arguments.")
             else:
