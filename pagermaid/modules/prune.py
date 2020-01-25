@@ -4,7 +4,6 @@ from asyncio import sleep
 from telethon.errors.rpcbaseerrors import BadRequestError
 from pagermaid import log
 from pagermaid.listener import listener
-from pagermaid.utils import send_prune_notify as send_notify
 
 
 @listener(outgoing=True, command="prune",
@@ -26,7 +25,7 @@ async def prune(context):
 
         if msgs:
             await context.client.delete_messages(chat, msgs)
-        notification = await send_notify(context, count)
+        notification = await send_prune_notify(context, count)
         await log(f"Deleted {str(count)} messages.")
         await sleep(0.5)
         await notification.delete()
@@ -50,7 +49,7 @@ async def selfprune(context):
             i = i + 1
             await message.delete()
 
-        notification = await send_notify(context, count)
+        notification = await send_prune_notify(context, count)
         await log(f"Deleted {str(count)} messages.")
         await sleep(0.5)
         await notification.delete()
@@ -88,3 +87,12 @@ async def timed(context):
         await log("Created timed message.")
     except ValueError:
         await context.edit("Invalid parameter.")
+
+
+async def send_prune_notify(context, count):
+    return await context.client.send_message(
+        context.chat_id,
+        "Deleted "
+        + str(count)
+        + " messages."
+    )

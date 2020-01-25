@@ -90,15 +90,6 @@ async def random_gen(context, selection):
         await context.edit("`Kat didn't bring /usr/bin/head.`")
 
 
-async def send_prune_notify(context, count):
-    return await context.client.send_message(
-        context.chat_id,
-        "Deleted "
-        + str(count)
-        + " messages."
-    )
-
-
 async def attach_log(context, result):
     """ Method to attach logs for messages that are too long. """
     file = open("output.log", "w+")
