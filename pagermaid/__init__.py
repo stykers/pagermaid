@@ -61,6 +61,9 @@ redis = StrictRedis(host='localhost', port=6379, db=14)
 
 
 async def log(message):
+    logs.info(
+        message.replace('`', '\"')
+    )
     if not strtobool(config['log']):
         return
     await bot.send_message(

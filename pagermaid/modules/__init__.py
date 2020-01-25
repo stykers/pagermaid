@@ -1,4 +1,4 @@
-""" PagerMaid module init. """
+""" PagerMaid module and plugin init. """
 
 from os.path import dirname, basename, isfile, exists
 from os import getcwd, makedirs

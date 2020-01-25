@@ -27,14 +27,15 @@ from youtube_dl import YoutubeDL
 from pagermaid import config, redis, working_dir, bot
 
 
-async def upload_attachment(file_path, chat_id, reply_id):
+async def upload_attachment(file_path, chat_id, reply_id, caption=None):
     if not exists(file_path):
         return False
     try:
         await bot.send_file(
             chat_id,
             file_path,
-            reply_to=reply_id
+            reply_to=reply_id,
+            caption=caption
         )
     except BaseException as exception:
         raise exception
