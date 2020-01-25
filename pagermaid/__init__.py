@@ -72,7 +72,7 @@ bot = TelegramClient("pagermaid", api_key, api_hash, auto_reconnect=True)
 redis = StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 
 
-def redis_check():
+def redis_status():
     try:
         redis.ping()
         return True

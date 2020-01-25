@@ -10,7 +10,7 @@ from telethon import version as telethon_version
 from sys import platform
 from re import sub
 from pathlib import Path
-from pagermaid import log, config, redis_check
+from pagermaid import log, config, redis_status
 from pagermaid.listener import listener
 from pagermaid.utils import unit_convert, execute
 
@@ -77,10 +77,9 @@ async def tty(context):
 async def status(context):
     hostname = uname().node
     kernel = uname().release
-    if redis_check():
+    database = "Redis is malfunctioning."
+    if redis_status():
         database = "Connected to Redis."
-    else:
-        database = "Redis is malfunctioning."
     await context.edit(
         "`"
         "PagerMaid is online. \n\n"

@@ -1,6 +1,6 @@
 """ PagerMaid module for different ways to avoid users. """
 
-from pagermaid import redis, log, redis_check
+from pagermaid import redis, log, redis_status
 from pagermaid.listener import listener
 
 
@@ -9,7 +9,7 @@ from pagermaid.listener import listener
           parameters="<true|false|status>")
 async def ghost(context):
     """ Toggles ghosting of a user. """
-    if not redis_check():
+    if not redis_status():
         await context.edit("Redis is offline, cannot operate.")
         return
     if context.pattern_match.group(1) == 'true':
