@@ -34,7 +34,7 @@ async def ghost(context):
           parameters="<true|false|status>")
 async def deny(context):
     """ Toggles denying of a user. """
-    if not redis_check():
+    if not redis_status():
         await context.edit("Redis is offline, cannot operate.")
         return
     if context.pattern_match.group(1) == 'true':
@@ -57,7 +57,7 @@ async def deny(context):
 @listener(incoming=True, ignore_edited=True)
 async def set_read_acknowledgement(context):
     """ Event handler to infinitely read ghosted messages. """
-    if not redis_check():
+    if not redis_status():
         return
     if redis.get("ghosted.chat_id." + str(context.chat_id)):
         await context.client.send_read_acknowledge(context.chat_id)
@@ -66,7 +66,7 @@ async def set_read_acknowledgement(context):
 @listener(incoming=True, ignore_edited=True)
 async def message_removal(context):
     """ Event handler to infinitely delete denied messages. """
-    if not redis_check():
+    if not redis_status():
         return
     if redis.get("denied.chat_id." + str(context.chat_id)):
         await context.delete()
