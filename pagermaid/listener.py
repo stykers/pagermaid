@@ -49,7 +49,7 @@ def listener(**args):
             if parameter == ['']:
                 parameter = []
             context.parameter = parameter
-            context.parameters = context.pattern_match.group(1)
+            context.arguments = context.pattern_match.group(1)
             try:
                 await function(context)
             except StopPropagation:

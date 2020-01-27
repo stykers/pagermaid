@@ -23,7 +23,7 @@ async def translate(context):
     """ PagerMaid universal translator. """
     translator = Translator()
     reply = await context.get_reply_message()
-    message = context.parameters
+    message = context.arguments
     lang = config['application_language']
     if message:
         pass
@@ -61,7 +61,7 @@ async def translate(context):
 async def tts(context):
     """ Send TTS stuff as voice message. """
     reply = await context.get_reply_message()
-    message = context.parameters
+    message = context.arguments
     lang = config['application_language']
     if message:
         pass
@@ -106,10 +106,10 @@ async def tts(context):
           parameters="<query>")
 async def google(context):
     """ Searches Google for a string. """
-    if context.parameters == "":
+    if context.arguments == "":
         await context.edit("Invalid argument.")
         return
-    query = context.parameters
+    query = context.arguments
     await context.edit("Pulling results . . .")
     search_results = GoogleSearch().search(query=query)
     results = ""
@@ -133,7 +133,7 @@ async def google(context):
           parameters="<url>")
 async def fetchaudio(context):
     """ Fetches audio from provided URL. """
-    url = context.parameters
+    url = context.arguments
     reply = await context.get_reply_message()
     reply_id = None
     await context.edit("Fetching audio . . .")

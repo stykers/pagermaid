@@ -103,15 +103,15 @@ async def pfp(context):
 async def bio(context):
     """ Sets your bio. """
     try:
-        await bot(UpdateProfileRequest(about=context.parameters))
+        await bot(UpdateProfileRequest(about=context.arguments))
     except AboutTooLongError:
         await context.edit("Provided string is too long.")
         return
     await context.edit("Bio has been altered successfully.")
-    if context.parameters == "":
+    if context.arguments == "":
         await log("Bio has been unset.")
         return
-    await log(f"Bio has been set to `{context.parameters}`.")
+    await log(f"Bio has been set to `{context.arguments}`.")
 
 
 @listener(outgoing=True, command="rmpfp",

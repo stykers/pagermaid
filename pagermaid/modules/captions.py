@@ -57,10 +57,10 @@ async def caption(context):
     if target_file_path is None:
         await context.edit("There are no attachments in target message.")
     if context.parameter:
-        if ',' in context.parameters:
-            string_1, string_2 = context.parameters.split(',', 1)
+        if ',' in context.arguments:
+            string_1, string_2 = context.arguments.split(',', 1)
         else:
-            string_1 = context.parameters
+            string_1 = context.arguments
             string_2 = " "
     else:
         await context.edit("Invalid syntax.")
@@ -147,8 +147,8 @@ async def highlight(context):
                     message = file.read()
             remove(target_file_path)
     else:
-        if context.parameters:
-            message = context.parameters
+        if context.arguments:
+            message = context.arguments
         else:
             await context.edit("`Unable to retrieve target message.`")
             return

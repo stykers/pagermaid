@@ -15,7 +15,7 @@ from pagermaid.utils import mocker, corrupt, owoifier, execute, random_gen
 async def animate(context):
     """ Animate a message. """
     text = await context.get_reply_message()
-    message = context.pattern_match.group(1)
+    message = context.arguments
     if message:
         pass
     elif text:
