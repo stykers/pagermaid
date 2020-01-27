@@ -1,6 +1,7 @@
 """ PagerMaid event listener. """
 
 from telethon import events
+from telethon.errors import MessageTooLongError
 from distutils2.util import strtobool
 from traceback import format_exc
 from time import gmtime, strftime, time
@@ -14,6 +15,7 @@ def listener(**args):
     """ Register an event listener. """
     command = args.get('command', None)
     description = args.get('description', None)
+    description_wrapper = []
     parameters = args.get('parameters', None)
     pattern = args.get('pattern', None)
     diagnostics = args.get('diagnostics', True)
@@ -22,13 +24,6 @@ def listener(**args):
         if command in help_messages:
             raise ValueError(f"The command \"{command}\" is already registered.")
         pattern = fr"^-{command}(?: |$)([\s\S]*)"
-        if description is not None:
-            if parameters is None:
-                parameters = ""
-            help_messages.update({
-                f"{command}": f"**Usage:** `-{command} {parameters}`\
-                \n{description}"
-            })
     if pattern is not None and not pattern.startswith('(?i)'):
         args['pattern'] = '(?i)' + pattern
     if 'ignore_edited' in args:
@@ -43,6 +38,8 @@ def listener(**args):
         del args['parameters']
 
     def decorator(function):
+        if description is None:
+            description_wrapper.append(function.__doc__)
 
         async def handler(context):
             parameter = context.pattern_match.group(1).split(' ')
@@ -54,6 +51,8 @@ def listener(**args):
                 await function(context)
             except StopPropagation:
                 raise StopPropagation
+            except MessageTooLongError:
+                await context.edit("The output generated was too long and could not be presented.")
             except BaseException:
                 try:
                     await context.edit("An error occurred while executing this command.")
@@ -78,5 +77,15 @@ def listener(**args):
         bot.add_event_handler(handler, events.NewMessage(**args))
 
         return handler
+
+    if description is None and len(description_wrapper) == 1:
+        description = description_wrapper[0]
+    if description != "" and command is not None:
+        if parameters is None:
+            parameters = ""
+        help_messages.update({
+            f"{command}": f"**Usage:** `-{command} {parameters}`\
+            \n{description}"
+        })
 
     return decorator

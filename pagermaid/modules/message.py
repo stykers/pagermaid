@@ -2,16 +2,17 @@
 
 from telethon.tl.functions.messages import DeleteChatUserRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
-from telethon.errors.rpcerrorlist import ChatIdInvalidError, PeerIdInvalidError
+from telethon.errors.rpcerrorlist import ChatIdInvalidError
+from distutils2.util import strtobool
 from pagermaid import bot, log, config
 from pagermaid.listener import listener
 from pagermaid.utils import random_gen
 
 
 @listener(outgoing=True, command="userid",
-          description="Query the userid of the sender of the message you replied to.")
+          description="Query the UserID of the sender of the message you replied to.")
 async def userid(context):
-    """ Queries the userid of a user. """
+    """ Query the UserID of the sender of the message you replied to. """
     message = await context.get_reply_message()
     if message:
         if not message.forward:
@@ -50,16 +51,14 @@ async def chatid(context):
           parameters="<string>")
 async def log(context):
     """ Forwards a message into log group """
-    if log:
+    if strtobool(config['log']):
         if context.reply_to_msg_id:
             reply_msg = await context.get_reply_message()
             await reply_msg.forward_to(int(config['log_chatid']))
-        elif context.pattern_match.group(1):
-            user = f"Chat ID: {context.chat_id}\n\n"
-            text = user + context.pattern_match.group(1)
-            await bot.send_message(int(config['log_chatid']), text)
+        elif context.arguments:
+            await log(context.arguments)
         else:
-            await context.edit("Unable to get the target message.")
+            await context.edit("Invalid argument.")
             return
         await context.edit("Noted.")
     else:

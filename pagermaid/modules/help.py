@@ -9,10 +9,9 @@ from pagermaid.listener import listener
           parameters="<command>")
 async def help(context):
     """ The help command,"""
-    args = context.pattern_match.group(1)
-    if args:
-        if args in help_messages:
-            await context.edit(str(help_messages[args]))
+    if context.arguments:
+        if context.arguments in help_messages:
+            await context.edit(str(help_messages[context.arguments]))
         else:
             await context.edit("Invalid argument.")
     else:
