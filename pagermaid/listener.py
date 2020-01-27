@@ -19,6 +19,8 @@ def listener(**args):
     diagnostics = args.get('diagnostics', True)
     ignore_edited = args.get('ignore_edited', False)
     if command is not None:
+        if command in help_messages:
+            raise ValueError(f"The command \"{command}\" is already registered.")
         pattern = fr"^-{command}(?: |$)([\s\S]*)"
         if description is not None:
             if parameters is None:

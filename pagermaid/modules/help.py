@@ -16,8 +16,8 @@ async def help(context):
         else:
             await context.edit("Invalid argument.")
     else:
-        result = "**Commands loaded from current modules: \n**"
-        for i in sorted(help_messages, reverse=False):
-            result += "`" + str(i)
+        result = "**Commands: \n**"
+        for command in sorted(help_messages, reverse=False):
+            result += "`" + str(command)
             result += "`, "
-        await context.edit(result[:-2] + "\n**Do \"-help <command>\" to view help for a specific command.**")
+        await context.edit(result[:-2] + "\n**Issue \"-help <command>\" to view help for a specific command.**")
