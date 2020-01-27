@@ -6,7 +6,6 @@ from telethon.errors.rpcerrorlist import ChatIdInvalidError
 from distutils2.util import strtobool
 from pagermaid import bot, log, config
 from pagermaid.listener import listener
-from pagermaid.utils import random_gen
 
 
 @listener(outgoing=True, command="userid",
@@ -85,20 +84,26 @@ async def leave(context):
           description="Convert meters to feet.",
           parameters="<meters>")
 async def meter2feet(context):
-    """ Converts meter to feet. """
-    meter = float(context.pattern_match.group(1))
+    """ Convert meter to feet. """
+    if not len(context.parameter) == 1:
+        await context.edit("Invalid argument.")
+        return
+    meter = float(context.parameter[0])
     feet = meter / .3048
-    await context.edit("Converted " + str(meter) + " meters to " + str(feet) + " feet.")
+    await context.edit(f"Converted {str(meter)} meters to {str(feet)} feet.")
 
 
 @listener(outgoing=True, command="feet2meter",
           description="Convert feet to meters.",
           parameters="<feet>")
 async def feet2meter(context):
-    """ Converts feet to meter. """
-    feet = float(context.pattern_match.group(1))
+    """ Convert feet to meter. """
+    if not len(context.parameter) == 1:
+        await context.edit("Invalid argument.")
+        return
+    feet = float(context.parameter[0])
     meter = feet * .3048
-    await context.edit("Converted " + str(feet) + " feet to " + str(meter) + " meter.")
+    await context.edit(f"Converted {str(feet)} feet to {str(meter)} meter.")
 
 
 @listener(outgoing=True, command="source",
