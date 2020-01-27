@@ -152,6 +152,23 @@ async def ship(context):
                        f"[{target_2.first_name}](tg://user?id={target_2.id}) = ❤️")
 
 
+@listener(outgoing=True, command="rng",
+          description="Generates a random string with a specific length.",
+          parameters="<length>")
+async def rng(context):
+    """ Generates a random string with a specific length. """
+    if len(context.parameter) == 0:
+        await context.edit(await random_gen("Aa"))
+        return
+    if len(context.parameter) == 1:
+        try:
+            await context.edit(await random_gen("A-Za-z0-9", int(context.parameter[0])))
+        except ValueError:
+            await context.edit("Invalid argument.")
+        return
+    await context.edit("Invalid argument.")
+
+
 @listener(outgoing=True, command="aaa",
           description="Saves a few presses of the A and shift key.",
           parameters="<integer>")

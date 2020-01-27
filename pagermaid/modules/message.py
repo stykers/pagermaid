@@ -32,8 +32,8 @@ async def userid(context):
             else:
                 target = "*" + message.forward.sender.first_name + "*"
         await context.edit(
-            "**Username:** {} \n**UserID:** `{}`"
-            .format(target, user_id)
+            f"**Username:** {target} \n"
+            f"**UserID:** `{user_id}`"
         )
     else:
         await context.edit("Unable to fetch information of target message.")
@@ -69,8 +69,8 @@ async def log(context):
           description="Say goodbye and leave.")
 async def leave(context):
     """ It leaves you from the group. """
-    await context.edit("Wasted my time, bye.")
     if context.is_group:
+        await context.edit("Wasted my time, bye.")
         try:
             await bot(DeleteChatUserRequest(chat_id=context.chat_id,
                                             user_id=context.sender_id
@@ -79,14 +79,6 @@ async def leave(context):
             await bot(LeaveChannelRequest(chatid))
     else:
         await context.edit("Current chat is not a group chat.")
-
-
-@listener(outgoing=True, command="rng",
-          description="Generates a random string with a specific length.",
-          parameters="<length>")
-async def rng(context):
-    """ Automates keyboard spamming. """
-    await random_gen(context, "A-Za-z0-9")
 
 
 @listener(outgoing=True, command="meter2feet",
