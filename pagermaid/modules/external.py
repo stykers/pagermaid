@@ -125,7 +125,7 @@ async def google(context):
     await context.edit(f"**Google** |`{query}`| 🎙 🔍 \n"
                        f"{results}",
                        link_preview=False)
-    await log(f"Queried {query} on the Google search engine.")
+    await log(f"Queried `{query}` on the Google search engine.")
 
 
 @listener(outgoing=True, command="fetchaudio",
