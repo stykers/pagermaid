@@ -35,3 +35,4 @@ matplotlib
 wordcloud
 lxml
 pyyaml
+python-magic

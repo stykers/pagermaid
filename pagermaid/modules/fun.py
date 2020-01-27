@@ -49,7 +49,7 @@ async def mock(context):
     elif reply:
         message = reply.text
     else:
-        await context.edit("Invalid arguments.")
+        await context.edit("Invalid argument.")
         return
 
     reply_text = mocker(message)
@@ -107,7 +107,7 @@ async def fox(context):
         message = reply.text
     else:
         await context.edit(
-            "`Invalid arguments.`"
+            "`Invalid argument.`"
         )
         return
 
@@ -218,7 +218,7 @@ async def aaa(context):
 async def asciiart(context):
     """ Generates ASCII art for specified string. """
     if not context.pattern_match.group(1):
-        await context.edit("`Invalid arguments.`")
+        await context.edit("`Invalid argument.`")
         return
     output = await execute(f"figlet -f {working_dir}/assets/graffiti.flf '{context.pattern_match.group(1)}'")
     await context.edit(f"`{output}`")
@@ -230,7 +230,7 @@ async def asciiart(context):
 async def tuxsay(context):
     """ Generates ASCII art of Tux saying stuff for specified string. """
     if not context.pattern_match.group(1):
-        await context.edit("`Invalid arguments.`")
+        await context.edit("`Invalid argument.`")
         return
     await context.edit(f"```{cow.Tux().milk(context.pattern_match.group(1))} \n ```")
 

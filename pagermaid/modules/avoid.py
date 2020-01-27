@@ -12,15 +12,26 @@ async def ghost(context):
     if not redis_status():
         await context.edit("Redis is offline, cannot operate.")
         return
-    if context.pattern_match.group(1) == 'true':
+    if len(context.parameter) != 1:
+        await context.edit("Invalid argument.")
+        return
+    myself = await context.client.get_me()
+    self_user_id = myself.id
+    if context.parameter[0] == "true":
+        if context.chat_id == self_user_id:
+            await context.edit("Unable to set flag on self.")
+            return
         redis.set("ghosted.chat_id." + str(context.chat_id), "true")
         await context.delete()
         await log(f"ChatID {str(context.chat_id)} added to ghosted chats.")
-    elif context.pattern_match.group(1) == 'false':
+    elif context.parameter[0] == "false":
+        if context.chat_id == self_user_id:
+            await context.edit("Unable to set flag on self.")
+            return
         redis.delete("ghosted.chat_id." + str(context.chat_id))
         await context.delete()
         await log(f"ChatID {str(context.chat_id)} removed from ghosted chats.")
-    elif context.pattern_match.group(1) == 'status':
+    elif context.parameter[0] == "status":
         if redis.get("ghosted.chat_id." + str(context.chat_id)):
             await context.edit("Current chat is ghosted.")
         else:
@@ -37,15 +48,26 @@ async def deny(context):
     if not redis_status():
         await context.edit("Redis is offline, cannot operate.")
         return
-    if context.pattern_match.group(1) == 'true':
+    if len(context.parameter) != 1:
+        await context.edit("Invalid argument.")
+        return
+    myself = await context.client.get_me()
+    self_user_id = myself.id
+    if context.parameter[0] == "true":
+        if context.chat_id == self_user_id:
+            await context.edit("Unable to set flag on self.")
+            return
         redis.set("denied.chat_id." + str(context.chat_id), "true")
         await context.delete()
         await log(f"ChatID {str(context.chat_id)} added to denied chats.")
-    elif context.pattern_match.group(1) == 'false':
+    elif context.parameter[0] == "false":
+        if context.chat_id == self_user_id:
+            await context.edit("Unable to set flag on self.")
+            return
         redis.delete("denied.chat_id." + str(context.chat_id))
         await context.delete()
         await log(f"ChatID {str(context.chat_id)} removed from denied chats.")
-    elif context.pattern_match.group(1) == 'status':
+    elif context.parameter[0] == "status":
         if redis.get("silenced.chat_id." + str(context.chat_id)):
             await context.edit("Current chat is denied.")
         else:

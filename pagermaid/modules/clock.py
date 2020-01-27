@@ -11,7 +11,9 @@ from pagermaid.listener import listener
           parameters="<region>")
 async def time(context):
     """ For querying time. """
-    country = context.pattern_match.group(1).title()
+    if len(context.parameter) > 1:
+        context.edit("Invalid argument.")
+    country = context.parameter[1].title()
     time_form = "%I:%M %p"
     date_form = "%A %d/%m/%y"
     if not country:

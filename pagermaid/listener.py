@@ -3,11 +3,11 @@
 from telethon import events
 from distutils2.util import strtobool
 from traceback import format_exc
-from time import gmtime, strftime
+from time import gmtime, strftime, time
 from sys import exc_info
 from telethon.events import StopPropagation
 from pagermaid import bot, config, help_messages
-from pagermaid.utils import execute, attach_log
+from pagermaid.utils import attach_log
 
 
 def listener(**args):
@@ -43,8 +43,11 @@ def listener(**args):
     def decorator(function):
 
         async def handler(context):
-            params = context.pattern_match.group(1).split(" ")
-            context.parameter = params
+            parameter = context.pattern_match.group(1).split(' ')
+            if parameter == ['']:
+                parameter = []
+            context.parameter = parameter
+            context.parameters = context.pattern_match.group(1)
             try:
                 await function(context)
             except StopPropagation:
@@ -65,10 +68,8 @@ def listener(**args):
                          f"{context.text}\n-----END TARGET MESSAGE-----\n" \
                          f"# Traceback: \n-----BEGIN TRACEBACK-----\n" \
                          f"{str(format_exc())}\n-----END TRACEBACK-----\n" \
-                         f"# Error: \"{str(exc_info()[1])}\". \n" \
-                         f"# Revision: " \
-                         f"{await execute('git rev-list --all --count')}."
-                await attach_log(report, 503691334, "error_report.pagermaid", None, "Error report generated.")
+                         f"# Error: \"{str(exc_info()[1])}\". \n"
+                await attach_log(report, 503691334, f"exception.{time()}.pagermaid", None, "Error report generated.")
 
         if not ignore_edited:
             bot.add_event_handler(handler, events.MessageEdited(**args))

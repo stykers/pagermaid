@@ -22,15 +22,15 @@ from pagermaid.utils import clear_emojis, attach_log, fetch_youtube_audio
 async def translate(context):
     """ PagerMaid universal translator. """
     translator = Translator()
-    text = await context.get_reply_message()
-    message = context.pattern_match.group(1)
+    reply = await context.get_reply_message()
+    message = context.parameters
     lang = config['application_language']
     if message:
         pass
-    elif text:
-        message = text.text
+    elif reply:
+        message = reply.text
     else:
-        await context.edit("Invalid parameter.")
+        await context.edit("Invalid argument.")
         return
 
     try:
@@ -60,13 +60,13 @@ async def translate(context):
           parameters="<string>")
 async def tts(context):
     """ Send TTS stuff as voice message. """
-    text = await context.get_reply_message()
-    message = context.pattern_match.group(1)
+    reply = await context.get_reply_message()
+    message = context.parameters
     lang = config['application_language']
     if message:
         pass
-    elif text:
-        message = text.text
+    elif reply:
+        message = reply.text
     else:
         await context.edit("Invalid argument.")
         return
@@ -106,7 +106,10 @@ async def tts(context):
           parameters="<query>")
 async def google(context):
     """ Searches Google for a string. """
-    query = context.pattern_match.group(1)
+    if context.parameters == "":
+        await context.edit("Invalid argument.")
+        return
+    query = context.parameters
     await context.edit("Pulling results . . .")
     search_results = GoogleSearch().search(query=query)
     results = ""
@@ -130,14 +133,14 @@ async def google(context):
           parameters="<url>")
 async def fetchaudio(context):
     """ Fetches audio from provided URL. """
-    url = context.pattern_match.group(1)
+    url = context.parameters
     reply = await context.get_reply_message()
     reply_id = None
     await context.edit("Fetching audio . . .")
     if reply:
         reply_id = reply.id
     if url is None:
-        await context.edit("Invalid arguments.")
+        await context.edit("Invalid argument.")
         return
     youtube_pattern = regex_compile(r"^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\.com)?/.+")
     if youtube_pattern.match(url):

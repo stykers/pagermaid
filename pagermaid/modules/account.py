@@ -8,6 +8,7 @@ from telethon.tl.functions.account import UpdateProfileRequest, UpdateUsernameRe
 from telethon.tl.functions.photos import DeletePhotosRequest, GetUserPhotosRequest, UploadProfilePhotoRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import InputPhoto, MessageMediaPhoto, MessageEntityMentionName
+from struct import error as StructError
 from pagermaid import bot, log
 from pagermaid.listener import listener
 
@@ -17,7 +18,12 @@ from pagermaid.listener import listener
           parameters="<username>")
 async def username(context):
     """ Reconfigure your username. """
-    result = context.pattern_match.group(1)
+    if len(context.parameter) > 1:
+        await context.edit("Invalid argument.")
+    if len(context.parameter) == 1:
+        result = context.parameter[0]
+    else:
+        result = ""
     try:
         await bot(UpdateUsernameRequest(result))
     except UsernameOccupiedError:
@@ -27,7 +33,10 @@ async def username(context):
         await context.edit("Invalid username.")
         return
     await context.edit("Username have been updated.")
-    await log(f"Username has been set to {result}.")
+    if result == "":
+        await log("Username has been unset.")
+        return
+    await log(f"Username has been set to `{result}`.")
 
 
 @listener(outgoing=True, command="name",
@@ -35,26 +44,27 @@ async def username(context):
           parameters="<first name> <last name>")
 async def name(context):
     """ Updates your display name. """
-    new_name = context.pattern_match.group(1)
-    if " " not in new_name:
-        first_name = new_name
+    if len(context.parameter) == 2:
+        first_name = context.parameter[0]
+        last_name = context.parameter[1]
+    elif len(context.parameter) == 1:
+        first_name = context.parameter[0]
         last_name = " "
     else:
-        split = new_name.split(" ", 1)
-        first_name = split[0]
-        last_name = split[1]
+        await context.edit("Invalid argument.")
+        return
     try:
         await bot(UpdateProfileRequest(
             first_name=first_name,
             last_name=last_name))
     except FirstNameInvalidError:
-        await context.edit("`Invalid first name.`")
+        await context.edit("Invalid first name.")
         return
-    await context.edit("`Display name is successfully altered.`")
+    await context.edit("Display name is successfully altered.")
     if last_name != " ":
         await log(f"Changed display name to `{first_name} {last_name}`.")
     else:
-        await log(f"Changed display name to `{new_name}`.")
+        await log(f"Changed display name to `{first_name}`.")
 
 
 @listener(outgoing=True, command="pfp",
@@ -92,13 +102,16 @@ async def pfp(context):
           parameters="<string>")
 async def bio(context):
     """ Sets your bio. """
-    result = context.pattern_match.group(1)
     try:
-        await bot(UpdateProfileRequest(about=result))
+        await bot(UpdateProfileRequest(about=context.parameters))
     except AboutTooLongError:
-        await context.edit("`Provided string is too long.`")
+        await context.edit("Provided string is too long.")
         return
-    await context.edit("`Bio has been altered successfully.`")
+    await context.edit("Bio has been altered successfully.")
+    if context.parameters == "":
+        await log("Bio has been unset.")
+        return
+    await log(f"Bio has been set to `{context.parameters}`.")
 
 
 @listener(outgoing=True, command="rmpfp",
@@ -137,31 +150,42 @@ async def rmpfp(context):
           parameters="<username>")
 async def profile(context):
     """ Queries profile of a user. """
-    if context.fwd_from:
+    if len(context.parameter) > 1:
+        await context.edit("Invalid argument.")
         return
 
     await context.edit("Generating user profile summary . . .")
     if context.reply_to_msg_id:
-        target_user = await context.client(GetFullUserRequest(await context.get_reply_message().from_id))
+        user_id = await context.get_reply_message().from_id
+        target_user = await context.client(GetFullUserRequest(user_id))
     else:
-        user = context.pattern_match.group(1)
-        if user.isnumeric():
-            user = int(user)
-        if not user:
-            self_user = await context.client.get_me()
-            user = self_user.id
+        if len(context.parameter) == 1:
+            user = context.parameter[0]
+            if user.isnumeric():
+                user = int(user)
+        else:
+            user_object = await context.client.get_me()
+            user = user_object.id
         if context.message.entities is not None:
-            user_entity = context.message.entities[0]
-            if isinstance(user_entity, MessageEntityMentionName):
-                user_id = user_entity.user_id
-                target_user = await context.client(GetFullUserRequest(user_id))
-                return target_user
+            if isinstance(context.message.entities[0], MessageEntityMentionName):
+                return await context.client(GetFullUserRequest(context.message.entities[0].user_id))
         try:
             user_object = await context.client.get_entity(user)
             target_user = await context.client(GetFullUserRequest(user_object.id))
-        except (TypeError, ValueError) as err:
-            await context.edit(str(err))
-            return None
+        except (TypeError, ValueError, OverflowError, StructError) as exception:
+            if str(exception).startswith("Cannot find any entity corresponding to"):
+                await context.edit("The specified user does not exist.")
+                return
+            if str(exception).startswith("No user has"):
+                await context.edit("The username specified does not exist.")
+                return
+            if str(exception).startswith("Could not find the input entity for") or isinstance(exception, StructError):
+                await context.edit("The UserID specified does not correspond to a user.")
+                return
+            if isinstance(exception, OverflowError):
+                await context.edit("The UserID specified have exceeded the integer limit.")
+                return
+            raise exception
     user_type = "Bot" if target_user.user.bot else "User"
     username_system = target_user.user.username if target_user.user.username is not None else (
         "This user have not yet defined their username.")

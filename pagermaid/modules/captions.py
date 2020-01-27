@@ -1,6 +1,7 @@
 """ PagerMaid module for adding captions to image. """
 
 from os import remove
+from magic import Magic
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
@@ -55,11 +56,11 @@ async def caption(context):
         )
     if target_file_path is None:
         await context.edit("There are no attachments in target message.")
-    if context.pattern_match.group(1):
-        if ',' in context.pattern_match.group(1):
-            string_1, string_2 = context.pattern_match.group(1).split(',', 1)
+    if context.parameter:
+        if ',' in context.parameters:
+            string_1, string_2 = context.parameters.split(',', 1)
         else:
-            string_1 = context.pattern_match.group(1)
+            string_1 = context.parameters
             string_2 = " "
     else:
         await context.edit("Invalid syntax.")
@@ -133,10 +134,21 @@ async def highlight(context):
     await context.edit("Rendering image, please wait . . .")
     if reply:
         reply_id = reply.id
-        message = reply.text
+        target_file_path = await context.client.download_media(
+            await context.get_reply_message()
+        )
+        if target_file_path is None:
+            message = reply.text
+        else:
+            if Magic(mime=True).from_file(target_file_path) != 'text/plain':
+                message = reply.text
+            else:
+                with open(target_file_path, 'r') as file:
+                    message = file.read()
+            remove(target_file_path)
     else:
-        if context.pattern_match.group(1):
-            message = context.pattern_match.group(1)
+        if context.parameters:
+            message = context.parameters
         else:
             await context.edit("`Unable to retrieve target message.`")
             return
