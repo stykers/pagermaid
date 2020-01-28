@@ -10,57 +10,57 @@ from pagermaid.listener import listener
           description="Deletes everything starting from the message you replied to.")
 async def prune(context):
     """ Purge every single message after the message you replied to. """
-    try:
-        chat = await context.get_input_chat()
-        msgs = []
-        count = 0
+    if not context.reply_to_msg_id:
+        await context.edit("There are no message that are replied to.")
+        return
+    input_chat = await context.get_input_chat()
+    messages = []
+    count = 0
+    async for message in context.client.iter_messages(input_chat, min_id=context.reply_to_msg_id):
+        messages.append(message)
+        count += 1
+        messages.append(context.reply_to_msg_id)
+        if len(messages) == 100:
+            await context.client.delete_messages(input_chat, messages)
+            messages = []
 
-        async for msg in context.client.iter_messages(chat, min_id=context.reply_to_msg_id):
-            msgs.append(msg)
-            count = count + 1
-            msgs.append(context.reply_to_msg_id)
-            if len(msgs) == 100:
-                await context.client.delete_messages(chat, msgs)
-                msgs = []
-
-        if msgs:
-            await context.client.delete_messages(chat, msgs)
-        notification = await send_prune_notify(context, count)
-        await log(f"Deleted {str(count)} messages.")
-        await sleep(0.5)
-        await notification.delete()
-    except TypeError:
-        await context.edit("`Please reply to a message.`")
+    if messages:
+        await context.client.delete_messages(input_chat, messages)
+    await log(f"Bulk deleted {str(count)} messages.")
+    notification = await send_prune_notify(context, count)
+    await sleep(.5)
+    await notification.delete()
 
 
 @listener(outgoing=True, command="selfprune",
           description="Deletes specific amount of messages you sent.",
           parameters="<integer>")
 async def selfprune(context):
-    """ Prune self message. """
+    """ Deletes specific amount of messages you sent. """
+    if not len(context.parameter) == 1:
+        await context.edit("Invalid argument.")
+        return
     try:
-        message = context.text
-        count = int(message[11:])
-        i = 1
-
-        async for message in context.client.iter_messages(context.chat_id, from_user='me'):
-            if i > count + 1:
-                break
-            i = i + 1
-            await message.delete()
-
-        notification = await send_prune_notify(context, count)
-        await log(f"Deleted {str(count)} messages.")
-        await sleep(0.5)
-        await notification.delete()
+        count = int(context.parameter[0])
     except ValueError:
-        await context.edit("`Invalid parameter.`")
+        await context.edit("Invalid argument.")
+        return
+    count_buffer = 0
+    async for message in context.client.iter_messages(context.chat_id, from_user="me"):
+        if count_buffer == count:
+            break
+        await message.delete()
+        count_buffer += 1
+    await log(f"Bulk deleted {str(count)} messages sent by self.")
+    notification = await send_prune_notify(context, count)
+    await sleep(.5)
+    await notification.delete()
 
 
 @listener(outgoing=True, command="delete",
           description="Deletes the message you replied to.")
 async def delete(context):
-    """ Deletes the replied message. """
+    """ Deletes the message you replied to. """
     target = await context.get_reply_message()
     if context.reply_to_msg_id:
         try:
@@ -69,24 +69,8 @@ async def delete(context):
             await log("Deleted a message.")
         except BadRequestError:
             await context.edit("Lacking permission to delete this message.")
-
-
-@listener(outgoing=True, command="timed",
-          description="Creates a timed message that is deleted after the amount of time specified.",
-          parameters="<time> <message>")
-async def timed(context):
-    """ A timed message that deletes itself. """
-    try:
-        message = context.text
-        counter = int(message[7:9])
-        text = str(context.text[9:])
+    else:
         await context.delete()
-        source_msg = await context.client.send_message(context.chat_id, text)
-        await sleep(counter)
-        await source_msg.delete()
-        await log("Created timed message.")
-    except ValueError:
-        await context.edit("Invalid parameter.")
 
 
 async def send_prune_notify(context, count):
