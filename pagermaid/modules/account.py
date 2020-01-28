@@ -156,7 +156,8 @@ async def profile(context):
 
     await context.edit("Generating user profile summary . . .")
     if context.reply_to_msg_id:
-        user_id = await context.get_reply_message().from_id
+        reply_message = await context.get_reply_message()
+        user_id = reply_message.from_id
         target_user = await context.client(GetFullUserRequest(user_id))
     else:
         if len(context.parameter) == 1:
