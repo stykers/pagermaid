@@ -109,6 +109,20 @@ async def owo(context):
     await edit_reply(result, context)
 
 
+@listener(outgoing=True, command="flip",
+          description="Flip flops the message.",
+          parameters="<message>")
+async def flip(context):
+    """ Flip flops the message. """
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("Invalid argument.")
+        return
+    result = message[::-1]
+    await edit_reply(result, context)
+
+
 @listener(outgoing=True, command="ship",
           description="Generates random couple, supports specifying the target as well.",
           parameters="<username> <username>")
