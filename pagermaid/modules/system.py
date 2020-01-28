@@ -2,53 +2,12 @@
 
 from platform import node
 from getpass import getuser
-from os import remove, geteuid
+from os import geteuid
 from requests import head
 from requests.exceptions import MissingSchema, InvalidURL, ConnectionError
 from pagermaid import log
 from pagermaid.listener import listener
 from pagermaid.utils import attach_log, execute
-
-
-@listener(outgoing=True, command="evaluate",
-          description="Evaluate an expression in the python interpreter.",
-          parameters="<expression>")
-async def evaluate(context):
-    """ Evaluate a python expression. """
-    if context.pattern_match.group(1):
-        expression = context.pattern_match.group(1)
-    else:
-        await context.edit("Invalid parameter.")
-        return
-
-    try:
-        evaluation = str(eval(expression))
-        if evaluation:
-            if isinstance(evaluation, str):
-                if len(evaluation) >= 4096:
-                    file = open("output.log", "w+")
-                    file.write(evaluation)
-                    file.close()
-                    await context.client.send_file(
-                        context.chat_id,
-                        "output.log",
-                        reply_to=context.id,
-                        caption="Output exceeded limit, attaching file.",
-                    )
-                    remove("output.log")
-                    return
-                await context.edit(
-                    f">>> {expression}\n"
-                    f"{evaluation}"
-                )
-
-    except Exception as err:
-        await context.edit(
-            f">>> {expression}\n"
-            f"`{err}`"
-        )
-
-    await log(f"Evaluated `{expression}` in the python interpreter.")
 
 
 @listener(outgoing=True, command="sh",
@@ -57,8 +16,7 @@ async def evaluate(context):
 async def sh(context):
     """ Use the command-line from Telegram. """
     user = getuser()
-    command = context.pattern_match.group(1)
-    uid = geteuid()
+    command = context.arguments
     hostname = node()
     if context.is_channel and not context.is_group:
         await context.edit("`Current configuration disables shell execution in channel.`")
@@ -68,7 +26,7 @@ async def sh(context):
         await context.edit("`Invalid argument.`")
         return
 
-    if uid == 0:
+    if geteuid() == 0:
         await context.edit(
             f"`{user}`@{hostname} ~"
             f"\n> `#` {command}"
@@ -86,7 +44,7 @@ async def sh(context):
             await attach_log(result, context.chat_id, "output.log", context.id)
             return
 
-        if uid == 0:
+        if geteuid() == 0:
             await context.edit(
                 f"`{user}`@{hostname} ~"
                 f"\n> `#` {command}"
@@ -118,7 +76,7 @@ async def restart(context):
           parameters="<url>")
 async def trace(context):
     """ Trace URL redirects. """
-    url = context.pattern_match.group(1)
+    url = context.arguments
     reply = await context.get_reply_message()
     if reply:
         url = reply.text
@@ -147,7 +105,7 @@ async def trace(context):
                 "Redirects:\n"
                 f"{result}"
             )
-            await log(f"Traced redirects of {context.pattern_match.group(1)}.")
+            await log(f"Traced redirects of {context.arguments}.")
         else:
             await context.edit(
                 "Something wrong happened while making HTTP requests."
@@ -161,16 +119,15 @@ async def trace(context):
           parameters="<message>")
 async def contact(context):
     """ Sends a message to Kat. """
-    if not context.text[0].isalpha():
-        await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
-                           parse_mode="markdown")
-        message = "Hi, I would like to report something about PagerMaid."
-        if context.pattern_match.group(1):
-            message = context.pattern_match.group(1)
-        await context.client.send_message(
-            503691334,
-            message
-        )
+    await context.edit("`A conversation have been opened, click `[here](tg://user?id=503691334)` to enter.`",
+                       parse_mode="markdown")
+    message = "Hi, I would like to report something about PagerMaid."
+    if context.arguments:
+        message = context.arguments
+    await context.client.send_message(
+        503691334,
+        message
+    )
 
 
 def url_tracer(url):
