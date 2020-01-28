@@ -10,10 +10,31 @@ from pagermaid.utils import owoify, execute, random_gen, obtain_message
 
 
 @listener(outgoing=True, command="animate",
-          description="Makes a typing animation via edits to the message.",
+          description="Make a text animation using a message.",
           parameters="<message>")
 async def animate(context):
-    """ Animate a message. """
+    """ Make a text animation using a message. """
+    try:
+        message = await obtain_message(context)
+    except ValueError:
+        await context.edit("Invalid argument.")
+        return
+    interval = 0.3
+    words = message.split(" ")
+    count = 0
+    buffer = ""
+    while count != len(words):
+        await sleep(interval)
+        buffer = f"{buffer} {words[count]}"
+        await context.edit(buffer)
+        count += 1
+
+
+@listener(outgoing=True, command="teletype",
+          description="Makes a typing animation via edits to the message.",
+          parameters="<message>")
+async def teletype(context):
+    """ Makes a typing animation via edits to the message. """
     try:
         message = await obtain_message(context)
     except ValueError:
