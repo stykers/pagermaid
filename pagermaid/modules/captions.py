@@ -45,6 +45,15 @@ async def convert(context):
 async def caption(context):
     """ Generates images with captions. """
     await context.edit("Rendering image . . .")
+    if context.arguments:
+        if ',' in context.arguments:
+            string_1, string_2 = context.arguments.split(',', 1)
+        else:
+            string_1 = context.arguments
+            string_2 = " "
+    else:
+        await context.edit("Invalid syntax.")
+        return
     reply = await context.get_reply_message()
     target_file_path = await context.download_media()
     reply_id = context.reply_to_msg_id
@@ -54,22 +63,20 @@ async def caption(context):
         )
     if target_file_path is None:
         await context.edit("There are no attachments in target message.")
-    if context.parameter:
-        if ',' in context.arguments:
-            string_1, string_2 = context.arguments.split(',', 1)
-        else:
-            string_1 = context.arguments
-            string_2 = " "
+    if not target_file_path.endswith(".mp4"):
+        result = await execute(f"{working_dir}/assets/caption.sh \"{target_file_path}\" "
+                               f"{working_dir}/assets/Impact-Regular.ttf "
+                               f"\"{str(string_1)}\" \"{str(string_2)}\"")
+        result_file = "result.png"
     else:
-        await context.edit("Invalid syntax.")
-        return
-    result = await execute(f"{working_dir}/assets/caption.sh \"{target_file_path}\" "
-                           f"{working_dir}/assets/Impact-Regular.ttf "
-                           f"\"{str(string_1)}\" \"{str(string_2)}\"")
+        result = await execute(f"{working_dir}/assets/caption-gif.sh \"{target_file_path}\" "
+                               f"{working_dir}/assets/Impact-Regular.ttf "
+                               f"\"{str(string_1)}\" \"{str(string_2)}\"")
+        result_file = "result.gif"
     if not result:
         await handle_failure(context, target_file_path)
         return
-    if not await upload_attachment("result.png", context.chat_id, reply_id):
+    if not await upload_attachment(result_file, context.chat_id, reply_id):
         await context.edit("An error occurred during the conversion.")
         remove(target_file_path)
         return
@@ -79,7 +86,7 @@ async def caption(context):
     else:
         message = string_1
     remove(target_file_path)
-    remove("result.png")
+    remove(result_file)
     await log(f"Caption `{message}` added to an image.")
 
 

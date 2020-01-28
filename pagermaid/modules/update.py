@@ -50,7 +50,7 @@ async def update(context):
     changelog = await changelog_gen(repo, f'HEAD..upstream/{active_branch}')
 
     if not changelog:
-        await context.edit(f"`PagerMaid is up to date with branch `**{active_branch}**`.`")
+        await context.edit(f"`PagerMaid is up to date with branch` **{active_branch}**`.`")
         return
 
     if parameter != "true":
@@ -70,7 +70,7 @@ async def update(context):
             await context.edit(changelog_str + "\n**Execute \"-update true\" to apply update(s).**")
         return
 
-    await context.edit('`Found update(s), pulling it in . . .`')
+    await context.edit('Found update(s), pulling it in . . .')
 
     try:
         upstream_remote.pull(active_branch)

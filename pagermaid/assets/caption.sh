@@ -12,7 +12,7 @@ strokewidth=$((width/500))
 
 convert "${src}"       \
   -background none   \
-  -font ${font}      \
+  -font "${font}"      \
   -fill white        \
   -stroke black      \
   -strokewidth ${strokewidth}       \
