@@ -17,9 +17,8 @@ async def convert(context):
     reply = await context.get_reply_message()
     await context.edit("Converting . . .")
     target_file_path = await context.download_media()
-    reply_id = None
+    reply_id = context.reply_to_msg_id
     if reply:
-        reply_id = reply.id
         target_file_path = await context.client.download_media(
             await context.get_reply_message()
         )
@@ -48,9 +47,8 @@ async def caption(context):
     await context.edit("Rendering image . . .")
     reply = await context.get_reply_message()
     target_file_path = await context.download_media()
-    reply_id = None
+    reply_id = context.reply_to_msg_id
     if reply:
-        reply_id = reply.id
         target_file_path = await context.client.download_media(
             await context.get_reply_message()
         )
@@ -89,8 +87,6 @@ async def caption(context):
           description="Extract text from attached image of replied message.")
 async def ocr(context):
     """ Extracts texts from images. """
-    if context.fwd_from:
-        return
     reply = await context.get_reply_message()
     await context.edit("`Processing image, please wait . . .`")
     if reply:
