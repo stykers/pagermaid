@@ -188,7 +188,7 @@ async def profile(context):
                 return
             raise exception
     user_type = "Bot" if target_user.user.bot else "User"
-    username_system = target_user.user.username if target_user.user.username is not None else (
+    username_system = f"@{target_user.user.username}" if target_user.user.username is not None else (
         "This user have not yet defined their username.")
     first_name = target_user.user.first_name.replace("\u2060", "")
     last_name = target_user.user.last_name.replace("\u2060", "") if target_user.user.last_name is not None else (
@@ -196,7 +196,7 @@ async def profile(context):
     )
     biography = target_user.about if target_user.about is not None else "This user did not define a biography string."
     caption = f"**Profile:** \n" \
-              f"Username: @{username_system} \n" \
+              f"Username: {username_system} \n" \
               f"UserID: {target_user.user.id} \n" \
               f"First Name: {first_name} \n" \
               f"Last Name: {last_name} \n" \
