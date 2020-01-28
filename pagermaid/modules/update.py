@@ -11,9 +11,14 @@ from pagermaid.utils import execute
 @listener(outgoing=True, command="update",
           description="Checks for updates from remote origin, and install them to PagerMaid.",
           parameters="<boolean>")
-async def upstream(context):
+async def update(context):
+    if len(context.parameter) > 1:
+        await context.edit("Invalid argument.")
+        return
     await context.edit("Checking remote origin for updates . . .")
-    parameter = context.pattern_match.group(1)
+    parameter = None
+    if len(context.parameter) == 1:
+        parameter = context.parameter[0]
     repo_url = 'https://git.stykers.moe/scm/~stykers/pagermaid.git'
 
     try:
