@@ -20,13 +20,7 @@ ffmpeg -i "${src}" \
  output.gif
 
 convert "output.gif" \
- -pointsize 120 \
- -gravity center \
- -font "${font}" \
- -stroke black \
- -fill white \
- -strokewidth 3 \
- -draw "text 0,90 ${header}" \
- "${dest}"
+\( -clone 0 -coalesce -gravity South -background none -size 435x65.5 caption:"${header}" \) -swap -1,0 \
+"${dest}"
 
 rm output.gif
