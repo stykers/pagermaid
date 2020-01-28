@@ -12,7 +12,7 @@ from youtube_dl import YoutubeDL
 from pagermaid import working_dir, bot
 
 
-async def upload_attachment(file_path, chat_id, reply_id, caption=None):
+async def upload_attachment(file_path, chat_id, reply_id, caption=None, preview=None, document=None):
     """ Uploads a local attachment file. """
     if not exists(file_path):
         return False
@@ -21,7 +21,9 @@ async def upload_attachment(file_path, chat_id, reply_id, caption=None):
             chat_id,
             file_path,
             reply_to=reply_id,
-            caption=caption
+            caption=caption,
+            link_preview=preview,
+            force_document=document
         )
     except BaseException as exception:
         raise exception

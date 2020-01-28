@@ -11,16 +11,17 @@ from sys import platform
 from re import sub
 from pathlib import Path
 from pagermaid import log, config, redis_status
+from pagermaid.utils import execute, upload_attachment
 from pagermaid.listener import listener
-from pagermaid.utils import execute
 
 
 @listener(outgoing=True, command="sysinfo",
           description="Retrieve system information via neofetch.")
 async def sysinfo(context):
     """ Retrieve system information via neofetch. """
+    await context.edit("Loading system information . . .")
     result = await execute("neofetch --config none --stdout")
-    await context.edit("`" + result + "`")
+    await context.edit(f"`{result}`")
 
 
 @listener(outgoing=True, command="fortune",
@@ -39,37 +40,28 @@ async def fortune(context):
 async def tty(context):
     """ Screenshots a TTY and prints it. """
     await context.edit("Taking screenshot of framebuffer console . . .")
-    message_id_to_reply = context.message.reply_to_msg_id
-    if not message_id_to_reply:
-        message_id_to_reply = None
+    reply_id = context.message.reply_to_msg_id
     result = await execute("fbdump | magick - image.png")
     if result == "/bin/sh: fbdump: command not found":
-        await context.edit("`fbdump does not exist on this system.`")
+        await context.edit("fbdump does not exist on this system.")
         remove("image.png")
         return
     if result == "/bin/sh: convert: command not found":
-        await context.edit("`ImageMagick does not exist on this system.`")
+        await context.edit("ImageMagick does not exist on this system.")
         remove("image.png")
         return
     if result == "Failed to open /dev/fb0: Permission denied":
-        await context.edit("`User not in video group.`")
+        await context.edit("User not in video group.")
         remove("image.png")
         return
-    try:
-        await context.client.send_file(
-            context.chat_id,
-            "image.png",
-            caption="Screenshot of currently attached tty.",
-            link_preview=False,
-            force_document=False,
-            reply_to=message_id_to_reply
-        )
-        await log("Screenshot of binded framebuffer console taken.")
-    except ValueError:
-        await context.edit("File is not generated due to unexpected error.")
+    if not await upload_attachment("image.png", context.chat_id, reply_id,
+                                   caption="Screenshot of binded framebuffer.",
+                                   preview=False, document=False):
+        await context.edit("File failed to generate due to an unexpected error.")
         return
     await context.delete()
     remove("image.png")
+    await log("Screenshot of binded framebuffer console taken.")
 
 
 @listener(outgoing=True, command="status",
@@ -81,15 +73,13 @@ async def status(context):
     if redis_status():
         database = "Connected to Redis."
     await context.edit(
-        "`"
-        "PagerMaid is online. \n\n"
-        f"Hostname: {hostname} \n"
-        f"Database Status: {database} \n"
-        f"Host Platform: {platform} \n"
-        f"Kernel Version: {kernel} \n"
-        f"Python Version: {python_version()} \n"
-        f"Library version: {telethon_version.__version__}"
-        "`"
+        f"**PagerMaid Status** \n"
+        f"Hostname: `{hostname}` \n"
+        f"Host Platform: `{platform}` \n"
+        f"Kernel Version: `{kernel}` \n"
+        f"Python Version: `{python_version()}` \n"
+        f"Library version: `{telethon_version.__version__}` \n"
+        f"Database Status: `{database}`"
     )
 
 
@@ -104,17 +94,13 @@ async def speedtest(context):
     test.upload()
     test.results.share()
     result = test.results.dict()
-
-    await context.edit("Timestamp "
-                       f"`{result['timestamp']}` \n\n"
-                       "Upload "
-                       f"`{unit_convert(result['upload'])}` \n"
-                       "Download "
-                       f"`{unit_convert(result['download'])}` \n"
-                       "Latency "
-                       f"`{result['ping']}` \n"
-                       "ISP "
-                       f"`{result['client']['isp']}`")
+    await context.edit(
+        f"**Speedtest** \n"
+        f"Upload: `{unit_convert(result['upload'])}` \n"
+        f"Download: `{unit_convert(result['download'])}` \n"
+        f"Latency: `{result['ping']}` \n"
+        f"Timestamp: `{result['timestamp']}`"
+    )
 
 
 @listener(outgoing=True, command="connection",
@@ -123,9 +109,10 @@ async def connection(context):
     """ Displays connection information between PagerMaid and Telegram. """
     datacenter = await context.client(functions.help.GetNearestDcRequest())
     await context.edit(
-        f"Region `{datacenter.country}` \n"
-        f"Connected Datacenter `{datacenter.this_dc}` \n"
-        f"Nearest Datacenter `{datacenter.nearest_dc}`"
+        f"**Connection Information** \n"
+        f"Region: `{datacenter.country}` \n"
+        f"Connected Datacenter: `{datacenter.this_dc}` \n"
+        f"Nearest Datacenter: `{datacenter.nearest_dc}`"
     )
 
 
@@ -134,18 +121,16 @@ async def connection(context):
 async def ping(context):
     """ Calculates latency between PagerMaid and Telegram. """
     start = datetime.now()
-    await context.edit("`Pong!`")
+    await context.edit("Pong!")
     end = datetime.now()
     duration = (end - start).microseconds / 1000
-    await context.edit("`Pong!|%sms`" % duration)
+    await context.edit(f"Pong!|{duration}")
 
 
 @listener(outgoing=True, command="topcloud",
           description="Generates a word cloud of resource-hungry processes.")
 async def topcloud(context):
     """ Generates a word cloud of resource-hungry processes. """
-    if context.fwd_from:
-        return
     await context.edit("Generating image . . .")
     command_list = []
     if not Path('/usr/bin/top').is_symlink():

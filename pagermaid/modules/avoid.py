@@ -68,7 +68,7 @@ async def deny(context):
         await context.delete()
         await log(f"ChatID {str(context.chat_id)} removed from denied chats.")
     elif context.parameter[0] == "status":
-        if redis.get("silenced.chat_id." + str(context.chat_id)):
+        if redis.get("denied.chat_id." + str(context.chat_id)):
             await context.edit("Current chat is denied.")
         else:
             await context.edit("Current chat is not denied.")

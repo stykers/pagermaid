@@ -15,7 +15,6 @@ def listener(**args):
     """ Register an event listener. """
     command = args.get('command', None)
     description = args.get('description', None)
-    description_wrapper = []
     parameters = args.get('parameters', None)
     pattern = args.get('pattern', None)
     diagnostics = args.get('diagnostics', True)
@@ -38,8 +37,6 @@ def listener(**args):
         del args['parameters']
 
     def decorator(function):
-        if description is None:
-            description_wrapper.append(function.__doc__)
 
         async def handler(context):
             parameter = context.pattern_match.group(1).split(' ')
@@ -78,9 +75,7 @@ def listener(**args):
 
         return handler
 
-    if description is None and len(description_wrapper) == 1:
-        description = description_wrapper[0]
-    if description != "" and command is not None:
+    if description is not None and command is not None:
         if parameters is None:
             parameters = ""
         help_messages.update({
