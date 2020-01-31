@@ -1,10 +1,9 @@
 from telethon import TelegramClient
-from dotenv import load_dotenv
-import os
+from yaml import load, FullLoader
 
-load_dotenv("config.env")
-API_KEY = os.environ.get("API_KEY", None)
-API_HASH = os.environ.get("API_HASH", None)
+config = load(open(r"config.yml"), Loader=FullLoader)
+api_key = config['api_key']
+api_hash = config['api_hash']
 
-bot = TelegramClient('pagermaid', API_KEY, API_HASH)
+bot = TelegramClient('pagermaid', api_key, api_hash)
 bot.start()
