@@ -13,7 +13,10 @@ async def time(context):
     """ For querying time. """
     if len(context.parameter) > 1:
         context.edit("Invalid argument.")
-    country = context.parameter[1].title()
+    if len(context.parameter) == 1:
+        country = context.parameter[0].title()
+    else:
+        country = config['application_region']
     time_form = "%I:%M %p"
     date_form = "%A %d/%m/%y"
     if not country:
@@ -27,7 +30,7 @@ async def time(context):
 
     time_zone = await get_timezone(country)
     if not time_zone:
-        await context.edit("`Invalid parameter.`")
+        await context.edit("Invalid argument.")
         return
 
     try:
