@@ -1,10 +1,10 @@
 """ PagerMaid module to manage plugins. """
 
-from os import getcwd, remove, rename, chdir, path
+from os import remove, rename, chdir, path
 from os.path import exists
 from shutil import copyfile, move
 from glob import glob
-from pagermaid import log
+from pagermaid import log, working_dir
 from pagermaid.listener import listener
 from pagermaid.utils import upload_attachment
 from pagermaid.modules import plugin_list as active_plugins, __list_plugins
@@ -14,8 +14,11 @@ from pagermaid.modules import plugin_list as active_plugins, __list_plugins
           description="Utility to manage plugins installed to PagerMaid.",
           parameters="{status|install|remove|enable|disable|upload} <plugin name/file>")
 async def plugin(context):
+    if len(context.parameter) > 2 or len(context.parameter) == 0:
+        await context.edit("Invalid argument.")
+        return
     reply = await context.get_reply_message()
-    plugin_directory = f"{getcwd()}/plugins/"
+    plugin_directory = f"{working_dir}/plugins/"
     if context.parameter[0] == "install":
         if len(context.parameter) == 1:
             await context.edit("Installing plugin . . .")
