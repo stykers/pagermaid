@@ -20,3 +20,10 @@ pygments
 distutils2-py3
 speedtest-cli
 gitpython
+werkzeug
+flask
+flask_sqlalchemy
+flask_login
+flask_bcrypt
+flask_wtf
+wtforms

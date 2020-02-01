@@ -15,6 +15,13 @@ api_hash: "HASH_HERE"
 debug: "False"
 error_report: "True"
 
+# Admin interface related
+web_interface:
+  enable: "True"
+  secret_key: "RANDOM_STRING_HERE"
+  host: "127.0.0.1"
+  port: "3333"
+
 # Redis connection information
 redis:
   host: "localhost"

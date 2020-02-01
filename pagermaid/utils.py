@@ -9,7 +9,7 @@ from re import sub, IGNORECASE
 from asyncio import create_subprocess_shell
 from asyncio.subprocess import PIPE
 from youtube_dl import YoutubeDL
-from pagermaid import working_dir, bot
+from pagermaid import module_dir, bot
 
 
 async def upload_attachment(file_path, chat_id, reply_id, caption=None, preview=None, document=None):
@@ -104,7 +104,7 @@ async def fetch_youtube_audio(url, chat_id, reply_id):
 def owoify(text):
     """ Converts your text to OwO """
     smileys = [';;w;;', '^w^', '>w<', 'UwU', '(・`ω´・)', '(´・ω・`)']
-    with open(f"{working_dir}/assets/replacements.json") as fp:
+    with open(f"{module_dir}/assets/replacements.json") as fp:
         replacements = load_json(fp)
     for expression in replacements:
         replacement = replacements[expression]

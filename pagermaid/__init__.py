@@ -1,5 +1,7 @@
 """ PagerMaid initialization. """
 
+from os import getcwd, makedirs
+from os.path import exists
 from sys import version_info, platform
 from yaml import load, FullLoader
 from shutil import copyfile
@@ -9,7 +11,8 @@ from distutils2.util import strtobool
 from coloredlogs import ColoredFormatter
 from telethon import TelegramClient
 
-working_dir = __path__[0]
+module_dir = __path__[0]
+working_dir = getcwd()
 logging_format = "%(levelname)s [%(asctime)s] [%(name)s] %(message)s"
 config = None
 help_messages = {}
@@ -23,7 +26,7 @@ try:
     config = load(open(r"config.yml"), Loader=FullLoader)
 except FileNotFoundError:
     logs.fatal("Configuration file does not exist, generating new configuration file.")
-    copyfile(f"{working_dir}/assets/config.gen.yml", "config.yml")
+    copyfile(f"{module_dir}/assets/config.gen.yml", "config.yml")
     exit(1)
 
 if strtobool(config['debug']):
@@ -47,6 +50,9 @@ if version_info[0] < 3 or version_info[1] < 6:
         "Please upgrade your python interpreter to at least version 3.6."
     )
     exit(1)
+
+if not exists(f"{getcwd()}/data"):
+    makedirs(f"{getcwd()}/data")
 
 api_key = config['api_key']
 api_hash = config['api_hash']

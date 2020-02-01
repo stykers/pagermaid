@@ -5,7 +5,7 @@ from magic import Magic
 from pygments import highlight as syntax_highlight
 from pygments.formatters import img
 from pygments.lexers import guess_lexer
-from pagermaid import log, working_dir
+from pagermaid import log, module_dir
 from pagermaid.listener import listener
 from pagermaid.utils import execute, upload_attachment
 
@@ -24,7 +24,7 @@ async def convert(context):
         )
     if target_file_path is None:
         await context.edit("There are no attachments in target message.")
-    result = await execute(f"{working_dir}/assets/caption.sh \"" + target_file_path +
+    result = await execute(f"{module_dir}/assets/caption.sh \"" + target_file_path +
                            "\" result.png" + " \"" + str("") +
                            "\" " + "\"" + str("") + "\"")
     if not result:
@@ -64,13 +64,13 @@ async def caption(context):
     if target_file_path is None:
         await context.edit("There are no attachments in target message.")
     if not target_file_path.endswith(".mp4"):
-        result = await execute(f"{working_dir}/assets/caption.sh \"{target_file_path}\" "
-                               f"{working_dir}/assets/Impact-Regular.ttf "
+        result = await execute(f"{module_dir}/assets/caption.sh \"{target_file_path}\" "
+                               f"{module_dir}/assets/Impact-Regular.ttf "
                                f"\"{str(string_1)}\" \"{str(string_2)}\"")
         result_file = "result.png"
     else:
-        result = await execute(f"{working_dir}/assets/caption-gif.sh \"{target_file_path}\" "
-                               f"{working_dir}/assets/Impact-Regular.ttf "
+        result = await execute(f"{module_dir}/assets/caption-gif.sh \"{target_file_path}\" "
+                               f"{module_dir}/assets/Impact-Regular.ttf "
                                f"\"{str(string_1)}\" \"{str(string_2)}\"")
         result_file = "result.gif"
     if not result:

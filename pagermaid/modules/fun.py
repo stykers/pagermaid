@@ -4,7 +4,7 @@ from asyncio import sleep
 from random import choice, random, randint, randrange, seed
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 from cowpy import cow
-from pagermaid import working_dir
+from pagermaid import module_dir
 from pagermaid.listener import listener
 from pagermaid.utils import owoify, execute, random_gen, obtain_message
 
@@ -231,7 +231,7 @@ async def asciiart(context):
     except ValueError:
         await context.edit("Invalid argument.")
         return
-    result = await execute(f"figlet -f {working_dir}/assets/graffiti.flf '{message}'")
+    result = await execute(f"figlet -f {module_dir}/assets/graffiti.flf '{message}'")
     await context.edit(f"```\n{result}\n```")
 
 

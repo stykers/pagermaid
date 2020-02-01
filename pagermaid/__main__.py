@@ -1,13 +1,13 @@
 """ PagerMaid launch sequence. """
 
 from sys import path
-from os import getcwd
+from os import _exit
 from importlib import import_module
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
-from pagermaid import bot, logs
+from pagermaid import bot, logs, working_dir
 from pagermaid.modules import module_list, plugin_list
 
-path.insert(1, f"{getcwd()}/plugins")
+path.insert(1, f"{working_dir}/plugins")
 
 try:
     bot.start()
@@ -25,5 +25,7 @@ for plugin_name in plugin_list:
     except BaseException as exception:
         logs.info(f"Error loading plugin {plugin_name}: {exception}")
         plugin_list.remove(plugin_name)
+import_module("pagermaid.interface")
 logs.info("PagerMaid have started, The prefix is -, type -help for help message.")
 bot.run_until_disconnected()
+_exit(0)
