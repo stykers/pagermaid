@@ -24,7 +24,9 @@ def listener(**args):
             raise ValueError(f"The command \"{command}\" is already registered.")
         pattern = fr"^-{command}(?: |$)([\s\S]*)"
     if pattern is not None and not pattern.startswith('(?i)'):
-        args['pattern'] = '(?i)' + pattern
+        args['pattern'] = f"(?i){pattern}"
+    else:
+        args['pattern'] = pattern
     if 'ignore_edited' in args:
         del args['ignore_edited']
     if 'command' in args:
@@ -39,12 +41,16 @@ def listener(**args):
     def decorator(function):
 
         async def handler(context):
-            parameter = context.pattern_match.group(1).split(' ')
-            if parameter == ['']:
-                parameter = []
-            context.parameter = parameter
-            context.arguments = context.pattern_match.group(1)
             try:
+                try:
+                    parameter = context.pattern_match.group(1).split(' ')
+                    if parameter == ['']:
+                        parameter = []
+                    context.parameter = parameter
+                    context.arguments = context.pattern_match.group(1)
+                except BaseException:
+                    context.parameter = None
+                    context.arguments = None
                 await function(context)
             except StopPropagation:
                 raise StopPropagation
