@@ -2,7 +2,9 @@
 
 from threading import Thread
 from distutils2.util import strtobool
+from importlib import import_module
 from flask import Flask
+from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
@@ -13,7 +15,7 @@ except ModuleNotFoundError:
     exit(1)
 
 
-app = Flask("PagerMaid")
+app = Flask("pagermaid")
 app.config['CSRF_ENABLED'] = True
 app.config['SECRET_KEY'] = config['web_interface']['secret_key']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,12 +31,17 @@ def init_db():
     db.create_all()
 
 
+import_module('pagermaid.interface.views')
+import_module('pagermaid.interface.modals')
+
+
 def start():
     if strtobool(config['web_interface']['enable']):
         logs.info(f"Starting web interface at {config['web_interface']['host']}:{config['web_interface']['port']}")
+        app.logger.removeHandler(default_handler)
         app.logger.addHandler(logging_handler)
         app.run(host=config['web_interface']['host'], port=config['web_interface']['port'],
-                debug=strtobool(config['debug']))
+                debug=False)
     else:
         logs.info("Web interface is disabled.")
 
