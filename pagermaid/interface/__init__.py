@@ -8,12 +8,12 @@ from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+
 try:
     from pagermaid import config, working_dir, logs, logging_handler
 except ModuleNotFoundError:
     print("This module should not be ran directly.")
     exit(1)
-
 
 app = Flask("pagermaid")
 app.config['CSRF_ENABLED'] = True

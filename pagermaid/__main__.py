@@ -25,7 +25,10 @@ for plugin_name in plugin_list:
     except BaseException as exception:
         logs.info(f"Error loading plugin {plugin_name}: {exception}")
         plugin_list.remove(plugin_name)
-import_module("pagermaid.interface")
-logs.info("PagerMaid have started, The prefix is -, type -help for help message.")
+try:
+    import_module("pagermaid.interface")
+except KeyError:
+    logs.fatal("Web interface configuration is missing in the config file.")
+logs.info("PagerMaid have started, type -help in any chat for help message.")
 bot.run_until_disconnected()
 _exit(0)
