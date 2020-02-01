@@ -11,6 +11,7 @@ from distutils2.util import strtobool
 from coloredlogs import ColoredFormatter
 from telethon import TelegramClient
 
+persistent_vars = []
 module_dir = __path__[0]
 working_dir = getcwd()
 logging_format = "%(levelname)s [%(asctime)s] [%(name)s] %(message)s"
