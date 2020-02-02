@@ -10,7 +10,7 @@ class LoginForm(FlaskForm):
     password = PasswordField(u'Password', validators=[DataRequired()])
 
 
-class RegisterForm(FlaskForm):
+class SetupForm(FlaskForm):
     full_name = StringField(u'Full Name', validators=[DataRequired()])
     username = StringField(u'Full Name', validators=[DataRequired()])
     password = PasswordField(u'Full Name', validators=[DataRequired()])

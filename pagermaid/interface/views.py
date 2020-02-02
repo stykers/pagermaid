@@ -1,11 +1,13 @@
 """ Static views generated for PagerMaid. """
 
 from os.path import join
+from pathlib import Path
+from os.path import exists
 from flask import render_template, request, url_for, redirect, send_from_directory
 from flask_login import login_user, logout_user, current_user
 from pagermaid.interface import app, login
 from pagermaid.interface.modals import User
-from pagermaid.interface.forms import LoginForm, RegisterForm
+from pagermaid.interface.forms import LoginForm, SetupForm
 
 
 @login.user_loader
@@ -20,10 +22,12 @@ def logout():
 
 
 @app.route("/setup", methods=['GET', 'POST'])
-def register():
-    form = RegisterForm(request.form)
+def setup():
+    form = SetupForm(request.form)
     msg = None
     if request.method == 'GET':
+        if exists('data/.user_configured'):
+            return redirect(url_for('login'), code=302)
         return render_template('pages/setup.html', form=form, msg=msg)
     if form.validate_on_submit():
         username = request.form.get('username', '', type=str)
@@ -37,7 +41,8 @@ def register():
             pw_hash = password
             user = User(username, email, pw_hash)
             user.save()
-            msg = 'User created! Please <a href="' + url_for('login') + '">login</a>.'
+            Path('data/.user_configured').touch()
+            return redirect(url_for('login'), code=302)
     else:
         msg = 'Invalid input.'
     return render_template('pages/setup.html', form=form, msg=msg)
@@ -45,6 +50,8 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if not exists('data/.user_configured'):
+        return redirect(url_for('setup'), code=302)
     form = LoginForm(request.form)
     msg = None
     if form.validate_on_submit():

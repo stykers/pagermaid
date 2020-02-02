@@ -19,7 +19,7 @@
         {% if msg %}
             <h4 class="fw-300 c-grey-900 mB-40">{{ msg | safe }}</h4>
         {% else %}
-            <h4 class="fw-300 c-grey-900 mB-40">Register</h4>
+            <h4 class="fw-300 c-grey-900 mB-40">Setup</h4>
         {% endif %}
 
         <form method="post" action="">
@@ -27,7 +27,7 @@
           {{ form.hidden_tag() }}
 
           <div class="form-group">
-            <label class="text-normal text-dark">Nickname</label>
+            <label class="text-normal text-dark">Full Name</label>
             {{ form.full_name(placeholder="Full Name", class="form-control") }}
           </div>
 
@@ -47,11 +47,7 @@
           </div>
 
           <div class="form-group">
-            <button type="submit" class="btn btn-primary">Register</button> 
-
-            &nbsp; &nbsp;
-            <span class="text-small font-weight-semibold">Already have and account?</span>
-            <a href="/login" class="text-black text-small">Login</a>
+            <button type="submit" class="btn btn-primary">Confirm</button>&nbsp; &nbsp;
           </div>
 
         </form>
