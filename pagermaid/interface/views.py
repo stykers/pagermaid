@@ -69,7 +69,7 @@ def login():
     return render_template('pages/login.html', form=form, msg=msg)
 
 
-@app.route('/', defaults={'path': '/'})
+@app.route('/', defaults={'path': '/index.html'})
 @app.route('/<path>')
 def index(path):
     if not current_user.is_authenticated:

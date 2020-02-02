@@ -193,7 +193,7 @@ async def ship(context):
 async def rng(context):
     """ Generates a random string with a specific length. """
     if len(context.parameter) == 0:
-        await context.edit(await random_gen("Aa"))
+        await context.edit(await random_gen("A-Za-z0-9"))
         return
     if len(context.parameter) == 1:
         try:
