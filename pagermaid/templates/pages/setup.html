@@ -1,7 +1,7 @@
 
 {% extends "layouts/auth-default.html" %}
 
-{% block title %} Register {% endblock title %}
+{% block title %} Setup {% endblock title %}
 
 {% block stylesheets %}{% endblock stylesheets %}
 
@@ -27,8 +27,8 @@
           {{ form.hidden_tag() }}
 
           <div class="form-group">
-            <label class="text-normal text-dark">Friendly Name</label>
-            {{ form.name(placeholder="Friendly Name", class="form-control") }}
+            <label class="text-normal text-dark">Nickname</label>
+            {{ form.full_name(placeholder="Full Name", class="form-control") }}
           </div>
 
           <div class="form-group">
@@ -37,8 +37,8 @@
           </div>
           
           <div class="form-group">
-            <label class="text-normal text-dark">eMail Address</label>
-            {{ form.email(placeholder="eMail Address", class="form-control") }}
+            <label class="text-normal text-dark">Email Address</label>
+            {{ form.email(placeholder="Email Address", class="form-control") }}
           </div>
 
           <div class="form-group">
@@ -51,7 +51,7 @@
 
             &nbsp; &nbsp;
             <span class="text-small font-weight-semibold">Already have and account?</span>
-            <a href="/login.html" class="text-black text-small">Login</a>    
+            <a href="/login" class="text-black text-small">Login</a>
           </div>
 
         </form>

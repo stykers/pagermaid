@@ -4,13 +4,11 @@ config.env
 config.yml
 pagermaid.session
 pagermaid.session-journal
+*.pyo
+*.pyc
 plugins/*.py
 plugins/*.py.disabled
-plugins/__pycache__/
 data/*
-__pycache__/*
-pagermaid/__pycache__/*
-pagermaid/modules/__pycache__/*
 build/
 dist/
 pagermaid.egg-info/

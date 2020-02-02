@@ -19,12 +19,12 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/register", methods=['GET', 'POST'])
+@app.route("/setup", methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
     msg = None
     if request.method == 'GET':
-        return render_template('pages/register.html', form=form, msg=msg)
+        return render_template('pages/setup.html', form=form, msg=msg)
     if form.validate_on_submit():
         username = request.form.get('username', '', type=str)
         password = request.form.get('password', '', type=str)
@@ -32,15 +32,15 @@ def register():
         user = User.query.filter_by(user=username).first()
         user_by_email = User.query.filter_by(email=email).first()
         if user or user_by_email:
-            msg = 'This email is already registered, sign in if it is yours.'
+            msg = 'This email already exists on this system, sign in if it is yours.'
         else:
             pw_hash = password
             user = User(username, email, pw_hash)
             user.save()
-            msg = 'Registration success! Please <a href="' + url_for('login') + '">login</a>.'
+            msg = 'User created! Please <a href="' + url_for('login') + '">login</a>.'
     else:
         msg = 'Invalid input.'
-    return render_template('pages/register.html', form=form, msg=msg)
+    return render_template('pages/setup.html', form=form, msg=msg)
 
 
 @app.route('/login', methods=['GET', 'POST'])

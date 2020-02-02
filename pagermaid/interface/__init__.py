@@ -49,8 +49,6 @@ def start():
         except OSError:
             logs.fatal("Another process is binded to the port PagerMaid needs!")
             return
-        # app.run(host=config['web_interface']['host'], port=config['web_interface']['port'],
-        #         debug=False)
     else:
         logs.info("Web interface is disabled.")
 
