@@ -44,7 +44,11 @@ def start():
         logs.info(f"Starting web interface at {config['web_interface']['host']}:{config['web_interface']['port']}")
         app.logger.removeHandler(default_handler)
         app.logger.addHandler(logging_handler)
-        server.start()
+        try:
+            server.start()
+        except OSError:
+            logs.fatal("Another process is binded to the port PagerMaid needs!")
+            return
         # app.run(host=config['web_interface']['host'], port=config['web_interface']['port'],
         #         debug=False)
     else:
