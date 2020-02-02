@@ -9,7 +9,7 @@ with open("requirements.txt", "r") as fp:
 
 setup(
     name="pagermaid",
-    version="2020.2.post5",
+    version="2020.2.post6",
     author="Stykers",
     author_email="stykers@stykers.moe",
     description="A telegram utility daemon and plugin framework.",

@@ -1,11 +1,19 @@
 """ PagerMaid launch sequence. """
 
 from sys import path
-from os import _exit
 from importlib import import_module
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 from pagermaid import bot, logs, working_dir
 from pagermaid.modules import module_list, plugin_list
+try:
+    from pagermaid.interface import server
+except TypeError:
+    logs.error("Web interface is configured to bind to an invalid address.")
+    server = None
+except KeyError:
+    logs.error("Web interface configuration is missing in the config file.")
+    server = None
+
 
 path.insert(1, f"{working_dir}/plugins")
 
@@ -25,10 +33,9 @@ for plugin_name in plugin_list:
     except BaseException as exception:
         logs.info(f"Error loading plugin {plugin_name}: {exception}")
         plugin_list.remove(plugin_name)
-try:
+if server is not None:
     import_module("pagermaid.interface")
-except KeyError:
-    logs.fatal("Web interface configuration is missing in the config file.")
 logs.info("PagerMaid have started, type -help in any chat for help message.")
 bot.run_until_disconnected()
-_exit(0)
+if server is not None:
+    server.stop()

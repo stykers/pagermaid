@@ -44,7 +44,7 @@ from pagermaid.listener import listener
           description="My PagerMaid plugin command.",
           parameters="<name>")
 async def command(context):
-    await context.edit(f"Hello, World! Welcome, {context.pattern_match.group(1)}.")
+    await context.edit(f"Hello, World! Welcome, {context.parameter[0]}.")
 ```
 
 The outgoing variable specifies if the message has to be sent by the user, if it is set to False the event listener

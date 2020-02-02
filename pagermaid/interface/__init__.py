@@ -3,6 +3,7 @@
 from threading import Thread
 from distutils2.util import strtobool
 from importlib import import_module
+from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 from flask import Flask
 from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
@@ -34,14 +35,18 @@ def init_db():
 import_module('pagermaid.interface.views')
 import_module('pagermaid.interface.modals')
 
+dispatcher = PathInfoDispatcher({'/': app})
+server = WSGIServer((config['web_interface']['host'], int(config['web_interface']['port'])), dispatcher)
+
 
 def start():
     if strtobool(config['web_interface']['enable']):
         logs.info(f"Starting web interface at {config['web_interface']['host']}:{config['web_interface']['port']}")
         app.logger.removeHandler(default_handler)
         app.logger.addHandler(logging_handler)
-        app.run(host=config['web_interface']['host'], port=config['web_interface']['port'],
-                debug=False)
+        server.start()
+        # app.run(host=config['web_interface']['host'], port=config['web_interface']['port'],
+        #         debug=False)
     else:
         logs.info("Web interface is disabled.")
 
