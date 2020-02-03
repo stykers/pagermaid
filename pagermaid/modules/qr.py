@@ -36,6 +36,7 @@ async def genqr(context):
           description="Parse attachment of replied message as a QR Code and output results.")
 async def parseqr(context):
     """ Parse attachment of replied message as a QR Code and output results. """
+    success = False
     target_file_path = await context.client.download_media(
         await context.get_reply_message()
     )
@@ -49,6 +50,7 @@ async def parseqr(context):
                            f"`{message}`")
     except IndexError:
         await context.edit("Target is not a QR Code.")
-        return
+        message = None
     if success:
         await log(f"Parsed QR Code with content `{message}`.")
+    remove(target_file_path)

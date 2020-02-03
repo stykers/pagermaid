@@ -1,4 +1,5 @@
 pyqrcode
+pypng
 pyzbar
 emoji
 youtube_dl

@@ -1,6 +1,6 @@
 {% extends "layouts/error-default.html" %}
 
-{% block title %} 500 Error {% endblock title %}
+{% block title %} Internal Server Error {% endblock title %}
 
 {% block content %}
 
@@ -10,11 +10,12 @@
       </div>
 
       <div class="d-f jc-c fxd-c">
-        <h1 class="mB-30 fw-900 lh-1 c-red-500" style="font-size: 60px;">500</h1>
-        <h3 class="mB-10 fsz-lg c-grey-900 tt-c">Internal server error</h3>
-        <p class="mB-30 fsz-def c-grey-700">Something goes wrong with our servers, please try again later.</p>
+        <h1 class="mB-30 fw-900 lh-1 c-red-500" style="font-size: 60px;">Internal Server Error</h1>
+        <h3 class="mB-10 fsz-lg c-grey-900 tt-c">It seems like you have touched PagerMaid in a way that angered
+         her.</h3>
+        <p class="mB-30 fsz-def c-grey-700">Please report this if you did not intentionally anger PagerMaid.</p>
         <div>
-          <a href="index.html" type="primary" class="btn btn-primary">Go to Home</a>
+          <a href="/" type="primary" class="btn btn-primary">Home</a>
         </div>
       </div>
     </div>

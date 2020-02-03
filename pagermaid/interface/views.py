@@ -5,6 +5,7 @@ from pathlib import Path
 from os.path import exists
 from flask import render_template, request, url_for, redirect, send_from_directory
 from flask_login import login_user, logout_user, current_user
+from pagermaid import logs
 from pagermaid.interface import app, login
 from pagermaid.interface.modals import User
 from pagermaid.interface.forms import LoginForm, SetupForm
@@ -69,15 +70,19 @@ def login():
     return render_template('pages/login.html', form=form, msg=msg)
 
 
-@app.route('/', defaults={'path': '/index.html'})
-@app.route('/<path>')
-def index(path):
+@app.route('/')
+def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    try:
-        if path.endswith(('.png', '.svg' '.ttf', '.xml', '.ico', '.woff', '.woff2')):
-            return send_from_directory(join(app.root_path, 'static'), path)
-        return render_template('pages/' + path)
-    except BaseException:
-        return render_template('layouts/auth-default.html',
-                               content=render_template('pages/404.html'))
+    return render_template('pages/index.html')
+
+
+@app.errorhandler(404)
+def no_such_file_or_directory(exception):
+    return render_template('pages/404.html')
+
+
+@app.errorhandler(500)
+def internal_server_error(exception):
+    logs.error(exception)
+    return render_template('pages/500.html')
