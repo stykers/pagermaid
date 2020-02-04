@@ -4,6 +4,7 @@ config.env
 config.yml
 pagermaid.session
 pagermaid.session-journal
+docker-compose.yml
 *.pyo
 *.pyc
 plugins/*.py
