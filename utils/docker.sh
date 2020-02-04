@@ -100,7 +100,7 @@ build_docker() {
   read -r container_name <&1
   echo "Building docker image . . ."
   docker rm -f "$container_name" > /dev/null 2>&1
-  docker build . --force-rm --no-cache -t pagermaid_"$container_name"
+  docker build - --force-rm --no-cache -t pagermaid_"$container_name < Dockerfile.persistant"
 }
 
 start_docker() {

@@ -36,6 +36,9 @@ USER pagermaid
 RUN mkdir /pagermaid/workdir
 RUN git clone -b master https://git.stykers.moe/scm/~stykers/pagermaid.git /pagermaid/workdir
 WORKDIR /pagermaid/workdir
-RUN python3 -m virtualenv /pagermaid/venv
-RUN source /pagermaid/venv/bin/activate; pip3 install -r requirements.txt
+COPY ./pagermaid.session ./config.yml /pagermaid/workdir/
+RUN sudo chown pagermaid:pagermaid /pagermaid/workdir/config.yml
+RUN sudo chown -f pagermaid:pagermaid /pagermaid/workdir/pagermaid.session; exit 0
+RUN python3 -m virtualenv venv
+RUN source venv/bin/activate; pip3 install -r requirements.txt
 CMD ["sh","utils/entrypoint.sh"]
