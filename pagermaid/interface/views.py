@@ -70,6 +70,23 @@ def login():
     return render_template('pages/login.html', form=form, msg=msg)
 
 
+@app.route('/style.css')
+def style():
+    return send_from_directory('static', 'style.css')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
+
+
+@app.route('/settings')
+def settings():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    return render_template('pages/settings.html')
+
+
 @app.route('/')
 def index():
     if not current_user.is_authenticated:
@@ -79,6 +96,7 @@ def index():
 
 @app.errorhandler(404)
 def no_such_file_or_directory(exception):
+    logs.debug(exception)
     return render_template('pages/404.html')
 
 

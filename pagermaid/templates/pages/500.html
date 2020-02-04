@@ -1,23 +1,37 @@
-{% extends "layouts/error-default.html" %}
 
-{% block title %} Internal Server Error {% endblock title %}
+<!doctype html>
+<title>Internal Server Error</title>
+<style>
+  body {
+        text-align: center;
+        padding: 150px;
+        background-color: #424242;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+      }
 
-{% block content %}
+    .content {
+        background-color: rgba(255, 255, 255, 0.75);
+        background-size: 100%;
+        color: inherit;
+        padding: 1px 100px 10px 100px;
+        border-radius: 15px;
+    }
 
-    <div class="pos-a t-0 l-0 bgc-white w-100 h-100 d-f fxd-r fxw-w ai-c jc-c pos-r p-30">
-      <div class="mR-60">
-        <img alt="#" src="/static/assets/static/images/500.png">
-      </div>
+  h1 { font-size: 40pt;}
+  body { font: 20px Helvetica, sans-serif; color: #333; }
+  article { display: block; text-align: left; width: 75%; margin: 0 auto; }
+  a:hover { color: #333; text-decoration: none; }
+</style>
 
-      <div class="d-f jc-c fxd-c">
-        <h1 class="mB-30 fw-900 lh-1 c-red-500" style="font-size: 60px;">Internal Server Error</h1>
-        <h3 class="mB-10 fsz-lg c-grey-900 tt-c">It seems like you have touched PagerMaid in a way that angered
-         her.</h3>
-        <p class="mB-30 fsz-def c-grey-700">Please report this if you did not intentionally anger PagerMaid.</p>
-        <div>
-          <a href="/" type="primary" class="btn btn-primary">Home</a>
-        </div>
-      </div>
+<article>
+  <div class="background">
+    <div class="content">
+      <h1>Internal Server Error</h1>
+        <p>Seems like some part of PagerMaid decided to crash, please report this to Kat.</p>
+        <p>Go back <span style="color: #000000;"><strong><a style="color: #000000;" href="/">Home</a></strong></span>.</p>
     </div>
-
-{% endblock content %}
+  </div>
+</article>

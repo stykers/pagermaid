@@ -1,23 +1,37 @@
-{% extends "layouts/error-default.html" %}
 
-{% block title %} No such file or directory {% endblock title %}
+<!doctype html>
+<title>No such file or directory</title>
+<style>
+  body {
+        text-align: center;
+        padding: 150px;
+        background-color: #424242;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+      }
 
-{% block content %}
+    .content {
+        background-color: rgba(255, 255, 255, 0.75);
+        background-size: 100%;
+        color: inherit;
+        padding: 1px 100px 10px 100px;
+        border-radius: 15px;
+    }
 
-    <div class="pos-a t-0 l-0 bgc-white w-100 h-100 d-f fxd-r fxw-w ai-c jc-c pos-r p-30">
-      <div class="mR-60">
-        <img alt="#" src="/static/assets/static/images/404.png">
-      </div>
+  h1 { font-size: 40pt;}
+  body { font: 20px Helvetica, sans-serif; color: #333; }
+  article { display: block; text-align: left; width: 75%; margin: 0 auto; }
+  a:hover { color: #333; text-decoration: none; }
+</style>
 
-      <div class="d-f jc-c fxd-c">
-        <h1 class="mB-30 fw-900 lh-1 c-red-500" style="font-size: 60px;">No such file or directory</h1>
-        <h3 class="mB-10 fsz-lg c-grey-900 tt-c">It seems like you have touched a broken link in PagerMaid or mashed
-        your keyboard.</h3>
-        <p class="mB-30 fsz-def c-grey-700">Please report this if a button took you to this page.</p>
-        <div>
-          <a href="/" type="primary" class="btn btn-primary">Home</a>
-        </div>
-      </div>
+<article>
+  <div class="background">
+    <div class="content">
+      <h1>No such file or directory</h1>
+        <p>Seems like a part of PagerMaid is missing or you have followed a bad link. If PagerMaid took you here please report this error.</p>
+        <p>Go back <span style="color: #000000;"><strong><a style="color: #000000;" href="/">Home</a></strong></span>.</p>
     </div>
-
-{% endblock content %}
+  </div>
+</article>
