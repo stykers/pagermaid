@@ -1,11 +1,14 @@
 """ Static views generated for PagerMaid. """
 
-from os.path import join
 from pathlib import Path
+from psutil import virtual_memory
 from os.path import exists
+from sys import platform
+from platform import uname, python_version
+from telethon import version as telethon_version
 from flask import render_template, request, url_for, redirect, send_from_directory
 from flask_login import login_user, logout_user, current_user
-from pagermaid import logs
+from pagermaid import logs, redis_status
 from pagermaid.interface import app, login
 from pagermaid.interface.modals import User
 from pagermaid.interface.forms import LoginForm, SetupForm
@@ -91,7 +94,32 @@ def settings():
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('pages/index.html')
+    memory = virtual_memory()
+    memory_total = memory.total
+    memory_available = memory.available
+    memory_available_percentage = round(100 * float(memory_available)/float(memory_total), 2)
+    memory_free = memory.free
+    memory_free_percentage = round(100 * float(memory_free) / float(memory_total), 2)
+    memory_buffered = memory.buffers
+    memory_buffered_percentage = round(100 * float(memory_buffered) / float(memory_total), 2)
+    memory_cached = memory.cached
+    memory_cached_percentage = round(100 * float(memory_cached) / float(memory_total), 2)
+    return render_template('pages/index.html',
+                           hostname=uname().node,
+                           platform=platform,
+                           kernel=uname().release,
+                           python=python_version(),
+                           telethon=telethon_version.__version__,
+                           redis="Connected" if redis_status() else "Disconnected",
+                           memory_total=round(memory_total/1048576, 2),
+                           memory_available=round(memory_available/1048576, 2),
+                           memory_available_percentage=memory_available_percentage,
+                           memory_free=round(memory_free/1048576, 2),
+                           memory_free_percentage=memory_free_percentage,
+                           memory_buffered=round(memory_buffered/1048576, 2),
+                           memory_buffered_percentage=memory_buffered_percentage,
+                           memory_cached=round(memory_cached/1048576, 2),
+                           memory_cached_percentage=memory_cached_percentage)
 
 
 @app.errorhandler(404)

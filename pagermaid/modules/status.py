@@ -67,19 +67,15 @@ async def tty(context):
 @listener(outgoing=True, command="status",
           description="Output the status of PagerMaid.")
 async def status(context):
-    hostname = uname().node
-    kernel = uname().release
-    database = "Redis is malfunctioning."
-    if redis_status():
-        database = "Connected to Redis."
+    database = "Connected" if redis_status() else "Disconnected"
     await context.edit(
         f"**PagerMaid Status** \n"
-        f"Hostname: `{hostname}` \n"
+        f"Hostname: `{uname().node}` \n"
         f"Host Platform: `{platform}` \n"
-        f"Kernel Version: `{kernel}` \n"
+        f"Kernel Version: `{uname().release}` \n"
         f"Python Version: `{python_version()}` \n"
         f"Library version: `{telethon_version.__version__}` \n"
-        f"Database Status: `{database}`"
+        f"Database Status: `{'Connected' if redis_status() else 'Disconnected'}`"
     )
 
 

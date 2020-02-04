@@ -26,47 +26,40 @@
                 <div
                     class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
                     <div class="mdl-card__title">
-                        <h2 class="mdl-card__title-text">Dashboard</h2>
+                        <h2 class="mdl-card__title-text">Status</h2>
                     </div>
                     <div class="mdl-card__supporting-text">
                         <table class="mdl-data-table w-100 mdl-js-data-table">
-                            <thead>
+                            <!--<thead>
                                 <tr>
-                                    <th class="mdl-data-table__cell--non-numeric">Material</th>
-                                    <th>Quantity</th>
-                                    <th>Unit price</th>
+                                    <th class="mdl-data-table__cell&#45;&#45;non-numeric">Node</th>
+                                    <th>Value</th>
                                 </tr>
-                            </thead>
+                            </thead>-->
                             <tbody>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Acrylic (Transparent)</td>
-                                    <td>25</td>
-                                    <td>$2.90</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Hostname</td>
+                                    <td>{{ hostname }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
-                                    <td>50</td>
-                                    <td>$1.25</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Platform</td>
+                                    <td>{{ platform }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
-                                    <td>10</td>
-                                    <td>$2.35</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Kernel Version</td>
+                                    <td>{{ kernel }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
-                                    <td>10</td>
-                                    <td>$2.35</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Python Version</td>
+                                    <td>{{ python }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
-                                    <td>10</td>
-                                    <td>$2.35</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Library Version</td>
+                                    <td>{{ telethon }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric">Laminate (Gold on Blue)</td>
-                                    <td>10</td>
-                                    <td>$2.35</td>
+                                    <td class="mdl-data-table__cell--non-numeric">Database Status</td>
+                                    <td>{{ redis }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -85,30 +78,30 @@
                                         Total available
                                     </td>
                                     <td>
-                                        <div class="mdl-progress mdl-js-progress" data-progress="80"></div>
+                                        <div class="mdl-progress mdl-js-progress" data-progress="{{ memory_available_percentage }}"></div>
                                     </td>
-                                    <td>186.02 MB / 236.18 MB (80%)</td>
+                                    <td>{{ memory_available }} MiB / {{ memory_total }} MiB ({{ memory_available_percentage }}%)</td>
                                 </tr>
                                 <tr>
                                     <td class="mdl-data-table__cell--non-numeric mdl-typography--font-bold">Free</td>
                                     <td>
-                                        <div class="mdl-progress mdl-js-progress" data-progress="70"></div>
+                                        <div class="mdl-progress mdl-js-progress" data-progress="{{ memory_free_percentage }}"></div>
                                     </td>
-                                    <td>186.02 MB / 236.18 MB (70%)</td>
+                                    <td>{{ memory_free }} MiB / {{ memory_total }} MiB ({{ memory_free_percentage }}%)</td>
                                 </tr>
                                 <tr>
                                     <td class="mdl-data-table__cell--non-numeric mdl-typography--font-bold">Buffered</td>
                                     <td>
-                                        <div class="mdl-progress mdl-js-progress" data-progress="10"></div>
+                                        <div class="mdl-progress mdl-js-progress" data-progress="{{ memory_buffered_percentage }}"></div>
                                     </td>
-                                    <td>186.02 MB / 236.18 MB (10%)</td>
+                                    <td>{{ memory_buffered }} MiB / {{ memory_total }} MiB ({{ memory_buffered_percentage }}%)</td>
                                 </tr>
                                 <tr>
                                     <td class="mdl-data-table__cell--non-numeric mdl-typography--font-bold">Cached</td>
                                     <td>
-                                        <div class="mdl-progress mdl-js-progress" data-progress="43"></div>
+                                        <div class="mdl-progress mdl-js-progress" data-progress="{{ memory_cached_percentage }}"></div>
                                     </td>
-                                    <td>186.02 MB / 236.18 MB (43%)</td>
+                                    <td>{{ memory_cached }} MiB / {{ memory_total }} MiB ({{ memory_cached_percentage }}%)</td>
                                 </tr>
                             </tbody>
                         </table>
