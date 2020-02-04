@@ -28,7 +28,7 @@ RUN pacman -Syu --needed --noconfirm \
     libwebp \
     zbar \
     ffmpeg \
-    python-magic \
+    file \
     procps-ng
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
 RUN useradd pagermaid -u 3333 -r -m -d /pagermaid
