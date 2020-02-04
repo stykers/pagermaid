@@ -15,3 +15,10 @@ class SetupForm(FlaskForm):
     username = StringField(u'Full Name', validators=[DataRequired()])
     password = PasswordField(u'Full Name', validators=[DataRequired()])
     email = StringField(u'Full Name', validators=[DataRequired(), Email()])
+
+
+class ModifyForm(FlaskForm):
+    full_name = StringField(u'Full Name')
+    username = StringField(u'Username')
+    password = PasswordField(u'Password')
+    email = StringField(u'Email Address', validators=[Email()])

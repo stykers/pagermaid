@@ -11,7 +11,7 @@ from flask_login import login_user, logout_user, current_user
 from pagermaid import logs, redis_status
 from pagermaid.interface import app, login
 from pagermaid.interface.modals import User
-from pagermaid.interface.forms import LoginForm, SetupForm
+from pagermaid.interface.forms import LoginForm, SetupForm, ModifyForm
 
 
 @login.user_loader
@@ -40,7 +40,7 @@ def setup():
         user = User.query.filter_by(user=username).first()
         user_by_email = User.query.filter_by(email=email).first()
         if user or user_by_email:
-            msg = 'This email already exists on this system, sign in if it is yours.'
+            msg = 'This email already exist on this system, sign in if it is yours.'
         else:
             pw_hash = password
             user = User(username, email, pw_hash)
@@ -88,6 +88,15 @@ def settings():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     return render_template('pages/settings.html')
+
+
+@app.route('/profile')
+def profile():
+    if not current_user.is_authenticated:
+        return redirect(url_for('profile'))
+    form = ModifyForm(request.form)
+    msg = None
+    return render_template('pages/profile.html', form=form, msg=msg)
 
 
 @app.route('/')
