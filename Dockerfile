@@ -30,7 +30,7 @@ RUN pacman -Syu --needed --noconfirm \
     ffmpeg \
     procps-ng
 RUN sed -e 's;^# \(%wheel.*NOPASSWD.*\);\1;g' -i /etc/sudoers
-RUN useradd pagermaid -r -m -d -u 3333 /pagermaid
+RUN useradd pagermaid -u 3333 -r -m -d /pagermaid
 RUN usermod -aG wheel,users pagermaid
 USER pagermaid
 RUN mkdir /pagermaid/workdir
